@@ -4,26 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hello World | 李大辉</title>
+    <title>Java集合学习3：HashSet和HashMap的比较 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+    <meta name="description" content="本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2015/06/28/hello-world/index.html">
+<meta property="og:title" content="Java集合学习3：HashSet和HashMap的比较">
+<meta property="og:url" content="http://yoursite.com/2015/07/01/Java集合学习3：HashSet和HashMap的比较/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2015-06-28T06:04:37.290Z">
+<meta property="og:description" content="本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。">
+<meta property="og:updated_time" content="2015-07-02T05:09:02.804Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="Java集合学习3：HashSet和HashMap的比较">
+<meta name="twitter:description" content="本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -85,14 +82,14 @@ Quick">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/06/28/hello-world/" title="Hello World" itemprop="url">Hello World</a>
+      <a href="/2015/07/01/Java集合学习3：HashSet和HashMap的比较/" title="Java集合学习3：HashSet和HashMap的比较" itemprop="url">Java集合学习3：HashSet和HashMap的比较</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-06-28T06:04:37.290Z" itemprop="datePublished"> 发表于 2015-06-28</time>
+    <time datetime="2015-07-01T14:36:57.000Z" itemprop="datePublished"> 发表于 2015-07-01</time>
     
   </p>
 </header>
@@ -101,24 +98,64 @@ Quick">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick_Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create_a_new_post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run_server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate_static_files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy_to_remote_sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashSet"><span class="toc-number">1.</span> <span class="toc-text">什么是HashSet</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashMap"><span class="toc-number">2.</span> <span class="toc-text">什么是HashMap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet和HashMap的区别"><span class="toc-number">3.</span> <span class="toc-text">HashSet和HashMap的区别</span></a></li></ol>
 		
 		</div>
 		
-		<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+		<p>HashMap和HashSet都是collection框架的一部分，它们让我们能够使用对象的集合。collection框架有自己的接口和实现，主要分为Set接口，List接口和Queue接口。它们有各自的特点，Set的集合里不允许对象有重复的值，List允许有重复，它对集合中的对象进行索引，Queue的工作原理是FCFS算法(First Come, First Serve)。</p>
+<p>首先让我们来看看什么是HashMap和HashSet，然后再来比较它们之间的分别。</p>
+<h1 id="什么是HashSet">什么是HashSet</h1><hr>
+<p>HashSet实现了Set接口，它不允许集合中有重复的值，当我们提到HashSet时，第一件事情就是在将对象存储在HashSet之前，要先确保对象重写equals()和hashCode()方法，这样才能比较对象的值是否相等，以确保set中没有储存相等的对象。如果我们没有重写这两个方法，将会使用这个方法的默认实现。</p>
+<p><code>public boolean add(Object o)</code>方法用来在Set中添加元素，当元素值重复时则会立即返回false，如果成功添加的话会返回true。</p>
+<h1 id="什么是HashMap">什么是HashMap</h1><hr>
+<p>HashMap实现了Map接口，Map接口对键值对进行映射。Map中不允许重复的键。Map接口有两个基本的实现，HashMap和TreeMap。TreeMap保存了对象的排列次序，而HashMap则不能。HashMap允许键和值为null。HashMap是非synchronized的，但collection框架提供方法能保证HashMap synchronized，这样多个线程同时访问HashMap时，能保证只有一个线程更改Map。</p>
+<p><code>public Object put(Object Key,Object value)</code>方法用来将元素添加到map中。</p>
+<h1 id="HashSet和HashMap的区别">HashSet和HashMap的区别</h1><hr>
+<table>
+<thead>
+<tr>
+<th>HashMap</th>
+<th style="text-align:center">HashSet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashMap实现了Map接口</td>
+<td style="text-align:center">HashSet实现了Set接口</td>
+</tr>
+<tr>
+<td>HashMap储存键值对</td>
+<td style="text-align:center">HashSet仅仅存储对象</td>
+</tr>
+<tr>
+<td>使用put()方法将元素放入map中</td>
+<td style="text-align:center">使用add()方法将元素放入set中</td>
+</tr>
+<tr>
+<td>HashMap中使用键对象来计算hashcode值</td>
+<td style="text-align:center">HashSet使用成员对象来计算hashcode值，对于两个对象来说hashcode可能相同，所以equals()方法用来判断对象的相等性，如果两个对象不同的话，那么返回false</td>
+</tr>
+<tr>
+<td>HashMap比较快，因为是使用唯一的键来获取对象</td>
+<td style="text-align:center">HashSet较HashMap来说比较慢</td>
+</tr>
+</tbody>
+</table>
   
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
 
 </div>
 
@@ -126,7 +163,7 @@ Quick">
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/06/28/hello-world/" data-title="Hello World | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/01/Java集合学习3：HashSet和HashMap的比较/" data-title="Java集合学习3：HashSet和HashMap的比较 | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -140,19 +177,27 @@ Quick">
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/07/01/Java集合学习1：HashMap的实现原理/" title="Java集合学习1：HashMap的实现原理">
+ <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" title="Java集合学习4：LinkedHashMap的实现原理">
   <strong>上一篇：</strong><br/>
   <span>
-  Java集合学习1：HashMap的实现原理</span>
+  Java集合学习4：LinkedHashMap的实现原理</span>
 </a>
 </div>
 
+
+<div class="next">
+<a href="/2015/07/01/Java集合学习2：HashSet的实现原理/"  title="Java集合学习2：HashSet的实现原理">
+ <strong>下一篇：</strong><br/> 
+ <span>Java集合学习2：HashSet的实现原理
+</span>
+</a>
+</div>
 
 </nav>
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/06/28/hello-world/" data-title="Hello World" data-url="http://yoursite.com/2015/06/28/hello-world/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/01/Java集合学习3：HashSet和HashMap的比较/" data-title="Java集合学习3：HashSet和HashMap的比较" data-url="http://yoursite.com/2015/07/01/Java集合学习3：HashSet和HashMap的比较/"></div>
 </section>
 
 
@@ -162,7 +207,7 @@ Quick">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick_Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create_a_new_post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run_server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate_static_files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy_to_remote_sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashSet"><span class="toc-number">1.</span> <span class="toc-text">什么是HashSet</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashMap"><span class="toc-number">2.</span> <span class="toc-text">什么是HashMap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet和HashMap的区别"><span class="toc-number">3.</span> <span class="toc-text">HashSet和HashMap的区别</span></a></li></ol>
  
   </div>
 
@@ -176,7 +221,7 @@ Quick">
 		<ul>
 		
 		  
-			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>2</sup></a></li>
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
 		  
 		
 		</ul>
@@ -189,11 +234,7 @@ Quick">
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/集合/" title="集合">集合<sup>2</sup></a></li>
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
 			
 		
 		</ul>

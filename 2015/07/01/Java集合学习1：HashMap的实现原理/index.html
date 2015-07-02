@@ -17,7 +17,7 @@
 <meta property="og:url" content="http://yoursite.com/2015/07/01/Java集合学习1：HashMap的实现原理/index.html">
 <meta property="og:site_name" content="李大辉">
 <meta property="og:description" content="本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。">
-<meta property="og:updated_time" content="2015-07-01T14:31:29.059Z">
+<meta property="og:updated_time" content="2015-07-02T05:07:05.867Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java集合学习1：HashMap的实现原理">
 <meta name="twitter:description" content="本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。">
@@ -103,7 +103,7 @@
 		</div>
 		
 		<h1 id="HashMap概述">HashMap概述</h1><hr>
-<p><code>static class Entry&lt;K,V&gt; implements Map.Entry&lt;K,V&gt;</code><br>HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
+<p>HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
 <h1 id="HashMap的数据结构">HashMap的数据结构</h1><hr>
 <p>在Java编程语言中，最基本的结构就是两种，一个是数组，另外一个是模拟指针（引用），所有的数据结构都可以用这两个基本结构来构造的，HashMap也不例外。<font color="#ff0000">HashMap实际上是一个“链表散列”的数据结构，即数组和链表的结合体。</font><br>从上图中可以看出，HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新建一个HashMap的时候，就会初始化一个数组。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/**</span><br><span class="line">* The table, resized as necessary. Length MUST Always be a power of two.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">transient</span> Entry[] table;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line">    ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>可以看出，Entry就是数组中的元素，每个 Map.Entry 其实就是一个key-value对，它持有一个指向下一个元素的引用，这就构成了链表。</p>
@@ -120,6 +120,47 @@
 <p>当length总是 2 的n次方时，h&amp; (length-1)运算等价于对length取模，也就是h%length，但是&amp;比%具有更高的效率。</p>
 <p>这看上去很简单，其实比较有玄机的，我们举个例子来说明：</p>
 <p>假设数组长度分别为15和16，优化后的hash码分别为8和9，那么&amp;运算后的结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>h &amp; (table.length-1)</th>
+<th style="text-align:center">hash</th>
+<th style="text-align:right"></th>
+<th>table.length-1</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8 &amp; (15-1)：</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:right">&amp;</td>
+<td>1110</td>
+<td>= 0100</td>
+</tr>
+<tr>
+<td>9 &amp; (15-1)：</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:right">&amp;</td>
+<td>1110</td>
+<td>= 0100</td>
+</tr>
+<tr>
+<td>8 &amp; (16-1)：</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:right">&amp;</td>
+<td>1111</td>
+<td>= 0100</td>
+</tr>
+<tr>
+<td>9 &amp; (16-1)：</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:right">&amp;</td>
+<td>1111</td>
+<td>= 0101</td>
+</tr>
+</tbody>
+</table>
 <p>从上面的例子中可以看出：当它们和15-1（1110）“与”的时候，产生了相同的结果，也就是说它们会定位到数组中的同一个位置上去，这就产生了碰撞，8和9会被放到数组中的同一个位置上形成链表，那么查询的时候就需要遍历这个链 表，得到8或者9，这样就降低了查询的效率。同时，我们也可以发现，当数组长度为15的时候，hash值会与15-1（1110）进行“与”，那么最后一位永远是0，而0001，0011，0101，1001，1011，0111，1101这几个位置永远都不能存放元素了，空间浪费相当大，更糟的是这种情况中，数组可以使用的位置比数组长度小了很多，这意味着进一步增加了碰撞的几率，减慢了查询的效率！而当数组长度为16时，即为2的n次方时，2n-1得到的二进制数的每个位上的值都为1，这使得在低位上&amp;时，得到的和原hash的低位相同，加之hash(int h)方法对key的hashCode的进一步优化，加入了高位计算，就使得只有相同的hash值的两个值才会被放到数组中的同一个位置上形成链表。</p>
 <p>所以说，当数组长度为2的n次幂的时候，不同的key算得得index相同的几率较小，那么数据在数组上分布就比较均匀，也就是说碰撞的几率小，相对的，查询的时候就不用遍历某个位置上的链表，这样查询效率也就较高了。</p>
 <p>根据上面 put 方法的源代码可以看出，当程序试图将一个key-value对放入HashMap中时，程序首先根据该 key 的 hashCode() 返回值决定该 Entry 的存储位置：如果两个 Entry 的 key 的 hashCode() 返回值相同，那它们的存储位置相同。如果这两个 Entry 的 key 通过 equals 比较返回 true，新添加 Entry 的 value 将覆盖集合中原有 Entry 的 value，但key不会覆盖。如果这两个 Entry 的 key 通过 equals 比较返回 false，新添加的 Entry 将与集合中原有 Entry 形成 Entry 链，而且新添加的 Entry 位于 Entry 链的头部——具体说明继续看 addEntry() 方法的说明。</p>
@@ -143,14 +184,14 @@
 <pre><code>threshold = <span class="list">(<span class="keyword">int</span>)</span><span class="list">(<span class="keyword">capacity</span> <span class="variable">* loadFactor);</span></span>
 </code></pre><p>结合负载因子的定义公式可知，threshold就是在此loadFactor和capacity对应下允许的最大元素数目，超过这个数目就重新resize，以降低实际的负载因子。默认的的负载因子0.75是对空间和时间效率的一个平衡选择。当容量超出此最大容量时， resize后的HashMap容量是容量的两倍：</p>
 <h1 id="Fail-Fast机制">Fail-Fast机制</h1><hr>
-<font color="#ff0000">我们知道java.util.HashMap不是线程安全的，因此如果在使用迭代器的过程中有其他线程修改了map，<br>那么将抛出ConcurrentModificationException，这就是所谓fail-fast策略。</font>
+<font color="#ff0000">我们知道java.util.HashMap不是线程安全的，因此如果在使用迭代器的过程中有其他线程修改了map，那么将抛出ConcurrentModificationException，这就是所谓fail-fast策略。</font>
 
 <p>这一策略在源码中的实现是通过modCount域，modCount顾名思义就是修改次数，对HashMap内容的修改都将增加这个值，那么在迭代器初始化过程中会将这个值赋给迭代器的expectedModCount。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">HashIterator() &#123;</span><br><span class="line">    expectedModCount = modCount;</span><br><span class="line">    <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123; <span class="comment">// advance to first entry</span></span><br><span class="line">    Entry[] t = table;</span><br><span class="line">    <span class="keyword">while</span> (index &lt; t.length &amp;&amp; (next = t[index++]) == <span class="keyword">null</span>)  </span><br><span class="line">        ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>在迭代过程中，判断modCount跟expectedModCount是否相等，如果不相等就表示已经有其他线程修改了Map：</p>
 <p>注意到modCount声明为volatile，保证线程之间修改的可见性。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Entry&lt;K,V&gt; nextEntry() &#123;</span><br><span class="line">    <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br></pre></td></tr></table></figure></p>
 <p>在HashMap的API中指出：</p>
 <p>由所有HashMap类的“collection 视图方法”所返回的迭代器都是快速失败的：在迭代器创建之后，如果从结构上对映射进行修改，除非通过迭代器本身的 remove 方法，其他任何时间任何方式的修改，迭代器都将抛出 ConcurrentModificationException。因此，面对并发的修改，迭代器很快就会完全失败，而不冒在将来不确定的时间发生任意不确定行为的风险。</p>
-<p>注意，迭代器的快速失败行为不能得到保证，一般来说，存在非同步的并发修改时，不可能作出任何坚决的保证。<br>快速失败迭代器尽最大努力抛出ConcurrentModificationException。因此，编写依赖于此异常的程序的做法是错误的，正确做法是：<font color="#ff0000">迭代器的快速失败行为应该仅用于检测程序错误。 </font></p>
+<p>注意，迭代器的快速失败行为不能得到保证，一般来说，存在非同步的并发修改时，不可能作出任何坚决的保证。快速失败迭代器尽最大努力抛出ConcurrentModificationException。因此，编写依赖于此异常的程序的做法是错误的，正确做法是：<font color="#ff0000">迭代器的快速失败行为应该仅用于检测程序错误。 </font></p>
 <h1 id="HashMap的两种遍历方式">HashMap的两种遍历方式</h1><hr>
 <h2 id="第一种">第一种</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">　　Map map = <span class="keyword">new</span> HashMap();</span><br><span class="line">　　Iterator iter = map.entrySet().iterator();</span><br><span class="line">　　<span class="keyword">while</span> (iter.hasNext()) &#123;</span><br><span class="line">　　Map.Entry entry = (Map.Entry) iter.next();</span><br><span class="line">　　Object key = entry.getKey();</span><br><span class="line">　　Object val = entry.getValue();</span><br><span class="line">　　&#125;</span><br></pre></td></tr></table></figure>
 <p>效率高,以后一定要使用此种方式！</p>
@@ -169,7 +210,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/集合/">集合</a>
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
   </div>
 
 </div>
@@ -200,14 +241,6 @@
 </div>
 
 
-<div class="next">
-<a href="/2015/06/28/hello-world/"  title="Hello World">
- <strong>下一篇：</strong><br/> 
- <span>Hello World
-</span>
-</a>
-</div>
-
 </nav>
 
 	
@@ -236,7 +269,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>2</sup></a></li>
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
 		  
 		
 		</ul>
@@ -249,11 +282,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/集合/" title="集合">集合<sup>2</sup></a></li>
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
 			
 		
 		</ul>
