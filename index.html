@@ -80,6 +80,82 @@
   
 <section class="post" itemscope itemprop="blogitem">
   
+    <a href="/2015/07/07/Hibernate关系映射3：双向1-1关联/" title="Hibernate关系映射3：双向1-1关联" itemprop="url">
+  
+    <h1 itemprop="name">Hibernate关系映射3：双向1-1关联</h1>
+    
+     
+           <p itemprop="description" >双向1-1关联
+双向1-1关联需要修改两边的持久化类代码，让两个持久化类都增加引用关联实体的属性，并为该属性提供get和set方法。
+双向1-1关联有三种映射模式：
+
+基于主键
+基于外键
+使用连接表
+
+在该文中，将主要介绍前两种模式。
+域模型
+关系数据模型按照外键映射
+按照主键映</p>
+        
+    
+    <time datetime="2015-07-07T09:32:38.000Z" itemprop="datePublished">2015-07-07</time>
+  </a>
+</section>
+
+
+
+
+
+
+  
+<section class="post" itemscope itemprop="blogitem">
+  
+    <a href="/2015/07/07/Hibernate关系映射2：双向1-N关联/" title="Hibernate关系映射2：双向1-N关联" itemprop="url">
+  
+    <h1 itemprop="name">Hibernate关系映射2：双向1-N关联</h1>
+    
+     
+           <p itemprop="description" >双向1-N关联
+对于1-N关联，Hibernate推荐使用双向关联，而且不要让1的一端控制关联关系，而使用N的一端控制关联关系。
+双向的N-1关联与1-N关联是完全相同的两种情形。两端都需要增加对关联属性的访问，N的一端增加引用到关联实体的属性，1的一端增加集合属性，集合元素为关</p>
+        
+    
+    <time datetime="2015-07-07T07:59:57.000Z" itemprop="datePublished">2015-07-07</time>
+  </a>
+</section>
+
+
+
+
+
+
+  
+<section class="post" itemscope itemprop="blogitem">
+  
+    <a href="/2015/07/07/Hibernate关系映射1：单向N-1关联/" title="Hibernate关系映射1：单向N-1关联" itemprop="url">
+  
+    <h1 itemprop="name">Hibernate关系映射1：单向N-1关联</h1>
+    
+     
+           <p itemprop="description" >单向N-1关联
+单向N-1关系，比如多个人对应一个地址，只需从人实体端可以找到对应的地址实体，无须关系某个地址的全部住户。
+单向 n-1 关联只需从 n 的一端可以访问 1 的一端。
+域模型从 Order 到 Customer 的多对一单向关联需要在Order 类中定义一个 Cu</p>
+        
+    
+    <time datetime="2015-07-07T06:55:02.000Z" itemprop="datePublished">2015-07-07</time>
+  </a>
+</section>
+
+
+
+
+
+
+  
+<section class="post" itemscope itemprop="blogitem">
+  
     <a href="/2015/07/04/MySQL索引的数据结构和算法原理以及查询优化/" title="MySQL索引的数据结构和算法原理以及查询优化" itemprop="url">
   
     <h1 itemprop="name">MySQL索引的数据结构和算法原理以及查询优化</h1>
@@ -217,26 +293,10 @@
 
 
 
-  
-<section class="post" itemscope itemprop="blogitem">
-  
-    <a href="/2015/07/01/Java集合学习1：HashMap的实现原理/" title="Java集合学习1：HashMap的实现原理" itemprop="url">
-  
-    <h1 itemprop="name">Java集合学习1：HashMap的实现原理</h1>
-    
-     
-      <p itemprop="description" >本文是对Java常用的集合的学习，通过借鉴摘抄转载网上同样主题的博客进行学习。主要以学习记录为主，作为后期复习的一个材料。</p>
-      
-    
-    <time datetime="2015-07-01T01:46:32.000Z" itemprop="datePublished">2015-07-01</time>
-  </a>
-</section>
 
-
-
-
-
-
+  <nav id="page-nav" class="clearfix unexpand">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
+  </nav>
 
 </div>
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
@@ -249,6 +309,10 @@
 <div class="categorieslist">
 	<p class="asidetitle">分类</p>
 		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>3</sup></a></li>
+		  
 		
 		  
 			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
@@ -269,6 +333,14 @@
 		
 			
 				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>3</sup></a></li>
 			
 		
 			
