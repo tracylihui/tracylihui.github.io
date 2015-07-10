@@ -21,7 +21,7 @@ Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
 <meta property="og:description" content="概述
 本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。
 Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
-<meta property="og:updated_time" content="2015-07-10T15:08:39.326Z">
+<meta property="og:updated_time" content="2015-07-10T15:10:05.487Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate：检索策略的学习2">
 <meta name="twitter:description" content="概述
@@ -110,7 +110,7 @@ Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
 		
 		<h1 id="概述">概述</h1><hr>
 <p>本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。</p>
-<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br>Hibernate：检索策略的学习2<br><a id="more"></a></p>
+<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/" target="_blank" rel="external">Hibernate：检索策略的学习2</a><br><a id="more"></a></p>
 <h1 id="N-1和1-1的检索策略">N-1和1-1的检索策略</h1><hr>
 <p>这个小节中的内容其实与第二部分的关于1-N和N-N部分有很多相似之处。只不过操作的对象不一样。比如说，我们之前考虑的是在获得了Customer时，如何获取其对应的orders集合；而在该节，我们考虑的是，在获取了Order对象，如何获取相对应的Customer。</p>
 <p>在这里，我们需要考虑的是在Order.hbm.xml中的<many-to-one>标签的属性，同样，其也有lazy属性和fetch属性：</many-to-one></p>

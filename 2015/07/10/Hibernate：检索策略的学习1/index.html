@@ -25,7 +25,7 @@
 
 不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。
 更高的查询效率：发送尽可">
-<meta property="og:updated_time" content="2015-07-10T08:52:43.552Z">
+<meta property="og:updated_time" content="2015-07-10T15:10:18.782Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate：检索策略的学习1">
 <meta name="twitter:description" content="概述
@@ -121,7 +121,7 @@
 <li>更高的查询效率：发送尽可能少的 SQL 语句。</li>
 </ol>
 <p>由于篇幅原因，将内容分为了两部分：</p>
-<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br>Hibernate：检索策略的学习2</p>
+<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/" target="_blank" rel="external">Hibernate：检索策略的学习2</a></p>
 <p>第一部分讲解了类级别的检索策略以及1-N和N-N的检索策略，在第二部分中将学习N-1和1-1的检索策略，并对检索策略进行总结。<br><a id="more"></a></p>
 <h1 id="类级别的检索策略">类级别的检索策略</h1><hr>
 <h2 id="知识点">知识点</h2><p>类级别可选的检索策略包括立即检索和延迟检索， 默认为延迟检索。</p>
