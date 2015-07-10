@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hibernate：检索策略的学习(1) | 李大辉</title>
+    <title>Hibernate：检索策略的学习1 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
@@ -17,17 +17,17 @@
 不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。
 更高的查询效率：发送尽可">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hibernate：检索策略的学习(1)">
-<meta property="og:url" content="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习(1)/index.html">
+<meta property="og:title" content="Hibernate：检索策略的学习1">
+<meta property="og:url" content="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习1/index.html">
 <meta property="og:site_name" content="李大辉">
 <meta property="og:description" content="概述
 检索数据，也就是查询数据是在一个系统中必不可少的一个功能。检索数据时的2个问题：
 
 不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。
 更高的查询效率：发送尽可">
-<meta property="og:updated_time" content="2015-07-10T08:48:14.890Z">
+<meta property="og:updated_time" content="2015-07-10T08:52:43.552Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hibernate：检索策略的学习(1)">
+<meta name="twitter:title" content="Hibernate：检索策略的学习1">
 <meta name="twitter:description" content="概述
 检索数据，也就是查询数据是在一个系统中必不可少的一个功能。检索数据时的2个问题：
 
@@ -94,7 +94,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/10/Hibernate：检索策略的学习(1)/" title="Hibernate：检索策略的学习(1)" itemprop="url">Hibernate：检索策略的学习(1)</a>
+      <a href="/2015/07/10/Hibernate：检索策略的学习1/" title="Hibernate：检索策略的学习1" itemprop="url">Hibernate：检索策略的学习1</a>
   </h1>
   <p class="article-author">By
        
@@ -120,7 +120,9 @@
 <li>不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。</li>
 <li>更高的查询效率：发送尽可能少的 SQL 语句。</li>
 </ol>
-<p>由于篇幅原因，将内容分为了两部分：<br><a href=""></a><br>第一部分讲解了类级别的检索策略以及1-N和N-N的检索策略，在第二部分中将学习N-1和1-1的检索策略，并对检索策略进行总结。<br><a id="more"></a></p>
+<p>由于篇幅原因，将内容分为了两部分：</p>
+<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br>Hibernate：检索策略的学习2</p>
+<p>第一部分讲解了类级别的检索策略以及1-N和N-N的检索策略，在第二部分中将学习N-1和1-1的检索策略，并对检索策略进行总结。<br><a id="more"></a></p>
 <h1 id="类级别的检索策略">类级别的检索策略</h1><hr>
 <h2 id="知识点">知识点</h2><p>类级别可选的检索策略包括立即检索和延迟检索， 默认为延迟检索。</p>
 <ul>
@@ -128,7 +130,8 @@
 <li>延迟检索: 延迟加载检索方法指定的对象。在使用具体的属性时，再进行加载。</li>
 </ul>
 <p><strong>类级别的检索策略可以通过 <class> 元素的 lazy 属性进行设置。</class></strong></p>
-<p>如果程序加载一个对象的目的是为了访问它的属性，可以采取立即检索；如果程序加载一个持久化对象的目的是仅仅为了获得它的引用，可以采用延迟检索，但<strong>需要注意懒加载异常</strong>（LazyInitializationException：简单理解该异常就是Hibernate在使用延迟加载时，并没有将数据实际查询出来，而只是得到了一个代理对象，当使用属性的时候才会去查询，而如果这个时候session关闭了，则会报该异常）！<br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A0(1" target="_blank" rel="external">Hibernate：检索策略的学习(1)</a>/)<br>Hibernate：检索策略的学习(1)<br>下面通过一个例子来进行讲解：</p>
+<p>如果程序加载一个对象的目的是为了访问它的属性，可以采取立即检索；如果程序加载一个持久化对象的目的是仅仅为了获得它的引用，可以采用延迟检索，但<strong>需要注意懒加载异常</strong>（LazyInitializationException：简单理解该异常就是Hibernate在使用延迟加载时，并没有将数据实际查询出来，而只是得到了一个代理对象，当使用属性的时候才会去查询，而如果这个时候session关闭了，则会报该异常）！</p>
+<p>下面通过一个例子来进行讲解：</p>
 <h2 id="Demo">Demo</h2><p>在该Demo中，我们只需要使用一个Customer的对象即可，其中包含了id，name等属性。</p>
 <h3 id="延迟检索">延迟检索</h3><p>首先我们来测试一下<class>元素的lazy属性为true的情况，也就是默认情况（不设置）。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HibernateTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> SessionFactory sessionFactory;</span><br><span class="line">	<span class="keyword">private</span> Session session;</span><br><span class="line">	<span class="keyword">private</span> Transaction transaction;</span><br><span class="line">	<span class="annotation">@Before</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Configuration configuration = <span class="keyword">new</span> Configuration().configure();</span><br><span class="line">		ServiceRegistry serviceRegistry = <span class="keyword">new</span> ServiceRegistryBuilder()</span><br><span class="line">				.applySettings(configuration.getProperties())</span><br><span class="line">				.buildServiceRegistry();</span><br><span class="line">		sessionFactory = configuration.buildSessionFactory(serviceRegistry);</span><br><span class="line"></span><br><span class="line">		session = sessionFactory.openSession();</span><br><span class="line">		transaction = session.beginTransaction();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="annotation">@After</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		transaction.commit();</span><br><span class="line">		session.close();</span><br><span class="line">		sessionFactory.close();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="annotation">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testClassLevelStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Customer customer = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">		System.out.println(customer.getClass());</span><br><span class="line">		System.out.println(customer.getCustomerId());</span><br><span class="line">		System.out.println(customer.getCustomerName());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></class></p>
 <p>看一下上面的代码，该代码是利用Junit进行测试（关于Junit的知识在这不多说，并不是重点）。其中init方法是对SessionFactory、Session等进行初始化，destroy方法是进行关闭。<br>当我们运行testClassLevelStrategy()方法时，会得到以下输出结果：<br><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> com.atguigu.hibernate.strategy.Customer_$$_javassist_1</span><br><span class="line"><span class="number">1</span></span><br><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.CUSTOMER_ID=?</span><br><span class="line">AA</span><br></pre></td></tr></table></figure></p>
@@ -261,7 +264,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习(1)/" data-title="Hibernate：检索策略的学习(1) | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习1/" data-title="Hibernate：检索策略的学习1 | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -287,7 +290,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/10/Hibernate：检索策略的学习(1)/" data-title="Hibernate：检索策略的学习(1)" data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习(1)/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/10/Hibernate：检索策略的学习1/" data-title="Hibernate：检索策略的学习1" data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习1/"></div>
 </section>
 
 
