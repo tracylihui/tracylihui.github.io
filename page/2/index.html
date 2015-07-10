@@ -83,6 +83,141 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/" title="Java集合学习5：LinkedHashSet的实现原理" itemprop="url">Java集合学习5：LinkedHashSet的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T04:41:54.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="LinkedHashSet概述">LinkedHashSet概述</h1><hr>
+<p>LinkedHashSet是具有可预知迭代顺序的Set接口的哈希表和链接列表实现。此实现与HashSet的不同之处在于，后者维护着一个运行于所有条目的双重链接列表。此链接列表定义了迭代顺序，该迭代顺序可为插入顺序或是访问顺序。</p>
+<p>注意，此实现不是同步的。如果多个线程同时访问链接的哈希Set，而其中至少一个线程修改了该Set，则它必须保持外部同步。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习5：LinkedHashSet的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" title="Java集合学习4：LinkedHashMap的实现原理" itemprop="url">Java集合学习4：LinkedHashMap的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T04:26:28.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="LinkedHashMap概述">LinkedHashMap概述</h1><hr>
+<p>LinkedHashMap是HashMap的一个子类，它保留插入的顺序，<font color="#ff0000"> 如果需要输出的顺序和输入时的相同，那么就选用LinkedHashMap。</font></p>
+<p>LinkedHashMap是Map接口的哈希表和链接列表实现，具有可预知的迭代顺序。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
+<p>LinkedHashMap实现与HashMap的不同之处在于，LinkedHashMap维护着一个运行于所有条目的双重链接列表。此链接列表定义了迭代顺序，该迭代顺序可以是插入顺序或者是访问顺序。</p>
+<p>注意，此实现不是同步的。如果多个线程同时访问链接的哈希映射，而其中至少一个线程从结构上修改了该映射，则它必须保持外部同步。</p>
+<p>根<font color="#ff0000">据链表中元素的顺序可以分为：按插入顺序的链表，和按访问顺序(调用get方法)的链表。</font>默认是按插入顺序排序，如果指定按访问顺序排序，那么调用get方法后，会将这次访问的元素移至链表尾部，不断访问可以形成按访问顺序排序的链表。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/01/Java集合学习3：HashSet和HashMap的比较/" title="Java集合学习3：HashSet和HashMap的比较" itemprop="url">Java集合学习3：HashSet和HashMap的比较</a>
   </h1>
   <p class="article-author">By
@@ -293,11 +428,15 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>5</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>6</sup></a></li>
 		  
 		
 		  
 			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
 		  
 		
 		  
@@ -318,7 +457,7 @@
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>5</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>6</sup></a></li>
 			
 		
 			
@@ -334,7 +473,15 @@
 			
 		
 			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>1</sup></a></li>
 			
 		
 		</ul>
