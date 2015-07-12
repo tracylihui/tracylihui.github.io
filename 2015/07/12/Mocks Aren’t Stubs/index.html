@@ -1,0 +1,577 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Mocks vs Stubs | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="原文链接：Mocks Aren’t Stubs
+最近在学习JUnit，遇到了关于Mocks和Stubs的问题，仔细学习的过程中遇到了这篇文章。学习这个知识点的提前应该是在了解并且会使用JUnit的基础上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mocks vs Stubs">
+<meta property="og:url" content="http://yoursite.com/2015/07/12/Mocks Aren’t Stubs/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="原文链接：Mocks Aren’t Stubs
+最近在学习JUnit，遇到了关于Mocks和Stubs的问题，仔细学习的过程中遇到了这篇文章。学习这个知识点的提前应该是在了解并且会使用JUnit的基础上。">
+<meta property="og:updated_time" content="2015-07-12T01:21:22.598Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mocks vs Stubs">
+<meta name="twitter:description" content="原文链接：Mocks Aren’t Stubs
+最近在学习JUnit，遇到了关于Mocks和Stubs的问题，仔细学习的过程中遇到了这篇文章。学习这个知识点的提前应该是在了解并且会使用JUnit的基础上。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/12/Mocks Aren’t Stubs/" title="Mocks vs Stubs" itemprop="url">Mocks vs Stubs</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-12T00:46:02.000Z" itemprop="datePublished"> 发表于 2015-07-12</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Regular_Tests"><span class="toc-number">1.</span> <span class="toc-text">Regular Tests</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Tests_with_Mock_Objects"><span class="toc-number">2.</span> <span class="toc-text">Tests with Mock Objects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_Difference_Between_Mocks_and_Stubs"><span class="toc-number">3.</span> <span class="toc-text">The Difference Between Mocks and Stubs</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Choosing_Between_the_Differences"><span class="toc-number">4.</span> <span class="toc-text">Choosing Between the Differences</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Fixture_Setup"><span class="toc-number">4.1.</span> <span class="toc-text">Fixture Setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test_Driven_Development"><span class="toc-number">4.2.</span> <span class="toc-text">Test Driven Development</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test_Isolation"><span class="toc-number">4.3.</span> <span class="toc-text">Test Isolation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coupling_Tests_to_Implementations"><span class="toc-number">4.4.</span> <span class="toc-text">Coupling Tests to Implementations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design_Style"><span class="toc-number">4.5.</span> <span class="toc-text">Design Style</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#So_should_I_be_a_classicist_or_a_mockist?"><span class="toc-number">5.</span> <span class="toc-text">So should I be a classicist or a mockist?</span></a></li></ol>
+		
+		</div>
+		
+		<p>原文链接：<a href="http://martinfowler.com/articles/mocksArentStubs.html" target="_blank" rel="external">Mocks Aren’t Stubs</a></p>
+<p>最近在学习JUnit，遇到了关于Mocks和Stubs的问题，仔细学习的过程中遇到了这篇文章。学习这个知识点的提前应该是在了解并且会使用JUnit的基础上。<br><a id="more"></a></p>
+<h1 id="Regular_Tests">Regular Tests</h1><hr>
+<p>我将通过两个简单的例子来说明Mocks和Stubs的用法。例子是用Java写的，但原则上对于任何面向对象的语言都是有意义的。我们有一个Order对象，并且从一个Warehouse对象中去填满这个订单对象。订单很简单，只有一个product和一个数量。Warehouse存放不同的products。当我们要求一个Order从Warehouse中获取产品的时候，有两种可能：warehouse的存货能满足；warehouse的存货不能满足order所要求的商品数目。</p>
+<p>下面代码是关于上面例子的测试，mock与stub代表的是不同的JUnit testing方法（分别是基于交互interaction-based和基于状态state-based）：</p>
+<p>（补充说明：可能作者写这篇文章时间比较早，所以当时还应该是JUnit3，与JUnit4中有一些方法不太相同，比如JUnit3中，规定需要覆盖setUp反法作为测试之前被调用以完成初始化工作的方法，而JUnit4中都会采用注解。）</p>
+<p>State-Based Testing：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderStateTester</span> <span class="keyword">extends</span> <span class="title">TestCase</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> String TALISKER = <span class="string">"Talisker"</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> String HIGHLAND_PARK = <span class="string">"Highland Park"</span>;</span><br><span class="line">  <span class="keyword">private</span> Warehouse warehouse = <span class="keyword">new</span> WarehouseImpl();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    warehouse.add(TALISKER, <span class="number">50</span>);</span><br><span class="line">    warehouse.add(HIGHLAND_PARK, <span class="number">25</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOrderIsFilledIfEnoughInWarehouse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">50</span>);</span><br><span class="line">    order.fill(warehouse);</span><br><span class="line">    assertTrue(order.isFilled());</span><br><span class="line">    assertEquals(<span class="number">0</span>, warehouse.getInventory(TALISKER));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOrderDoesNotRemoveIfNotEnough</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">51</span>);</span><br><span class="line">    order.fill(warehouse);</span><br><span class="line">    assertFalse(order.isFilled());</span><br><span class="line">    assertEquals(<span class="number">50</span>, warehouse.getInventory(TALISKER));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>state-based tests采用固定的模式。先准备好测试所需要的所有对象（包括测试的主要对象和能让测试成功的辅助对象）。这个对象的集合一般被称为fixture。本例中在fixture里只有一个次要的对象（warehouse），但很有可能在其他fixture中存在大量次要对象。在JUnit中，一般利用setUp方法来初始化这个fixture。</p>
+<p>一旦建立了fixture，就可以开始测试主要对象（例子中的order）的行为，结束后用一些assert来测试是否一切正常（assert会针对主要和次要对象）。</p>
+<p>（state-based中的主要/次要对象的区别很模糊，我把主要对象认定为你在测试中最关心的那个对象，而次要对象有它们自己的测试而且是假设它们能正常工作。次要对象要优于库对象，我们假设它们可以正常工作，但是对于库来写测试一般是不必要的。可能会有多个主要对象，但文中只考虑一个主要对象的情况）。</p>
+<h1 id="Tests_with_Mock_Objects">Tests with Mock Objects</h1><hr>
+<p>Interaction-Based Tests：<br>Using JMock：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderInteractionTester</span> <span class="keyword">extends</span> <span class="title">MockObjectTestCase</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> String TALISKER = <span class="string">"Talisker"</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFillingRemovesInventoryIfInStock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//setup</span></span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">50</span>);</span><br><span class="line">    Mock warehouse = <span class="keyword">new</span> Mock(Warehouse.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//expectations</span></span><br><span class="line">    warehouse.expects(once()).method(<span class="string">"hasInventory"</span>)</span><br><span class="line">      .with(eq(TALISKER),eq(<span class="number">50</span>))</span><br><span class="line">      .will(returnValue(<span class="keyword">true</span>));</span><br><span class="line">    warehouse.expects(once()).method(<span class="string">"remove"</span>)</span><br><span class="line">      .with(eq(TALISKER), eq(<span class="number">50</span>))</span><br><span class="line">      .after(<span class="string">"hasInventory"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//execute</span></span><br><span class="line">    order.fill((Warehouse) warehouse.proxy());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//verify</span></span><br><span class="line">    warehouse.verify();</span><br><span class="line">    assertTrue(order.isFilled());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFillingDoesNotRemoveIfNotEnoughInStock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">51</span>);</span><br><span class="line">    Mock warehouse = mock(Warehouse.class);</span><br><span class="line"></span><br><span class="line">    warehouse.expects(once()).method(<span class="string">"hasInventory"</span>)</span><br><span class="line">      .withAnyArguments()</span><br><span class="line">      .will(returnValue(<span class="keyword">false</span>));</span><br><span class="line"></span><br><span class="line">    order.fill((Warehouse) warehouse.proxy());</span><br><span class="line"></span><br><span class="line">    assertFalse(order.isFilled());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Interaction-based测试有不同的模式。</p>
+<p>和刚才从建立fixture开始不同，你之需要创建一个普通的主要对象的实例。你并没有建立次要对象的实例，而是建立了mock实例。当建立好mock以后，添加对mock的expectations，这些expectations说明了当主要对象被使用时，mock上会有哪些方法被调用。 Expectations是stubs和mocks的主要区别。</p>
+<p>在设置要所有的expectations后，开始测试主要对象。接下来要干两件不同的事情：针对主要对象作assert，以及verrify了mock，来检查它们是否根据其expectations被调用。</p>
+<p>在state-based测试中，我们通过检查测试后的状态来检查测试成功与否。在interaction-based测试中，我们检查是否正确的interactions被测试触发。如果主要对象的state没有被改变，就不需要来做asserts了，只需要verify那些mock就可以了。</p>
+<p>在第二个测试（testFillingDoesNotRemoveIfNotEnoughInStock() ）中，我做了两件不同的事情。首先以不同的方式创建了mock，在MockObjectTestCase中使用了mock方法，而不是在constructor中。这在jMock库中是一个convenience method，这意味着不需要显式来verify，因为任何利用convenience method创建的mock会在测试结束后被自动verify。 在第一个test（testFillingRemovesInventoryIfInStock() ）中，其实也可以省略verify，在那里显式调用verify是为了更清楚一些。</p>
+<p>第二件不同的事情就是我使用了withAnyArguments来放宽对于expectation的限制。因为第一个test检查了订货数量被传给了warehouse，所以第二个测试就不需要重复这一步骤了。如果order的逻辑需要在日后被改变，只有一个测试会失败，easing the effort of migrating the tests。</p>
+<p>Using EasyMock：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderEasyTester</span> <span class="keyword">extends</span> <span class="title">TestCase</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> String TALISKER = <span class="string">"Talisker"</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> MockControl warehouseControl;</span><br><span class="line">  <span class="keyword">private</span> Warehouse warehouseMock;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    warehouseControl = MockControl.createControl(Warehouse.class);</span><br><span class="line">    warehouseMock = (Warehouse) warehouseControl.getMock();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFillingRemovesInventoryIfInStock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//setup</span></span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">50</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//expectations</span></span><br><span class="line">    warehouseMock.hasInventory(TALISKER, <span class="number">50</span>);</span><br><span class="line">    warehouseControl.setReturnValue(<span class="keyword">true</span>);</span><br><span class="line">    warehouseMock.remove(TALISKER, <span class="number">50</span>);</span><br><span class="line">    warehouseControl.replay();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//execute</span></span><br><span class="line">    order.fill(warehouseMock);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//verify</span></span><br><span class="line">    warehouseControl.verify();</span><br><span class="line">    assertTrue(order.isFilled());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFillingDoesNotRemoveIfNotEnoughInStock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Order order = <span class="keyword">new</span> Order(TALISKER, <span class="number">51</span>);</span><br><span class="line"></span><br><span class="line">    warehouseMock.hasInventory(TALISKER, <span class="number">51</span>);</span><br><span class="line">    warehouseControl.setReturnValue(<span class="keyword">false</span>);</span><br><span class="line">    warehouseControl.replay();</span><br><span class="line"></span><br><span class="line">    order.fill((Warehouse) warehouseMock);</span><br><span class="line"></span><br><span class="line">    assertFalse(order.isFilled());</span><br><span class="line">    warehouseControl.verify();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>EasyMock使用了 record/replay的隐喻（ metaphor）来设置expectations。对于每个你想要mock的对象，你建立一个control和mock对象。mock满足次要对象的接口，control可以提供额外的特性。为了说明一个 expectation，你调用了方法（带有期望的参数）。如果你需要一个返回值的话，接下来就调用control。一旦你结束了对 expectations的设置，你对control调用replay，那就是mock结束了记录而且准备好对主要对象做反应的时候。结束以后你对control调用verify。  </p>
+<p>人们最初一般会对record/replay隐喻有疑虑，但是很快会适应。它相比jMock的限制来说有优势，因为你可以实际调用方法，而不是利用string来制定方法的名字。这意味着你可以利用IDE提供的code-completion，而且任何对方法名的重构都会自动将test更新。缺点就是你不能拥有更松散的约束。</p>
+<h1 id="The_Difference_Between_Mocks_and_Stubs">The Difference Between Mocks and Stubs</h1><hr>
+<p>主要区别不是what they are，而是how they are used。</p>
+<p>Stubs一般用来stub out那些难于创建或操纵的对象。一个经典的例子就是一个database connection。因此，一般的stub都被发现于系统边界，或者围绕着系统中复杂的对象群。为了建立一个stub，你建立了一个接口的另一种实现，利用简单的数据替换了真实的方法。</p>
+<p>大多数团队一般编写custom stubs来stub任何需要的服务，毕竟数目并不多，而且它们经常可以在test cases之间复用。因此，你不需要构建一个通用的stub定义库。而利用mock库是可以很好地创建stub的。</p>
+<p>因为其在测试中所担任的角色，大部分stub的实现就是对于带特定参数的方法调用返回已定义好的数据。在mock社区看来，最本质的区别就在于mock所具有的expectation setting机制，利用此机制可以测试mock上哪些方法被调用了。Mockists通常把一个刚刚返回值的mock object叫做’just a stub’。所以，一种观察mocks和stubs的区别的方法就是在使用mock的时候人们是把建立并且测试expectations当作测试的一部分的。似乎太简单了点 - 我也曾经编写过做一些简单形式expectation检查的stub（这些检查可能是设置一个布尔值来代表某个method是否被调用）。但是我想我们有理由认为expectations对于stubs来说是一种稀有的特性，而对于mocks来说是主要的特性。</p>
+<p>最大的问题并不真的是mocks和stubs的区别，真正关心的是interaction和state style的对比。Interaction-based testers对于所有次要对象编写mocks。State-based testers仅仅对于那些不实际使用real object的object编写stubs （比如external services、开销很大的东西、cache等等）。</p>
+<p>很有必要强调这一点，因为我也曾经多次感到迷惑。State based testers不避免使用stubs（或者mocks来实现stubs） - 他们只是在必须要的情况下才用。Interaction testers随时使用mocks，就算真实的次要对象用起来也一样容易。</p>
+<h1 id="Choosing_Between_the_Differences">Choosing Between the Differences</h1><hr>
+<p>每种style都有自己的优点和拥护者。我们要考虑很多因素。</p>
+<h2 id="Fixture_Setup">Fixture Setup</h2><p>如果使用state-based testing，你不得不创建所有测试中涉及的对象（可能是大量次级对象）。一般来说，这些对象在每次运行测试的时候被创建和摧毁。</p>
+<p>Interaction-based tests只需要创建主要对象，对其它相关对象只要mock就可以。这可以避免某些在构建复杂fixtures时所作的工作。</p>
+<p>实际上，state-driven testers喜欢尽可能的重用复杂的fixtures。最简单的方法就是把fixture setup code放到xUnit的setup method。更复杂的fixtures需要被多个test classes使用，因此在这种情况下你建立特别的fixture generated classes。我一般将其称为 ‘Object Mothers’，基于一个早期ThoughtWorks XP项目用到的命名规约。在比较大的state based testing中使用“mother”是很必要的，但是mothers是需要维护的额外的代码，而且对mother的改变可能会对测试产生连锁反应。还可能在fixture创建时存在性能消耗（问题一般并不严重）。</p>
+<p>两种style互相指责对方工作繁重，Interaction testers说建立fixtures很费事；但state testers说fixture是可以重用的，而mock是需要在每次测试中都被建立的。</p>
+<h2 id="Test_Driven_Development">Test Driven Development</h2><p>Mock objects来源于XP社区，XP的主要特点之一就是它强调Test Driven Development。</p>
+<p>所以，Mock Object的支持者谈论在设计阶段的interaction testing的作用，也就不令人惊讶了。 在这种style，你从编写第一个针对主要对象的测试来开始开发过程。通过考虑次要对象上的expectations，你研究了主要对象和其他对象的交互 - 有效设计主要对象的外部接口。一旦你让你的第一个测试运行起来了，mocks上的expectations提供了下一步骤的规范以及对测试的出发点。</p>
+<p>特别的，这种途径鼓励了一种outside-in的途径来实现一个功能点。你首先利用底下的mock层来进行UI编程。接下来你编写底下一层的测试，逐步渗透进系统的所有层次。</p>
+<p>State-based testing并未提供类似的向导。State-based testers 一般要考虑很多相关的对象。一个类似的渐进步骤可以被实施，我们可以先把次要对象用fake methods来实现，然后利用real methods来替代，然后可以进行测试了。在多层系统中，state-based testing似乎更普遍地和middle-out styles一起使用，开发者先实现domain logic然后再做UI。</p>
+<h2 id="Test_Isolation">Test Isolation</h2><p>如果你在interaction testing时候引入了一个bug，这通常会仅导致那些主要对象包含了这个bug的测试失败。如果使用state-based方法，任何把有bug的对象当作次要对象使用的client objects的测试都会失败。因此，一个被广泛使用的对象的bug会波及到整个系统测试的失败。</p>
+<p>Interaction testers认为这是state-based tests的主要问题，这对于寻找错误的真正源头比较麻烦。但是state-based testers并不认为这是一个问题。一般来说，出问题的地方可以根据测试失败的位置来做判断，开发者也可以分辨出其它失败是继承自根源错误。另外，如果你经常做测试，你就可以知道错误来源于你最近修改的部分，这样找错误也不难。</p>
+<p>一个显著因素就是小间隔的测试。因为state-based tests操纵很多对象，你可以经常发现一个single state-based test作为一个对象群的主要测试，而不是针对一个对象。如果这个群涉及很多对象，那找出bug的根源就困难了 。What’s happening here is that the tests are too coarse grained.</p>
+<p>貌似interaction-based tests比较少遭遇此类问题，因为惯例就是mock out主要对象之外的所有对象，这就明确了次要对象需要更好的测试。也就是说，overly coarse grained tests的存在并不说明state-based testing是失败的，只是对于正确的进行state-based testing是一个失败。一个好的规则就是把把每个类的测试都分开。当对象群存在的时候，应该把它们限制在极少数的几个类（不超过6个），如果你发现了因为 overly coarse-grained tests引发的调试问题，你就应该用test driven的形式来debug，创建finer grained tests。</p>
+<p>在基本的state-based tests中不只有单元测试，还有小的集成测试。因此很多人喜欢以下事实：client tests可能会catch到一个对象的主测试忽略的error，特别地可以深入类之间进行交互的区域。Interaction tests失去了这种性质。另外，你还要冒着interaction-based tests中的expectations可能是矛盾的这种风险，这会导致单元测试通过但掩盖了内部错误。</p>
+<p>我要强调，不管你用哪种style来测试，你都必须把它结合上coarser grained acceptance tests that operate across the system as a whole。</p>
+<h2 id="Coupling_Tests_to_Implementations">Coupling Tests to Implementations</h2><p>当你编写了一个interaction-based test，你就在测试主要对象的向外的调用，来确保它能和其suppliers合理交互。一个state-based test只考虑最终状态 - 而不是这个状态时如何推导出的。因此Interaction-based tests和一个方法的实现耦合比较紧。Changing the nature of calls to secondary objects将会导致一个interaction-based test失败。</p>
+<p>这耦合会导致几个关注点。最重要的一个就是它对TDD的影响。当使用interaction-based testing时，编写测试让你考虑行为的实现 - 实际上interaction testers把它认为是优点。但是，State-based testers认为只考虑从外部接口的观点看发生了什么是重要的，在编写好测试后再考虑实现问题。</p>
+<p>和测试的耦合还会影响到refactoring，因为实现上的变化更容易破坏测试（相对 state-based testing来说）。</p>
+<p>This can be worsened by the nature of interaction-based toolkits。通常mock tools指定了很详细的method calls和参数匹配，就算它们和这个特定测试不相关。jMock toolkit的其中一个目标就是让它对于expectations的规格说明更有弹性一些，来让expectations在那些不要紧的领域松散一些。</p>
+<h2 id="Design_Style">Design Style</h2><p>这些测试styles的最迷人的方面中其中一个就是它们如何影响设计决定。我意识到了一些styles鼓励的设计（初步认识）。</p>
+<p>我已经提到了一个tackling layers的区别。Interaction-based testing supports an outside in approach starting with the presentation。喜欢domain model out style的开发者更喜欢state-based testing。</p>
+<p>在一个更小的层次上我注意到interaction-based testers喜欢ease away from methods that return values，in favor of methods that act upon a collecting object。举个例子，从一组对象中收集信息来生成一个report string的行为。一个通常办法就是让reporting method在多个对象上调用string returning methods，然后在临时变量里生成结果string。一个interaction-based tester可能会把一个 string buffer传入多个对象来让它们在buffer中添加多个string - 把string buffer看作一个collecting parameter。</p>
+<p>Interaction-based testers的确更多的讨论避免’train wrecks’ - method chains of style of getThis().getThat().getTheOther()。避免method chains即按照Law of Demeter。当method chains是smell的时候，the opposite problem of middle men objects bloated with forwarding methods也是smell。 (我一直觉得把Law of Demeter叫做Suggestion of Demeter比较好)</p>
+<p>人们理解OO design的最难的一件事情就是”Tell Don’t Ask” principle，它鼓励你告诉一个对象来做某事，而不是把数据从对象中掏出来而在client code中处理。Interaction testers认为利用interaction testing有助于此，而且避免 the getter confetti that pervades too much of code these days.  </p>
+<h1 id="So_should_I_be_a_classicist_or_a_mockist?">So should I be a classicist or a mockist?</h1><hr>
+<p>难以回答的问题。我个人总是一个 state-based tester，而且没觉得需要改变。我没发现 interaction based testing有什么特别的好处，而且我关注把测试和实现耦合起来的后果。</p>
+<p>如果不把interaction based testing认真用在实际例子上（而不是仅仅[玩具]级别的例子），也是不妥的。我的确知道很多人在用interaction based testing - 他们是优秀的开发者，而且也对这个技术很满意。</p>
+<p>所以，如果interaction-based testing对你有吸引力，那我建议你尝试一下，尤其是如果你在那些interaction-based testing特别加强的领域碰到问题的话。我主要发现了两个地方。一是，如果你当测试失败时在debugging上花费了很多时间，而原因是那些测试没有很清楚地告诉你问题在那里（你也可以利用state-based testing来改进这一点，只要注意 finer-grained clusters即可）。第二，如果你的对象没包含足够的行为)， interaction-based testing可能会鼓励开发者添加更多的行为来丰富这些对象。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Junit/">Junit</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Junit/">Junit</a><a href="/tags/Mocks/">Mocks</a><a href="/tags/Stubs/">Stubs</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/12/Mocks Aren’t Stubs/" data-title="Mocks vs Stubs | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/07/10/Hibernate：检索策略的学习2/"  title="Hibernate：检索策略的学习2">
+ <strong>下一篇：</strong><br/> 
+ <span>Hibernate：检索策略的学习2
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/12/Mocks Aren’t Stubs/" data-title="Mocks vs Stubs" data-url="http://yoursite.com/2015/07/12/Mocks Aren’t Stubs/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Regular_Tests"><span class="toc-number">1.</span> <span class="toc-text">Regular Tests</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Tests_with_Mock_Objects"><span class="toc-number">2.</span> <span class="toc-text">Tests with Mock Objects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_Difference_Between_Mocks_and_Stubs"><span class="toc-number">3.</span> <span class="toc-text">The Difference Between Mocks and Stubs</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Choosing_Between_the_Differences"><span class="toc-number">4.</span> <span class="toc-text">Choosing Between the Differences</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Fixture_Setup"><span class="toc-number">4.1.</span> <span class="toc-text">Fixture Setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test_Driven_Development"><span class="toc-number">4.2.</span> <span class="toc-text">Test Driven Development</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test_Isolation"><span class="toc-number">4.3.</span> <span class="toc-text">Test Isolation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Coupling_Tests_to_Implementations"><span class="toc-number">4.4.</span> <span class="toc-text">Coupling Tests to Implementations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design_Style"><span class="toc-number">4.5.</span> <span class="toc-text">Design Style</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#So_should_I_be_a_classicist_or_a_mockist?"><span class="toc-number">5.</span> <span class="toc-text">So should I be a classicist or a mockist?</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>7</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
