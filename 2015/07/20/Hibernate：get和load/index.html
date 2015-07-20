@@ -4,27 +4,29 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>深入学习JVM1：总体介绍 | 李大辉</title>
+    <title>Hibernate：get和load | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
+    <meta name="description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入学习JVM1：总体介绍">
-<meta property="og:url" content="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/index.html">
+<meta property="og:title" content="Hibernate：get和load">
+<meta property="og:url" content="http://yoursite.com/2015/07/20/Hibernate：get和load/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
-<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/jvm1-1.png">
-<meta property="og:updated_time" content="2015-07-14T03:08:24.047Z">
+<meta property="og:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
+<meta property="og:updated_time" content="2015-07-20T14:44:03.017Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深入学习JVM1：总体介绍">
-<meta name="twitter:description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
+<meta name="twitter:title" content="Hibernate：get和load">
+<meta name="twitter:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -88,14 +90,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/13/深入学习JVM1：总体介绍/" title="深入学习JVM1：总体介绍" itemprop="url">深入学习JVM1：总体介绍</a>
+      <a href="/2015/07/20/Hibernate：get和load/" title="Hibernate：get和load" itemprop="url">Hibernate：get和load</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-13T03:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-13</time>
+    <time datetime="2015-07-20T14:22:14.000Z" itemprop="datePublished"> 发表于 2015-07-20</time>
     
   </p>
 </header>
@@ -104,19 +106,27 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li></ol>
 		
 		</div>
 		
-		<p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第一篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/" target="_blank" rel="external">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/" target="_blank" rel="external">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" target="_blank" rel="external">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是整体上了解一下。<br><a id="more"></a></p>
-<h1 id="概述">概述</h1><hr>
-<p>由于之前对JVM（Java虚拟机）已经有过了解，所以在这就不太注重很基础的知识。<br>首先，看一下JVM的体系结构：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/jvm1-1.png" alt="图1"></p>
-<p>初看这个图可能会觉得有点云里雾里，在我看来，关于JVM的学习有两点是比较重要的：</p>
-<ol>
-<li><strong>内存区域的管理，其中就包含了内存区域的结构以及垃圾回收</strong></li>
-<li><strong>Java文件到Class文件，然后通过类加载子系统加载到内存，继而执行这个流程</strong></li>
-</ol>
+		<p>当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。</p>
+<p>这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。</p>
+<p>PS，概念什么的就不详细介绍了，主要就是列举一下而已，因为我自己本身是对这个点比较了解了。<br><a id="more"></a></p>
+<h1 id="load和get的简单介绍">load和get的简单介绍</h1><hr>
+<ul>
+<li>load代表的是采用延迟加载方法，即当我们采用load()方法加载一个对象时，并不会发送SQL语句，<strong>得到的只是一个包含了实体对象ID值的代理对象</strong>，只有当我们使用具体属性时候，才会发送SQL语句。</li>
+<li>get则非常直白，当我们通过get方法的时候，不管后边怎样，就先通过SQL将该对象查询出来，也就是常说的立即加载。</li>
+<li>使用load的加载方式要比get的加载方式性能好一点，因为load加载的时候，只是得到一个代理对象，当真正需要的时候才会去查询。这也代表了延迟加载与立即加载的同比。</li>
+</ul>
+<h1 id="小Tips">小Tips</h1><hr>
+<ul>
+<li>get()方法来加载对象，当我们试图得到一个id不存在的对象时候，会报空指针异常，也就是NullPointException。</li>
+<li>load()方法来加载对象，如果id不存在，若我们不使用该对象的任何属性，啥事没有；但如果需要使用属性（也就是真正的去查询该对象），会报异常，但该异常并不是空指针，而是ObjectNotFoundException。为啥呢？还是因为延迟加载，得到的是仅包含ID的代理对象；虽然我们在使用具体的属性时候，会发送SQL语句去进行查询，但却查询不到结果，这个就好尴尬。所以你要查询的属性是不存在的，所以会报ObjectNotFoundException。</li>
+<li>关于load还有一点比较重要，就是LazyInitializationException（懒加载异常，用过Hibernate的应该都会接触过N次）。其原因还是因为延迟加载！我们通过load方法得到了代理对象，但此时我们的session关闭了，但我们的对象还是存在的啊，所以当我们准备使用该对象属性的时候，就会报LazyInitializationException异常了。Session都关了，我还怎么去初始化= =</li>
+</ul>
+<p>提到懒加载异常，突然想到一个点，就是我们之前在开发web项目的时候，通过load()方法得到的对象，经常会在session关闭之后再使用。那这个时候一般都是如何解决的？</p>
+<p>答案就是OpenSessionInViewer。关于这个嘛，随便百度有的是教程，它在Spring与Hibernate整合过程中有一个比较重要的作用。将其配置在web.xml中。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -124,13 +134,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/JVM/">JVM</a>
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
   </div>
 
 </div>
@@ -139,7 +149,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/" data-title="深入学习JVM1：总体介绍 | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/20/Hibernate：get和load/" data-title="Hibernate：get和load | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -152,19 +162,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/07/13/深入学习JVM2：自动内存管理机制/" title="深入学习JVM2：自动内存管理机制">
-  <strong>上一篇：</strong><br/>
-  <span>
-  深入学习JVM2：自动内存管理机制</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/12/Mocks Aren’t Stubs/"  title="Mocks vs Stubs">
+<a href="/2015/07/20/Hibernate：缓存机制的学习/"  title="Hibernate：缓存机制的学习">
  <strong>下一篇：</strong><br/> 
- <span>Mocks vs Stubs
+ <span>Hibernate：缓存机制的学习
 </span>
 </a>
 </div>
@@ -173,7 +175,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/13/深入学习JVM1：总体介绍/" data-title="深入学习JVM1：总体介绍" data-url="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/20/Hibernate：get和load/" data-title="Hibernate：get和load" data-url="http://yoursite.com/2015/07/20/Hibernate：get和load/"></div>
 </section>
 
 
@@ -183,7 +185,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li></ol>
  
   </div>
 
