@@ -21,7 +21,7 @@ PS，概念什么的就不详细">
 <meta property="og:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
 这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
 PS，概念什么的就不详细">
-<meta property="og:updated_time" content="2015-07-20T14:44:03.017Z">
+<meta property="og:updated_time" content="2015-07-20T14:46:21.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate：get和load">
 <meta name="twitter:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
@@ -106,7 +106,7 @@ PS，概念什么的就不详细">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
 		
 		</div>
 		
@@ -120,11 +120,12 @@ PS，概念什么的就不详细">
 <li>使用load的加载方式要比get的加载方式性能好一点，因为load加载的时候，只是得到一个代理对象，当真正需要的时候才会去查询。这也代表了延迟加载与立即加载的同比。</li>
 </ul>
 <h1 id="小Tips">小Tips</h1><hr>
-<ul>
-<li>get()方法来加载对象，当我们试图得到一个id不存在的对象时候，会报空指针异常，也就是NullPointException。</li>
-<li>load()方法来加载对象，如果id不存在，若我们不使用该对象的任何属性，啥事没有；但如果需要使用属性（也就是真正的去查询该对象），会报异常，但该异常并不是空指针，而是ObjectNotFoundException。为啥呢？还是因为延迟加载，得到的是仅包含ID的代理对象；虽然我们在使用具体的属性时候，会发送SQL语句去进行查询，但却查询不到结果，这个就好尴尬。所以你要查询的属性是不存在的，所以会报ObjectNotFoundException。</li>
-<li>关于load还有一点比较重要，就是LazyInitializationException（懒加载异常，用过Hibernate的应该都会接触过N次）。其原因还是因为延迟加载！我们通过load方法得到了代理对象，但此时我们的session关闭了，但我们的对象还是存在的啊，所以当我们准备使用该对象属性的时候，就会报LazyInitializationException异常了。Session都关了，我还怎么去初始化= =</li>
-</ul>
+<p>1、get()方法来加载对象，当我们试图得到一个id不存在的对象时候，会报空指针异常，也就是NullPointException。</p>
+<p>2、load()方法来加载对象，如果id不存在，若我们不使用该对象的任何属性，啥事没有；但如果需要使用属性（也就是真正的去查询该对象），会报异常，但该异常并不是空指针，而是ObjectNotFoundException。</p>
+<p>为啥呢？还是因为延迟加载，得到的是仅包含ID的代理对象；虽然我们在使用具体的属性时候，会发送SQL语句去进行查询，但却查询不到结果，这个就好尴尬。所以你要查询的属性是不存在的，所以会报ObjectNotFoundException。</p>
+<p>3、关于load还有一点比较重要，就是LazyInitializationException（懒加载异常，用过Hibernate的应该都会接触过N次）。</p>
+<p>其原因还是因为延迟加载！我们通过load方法得到了代理对象，但此时我们的session关闭了，但我们的对象还是存在的啊，所以当我们准备使用该对象属性的时候，就会报LazyInitializationException异常了。Session都关了，我还怎么去初始化= =</p>
+<h1 id="想到的一个SSH整合的事情">想到的一个SSH整合的事情</h1><hr>
 <p>提到懒加载异常，突然想到一个点，就是我们之前在开发web项目的时候，通过load()方法得到的对象，经常会在session关闭之后再使用。那这个时候一般都是如何解决的？</p>
 <p>答案就是OpenSessionInViewer。关于这个嘛，随便百度有的是教程，它在Spring与Hibernate整合过程中有一个比较重要的作用。将其配置在web.xml中。</p>
   
@@ -185,7 +186,7 @@ PS，概念什么的就不详细">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
  
   </div>
 
