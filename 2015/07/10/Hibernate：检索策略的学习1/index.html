@@ -25,7 +25,7 @@
 
 不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。
 更高的查询效率：发送尽可">
-<meta property="og:updated_time" content="2015-07-10T15:10:18.782Z">
+<meta property="og:updated_time" content="2015-07-20T08:02:32.480Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate：检索策略的学习1">
 <meta name="twitter:description" content="概述
@@ -239,7 +239,10 @@
 <li>若取值为join：<ul>
 <li>在加载1的一端的对象的时候，使用迫切左外连接（可参考该博客进行学习<a href="http://tracylihui.github.io/2015/07/08/Hibernate%EF%BC%9A%E6%B7%B1%E5%85%A5HQL%E5%AD%A6%E4%B9%A0/" target="_blank" rel="external">Hibernate:深入HQL学习</a>）的方式检索N的一端的集合的属性；</li>
 <li>忽略lazy属性(理解了迫切左外连接，也就能知道为啥会忽略lazy属性了)；</li>
-<li>HQL查询忽略<code>fetch=&quot;join&quot;</code>的取值。</li>
+<li>HQL查询忽略<code>fetch=&quot;join&quot;</code>的取值；<ul>
+<li><strong>Query 的list() 方法会忽略映射文件中配置的迫切左外连接检索策略, 而依旧采用延迟加载策略。（这个点之前测试的时候老是忽略掉了）</strong></li>
+</ul>
+</li>
 </ul>
 </li>
 </ol>
@@ -324,7 +327,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>7</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>8</sup></a></li>
 		  
 		
 		  
@@ -357,7 +360,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>7</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>8</sup></a></li>
 			
 		
 			
@@ -377,11 +380,15 @@
 			
 		
 			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
 			
 		
 			

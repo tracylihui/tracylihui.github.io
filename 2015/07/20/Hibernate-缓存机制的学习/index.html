@@ -4,22 +4,26 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>李大辉</title>
+    <title>Hibernate:缓存机制的学习 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="给自己提供一个总结的平台">
-<meta property="og:type" content="website">
-<meta property="og:title" content="李大辉">
-<meta property="og:url" content="http://yoursite.com/index.html">
+    <meta name="description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate:缓存机制的学习">
+<meta property="og:url" content="http://yoursite.com/2015/07/20/Hibernate-缓存机制的学习/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="给自己提供一个总结的平台">
+<meta property="og:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
+<meta property="og:updated_time" content="2015-07-20T13:43:42.044Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="李大辉">
-<meta name="twitter:description" content="给自己提供一个总结的平台">
+<meta name="twitter:title" content="Hibernate:缓存机制的学习">
+<meta name="twitter:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -77,12 +81,10 @@
 </div>
     </header>
     <div id="container">
-      <div id="main">
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
   <h1 itemprop="name">
     
       <a href="/2015/07/20/Hibernate-缓存机制的学习/" title="Hibernate:缓存机制的学习" itemprop="url">Hibernate:缓存机制的学习</a>
@@ -96,9 +98,16 @@
     
   </p>
 </header>
-    <div class="article-content">
-        
-        <p>Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。</p>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate缓存"><span class="toc-number">1.</span> <span class="toc-text">Hibernate缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate一级缓存"><span class="toc-number">2.</span> <span class="toc-text">Hibernate一级缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">2.1.</span> <span class="toc-text">Demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">2.2.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate二级缓存"><span class="toc-number">3.</span> <span class="toc-text">Hibernate二级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#查询缓存"><span class="toc-number">4.</span> <span class="toc-text">查询缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+		
+		</div>
+		
+		<p>Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。</p>
 <p>这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可以很方便的将与其相关联的Order集合查询出来，这也非常符合我们的实际业务，毕竟我们不可能给这个Cutomer对象别人的Order吧，这既不安全，而且对Customer的普通顾客来说，并无卵用。所以我们不得不说Hibernate的ORM做的很好，但凡事都有但是（要是没有但是，也就没有写这篇文章的必要了）。</p>
 <p>我们再对数据库进行访问的时候必须要考虑性能问题（通俗点讲，就是用少发SQL语句），当我们设定了1-N这种关系后，查询过程中就有可能出现N+1问题。</p>
 <p>关于N+1问题，并不是本文的重点。但关于N+1问题，我们需要知道的是，这个问题会导致SQL语句的增加，也就是要与数据库进行更多的交互，这无疑会给项目以及后台数据库带来影响。</p>
@@ -165,14 +174,9 @@
 <p>这是因为查询缓存缓存的仅仅是对象的ID，所以首先会通过一条SQL将对象的ID都查询出来，但是当我们后面要得到每个对象的信息的时候，此时又会发送SQL语句，所以如果我们使用查询缓存，一定也要开启二级缓存。</p>
 <h1 id="总结">总结</h1><p>这些就是自己今晚上研究的关于Hibernate缓存的一些问题，其出发点也是为了自己能够对Hibernate缓存的知识有一定的总结。当然了，下一步还需要深入到缓存是如何实现的这个深度中。</p>
 <p>另外PS一句，最近打球打的很累，都感觉自己打的有点乏力了。休息几天再去玩。</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
+  
+	</div>
+		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
@@ -190,646 +194,47 @@
 
 
 
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/20/Hibernate-缓存机制的学习/" data-title="Hibernate:缓存机制的学习 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
 
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/20/Hibernate-缓存机制的学习/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/20/Hibernate-缓存机制的学习/" data-count-type="comments">&nbsp;</a>
-	
-</div>
 
 </footer>
 
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/14/深入学习JVM3：JVM类加载机制/" title="深入学习JVM3：JVM类加载机制" itemprop="url">深入学习JVM3：JVM类加载机制</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-14T01:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-14</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第三篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM如何加载Class文件以及Class文件中的信息进入到虚拟机后会发生什么变化。本文内容主要包括一下这个部分：</p>
-<ul>
-<li>类加载的时机</li>
-<li>类加载的过程</li>
-<li>类加载器
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/14/深入学习JVM3：JVM类加载机制/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/JVM/">JVM</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
+   	       
+	</article>
 	
-	  	<span></span>
-		<a href="/2015/07/14/深入学习JVM3：JVM类加载机制/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/14/深入学习JVM3：JVM类加载机制/" data-count-type="comments">&nbsp;</a>
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/07/14/深入学习JVM3：JVM类加载机制/"  title="深入学习JVM3：JVM类加载机制">
+ <strong>下一篇：</strong><br/> 
+ <span>深入学习JVM3：JVM类加载机制
+</span>
+</a>
+</div>
+
+</nav>
+
 	
-</div>
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/20/Hibernate-缓存机制的学习/" data-title="Hibernate:缓存机制的学习" data-url="http://yoursite.com/2015/07/20/Hibernate-缓存机制的学习/"></div>
+</section>
 
-</footer>
 
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/13/深入学习JVM2：自动内存管理机制/" title="深入学习JVM2：自动内存管理机制" itemprop="url">深入学习JVM2：自动内存管理机制</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-13T07:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-13</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第二篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM的自动内存管理机制，其包含两部分内容：</p>
-<ol>
-<li>Java内存区域</li>
-<li>对象访问</li>
-<li>垃圾收集器与内存分配策略</li>
-<li>通过例子讲解Java有了GC同样会可能出现内存泄露问题
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/13/深入学习JVM2：自动内存管理机制/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/JVM/">JVM</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/13/深入学习JVM2：自动内存管理机制/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/13/深入学习JVM2：自动内存管理机制/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/13/深入学习JVM1：总体介绍/" title="深入学习JVM1：总体介绍" itemprop="url">深入学习JVM1：总体介绍</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-13T03:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-13</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第一篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是整体上了解一下。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/13/深入学习JVM1：总体介绍/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/JVM/">JVM</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/13/深入学习JVM1：总体介绍/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/13/深入学习JVM1：总体介绍/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/12/Mocks Aren’t Stubs/" title="Mocks vs Stubs" itemprop="url">Mocks vs Stubs</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-12T00:46:02.000Z" itemprop="datePublished"> 发表于 2015-07-12</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>原文链接：<a href="http://martinfowler.com/articles/mocksArentStubs.html">Mocks Aren’t Stubs</a></p>
-<p>最近在学习JUnit，遇到了关于Mocks和Stubs的问题，仔细学习的过程中遇到了这篇文章。学习这个知识点的提前应该是在了解并且会使用JUnit的基础上。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/12/Mocks Aren’t Stubs/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Junit/">Junit</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Junit/">Junit</a><a href="/tags/Mocks/">Mocks</a><a href="/tags/Stubs/">Stubs</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/12/Mocks Aren’t Stubs/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/12/Mocks Aren’t Stubs/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/10/Hibernate：检索策略的学习2/" title="Hibernate：检索策略的学习2" itemprop="url">Hibernate：检索策略的学习2</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-10T14:14:15.000Z" itemprop="datePublished"> 发表于 2015-07-10</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<p>本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。</p>
-<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/">Hibernate：检索策略的学习2</a><br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/10/Hibernate：检索策略的学习2/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/检索策略/">检索策略</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/10/Hibernate：检索策略的学习2/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/10/Hibernate：检索策略的学习2/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/10/Hibernate：检索策略的学习1/" title="Hibernate：检索策略的学习1" itemprop="url">Hibernate：检索策略的学习1</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-10T05:01:54.000Z" itemprop="datePublished"> 发表于 2015-07-10</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<p>检索数据，也就是查询数据是在一个系统中必不可少的一个功能。检索数据时的2个问题：</p>
-<ol>
-<li>不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。</li>
-<li>更高的查询效率：发送尽可能少的 SQL 语句。</li>
-</ol>
-<p>由于篇幅原因，将内容分为了两部分：</p>
-<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/">Hibernate：检索策略的学习2</a></p>
-<p>第一部分讲解了类级别的检索策略以及1-N和N-N的检索策略，在第二部分中将学习N-1和1-1的检索策略，并对检索策略进行总结。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/10/Hibernate：检索策略的学习1/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/检索策略/">检索策略</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/10/Hibernate：检索策略的学习1/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/10/Hibernate：检索策略的学习1/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/09/Maven学习/" title="Maven学习" itemprop="url">Maven学习</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-09T14:24:06.000Z" itemprop="datePublished"> 发表于 2015-07-09</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="Maven导读">Maven导读</h1><hr>
-<h2 id="构建项目">构建项目</h2><p>Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。</p>
-<p>Maven是跨平台的。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/09/Maven学习/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Maven/">Maven</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Maven/">Maven</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/09/Maven学习/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/09/Maven学习/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/08/Hibernate：深入HQL学习/" title="Hibernate：深入HQL学习" itemprop="url">Hibernate：深入HQL学习</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-08T13:07:35.000Z" itemprop="datePublished"> 发表于 2015-07-08</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="导读">导读</h1><hr>
-<p>HQL(Hibernate Query Language) 是面向对象的查询语言, 它和 SQL 查询语言有些相似. 在 Hibernate 提供的各种检索方式中, HQL 是使用最广的一种检索方式. 它有如下功能:</p>
-<ol>
-<li>在查询语句中设定各种查询条件；</li>
-<li>支持投影查询, 即仅检索出对象的部分属性；</li>
-<li>支持分页查询；</li>
-<li>支持连接查询；</li>
-<li>支持分组查询, 允许使用 HAVING 和 GROUP BY 关键字；</li>
-<li>提供内置聚集函数, 如 sum(), min() 和 max()；</li>
-<li>支持子查询；</li>
-<li>支持动态绑定参数；</li>
-<li>能够调用 用户定义的 SQL 函数或标准的 SQL 函数。</li>
-</ol>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/08/Hibernate：深入HQL学习/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/HQL/">HQL</a><a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/08/Hibernate：深入HQL学习/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/08/Hibernate：深入HQL学习/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/08/Hibernate关系映射4：N-N关联/" title="Hibernate关系映射4：N-N关联" itemprop="url">Hibernate关系映射4：N-N关联</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-08T00:58:48.000Z" itemprop="datePublished"> 发表于 2015-07-08</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>我最近在复习一下关于Hibernate关系映射的知识，看了书本的介绍以及视频。这几篇博客都是对学到知识的一点总结。当然，这些这是最基本的能够实现关联关系的配置，在实际的使用中，还有很多参数需要根据情况来设置。但也算是对以后开发过程中遇到遗忘的地方可以进行查阅。</p>
-<p>在本文中使用的Demo也都已经上传到github中，里边有详细的运行说明。<br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%841%EF%BC%9A%E5%8D%95%E5%90%91N-1%E5%85%B3%E8%81%94/">Hibernate关系映射1：单向N-1关联</a><br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%842%EF%BC%9A%E5%8F%8C%E5%90%911-N%E5%85%B3%E8%81%94/">Hibernate关系映射2：双向1-N关联</a><br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%843%EF%BC%9A%E5%8F%8C%E5%90%911-1%E5%85%B3%E8%81%94/">Hibernate关系映射3：双向1-1关联</a><br><a href="http://tracylihui.github.io/2015/07/08/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%844%EF%BC%9AN-N%E5%85%B3%E8%81%94/">Hibernate关系映射4：N-N关联</a></p>
-<p>Github地址：<a href="https://github.com/tracylihui/HibernateRelationMapping">HibernateRelationMapping</a><br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/08/Hibernate关系映射4：N-N关联/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/关系映射/">关系映射</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/08/Hibernate关系映射4：N-N关联/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/08/Hibernate关系映射4：N-N关联/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-
-  <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
-  </nav>
-
-</div>
+</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate缓存"><span class="toc-number">1.</span> <span class="toc-text">Hibernate缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate一级缓存"><span class="toc-number">2.</span> <span class="toc-text">Hibernate一级缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">2.1.</span> <span class="toc-text">Demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">2.2.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate二级缓存"><span class="toc-number">3.</span> <span class="toc-text">Hibernate二级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#查询缓存"><span class="toc-number">4.</span> <span class="toc-text">查询缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+ 
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -1040,6 +445,11 @@ $(document).ready(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
   
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
   $(window).resize(function(){
     getSize(); 
     if (myWidth >= 1024) {
@@ -1048,12 +458,69 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -1131,4 +598,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- Tiny_search End -->
 
   </body>
- </html>
+</html>
