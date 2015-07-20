@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="李大辉">
 <meta property="og:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
 这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
-<meta property="og:updated_time" content="2015-07-20T13:43:42.044Z">
+<meta property="og:updated_time" content="2015-07-20T14:03:33.227Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hibernate:缓存机制的学习">
 <meta name="twitter:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
@@ -110,7 +110,7 @@
 		<p>Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。</p>
 <p>这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可以很方便的将与其相关联的Order集合查询出来，这也非常符合我们的实际业务，毕竟我们不可能给这个Cutomer对象别人的Order吧，这既不安全，而且对Customer的普通顾客来说，并无卵用。所以我们不得不说Hibernate的ORM做的很好，但凡事都有但是（要是没有但是，也就没有写这篇文章的必要了）。</p>
 <p>我们再对数据库进行访问的时候必须要考虑性能问题（通俗点讲，就是用少发SQL语句），当我们设定了1-N这种关系后，查询过程中就有可能出现N+1问题。</p>
-<p>关于N+1问题，并不是本文的重点。但关于N+1问题，我们需要知道的是，这个问题会导致SQL语句的增加，也就是要与数据库进行更多的交互，这无疑会给项目以及后台数据库带来影响。</p>
+<p>关于N+1问题，并不是本文的重点。但关于N+1问题，我们需要知道的是，这个问题会导致SQL语句的增加，也就是要与数据库进行更多的交互，这无疑会给项目以及后台数据库带来影响。<br><a id="more"></a></p>
 <h1 id="Hibernate缓存">Hibernate缓存</h1><hr>
 <p>Hibernate是一个持久化框架，经常需要访问数据库。如果我们能够降低应用程序对物理数据库访问的频次，那会提供应用程序的运行性能。缓存内的数据是对物理数据源中的数据的复制，应用程序运行时先从缓存中读写数据。</p>
 <p>缓存就是数据库数据在内存中的临时容器，包括数据库数据在内存中的临时拷贝，它位于数据库与数据库访问层中间。ORM在查询数据时首先会根据自身的缓存管理策略，在缓存中查找相关数据，如发现所需的数据，则直接将此数据作为结果加以利用，从而避免了数据库调用性能的开销。而相对内存操作而言，数据库调用是一个代价高昂的过程。</p>
