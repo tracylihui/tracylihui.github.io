@@ -100,20 +100,12 @@
         
         <h1 id="概述">概述</h1><hr>
 <h2 id="加密">加密</h2><p>我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。</p>
-<p>我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的信息为加密之后的密文。例如，如果小红在你的系统中注册了自己的账号，她提交的注册信息中的密码为”admin”，那么实际存到数据库中的密码为“21232F297A57A5A743894A0E4A801FC3”（假设采用MD5加密，并且不会被破解）。这样我们至少保证了只有小红本人能够通过其账号进行登录，因为密码只有她自己知道。</p>
-<p>当小红用其账号进行登录的过程中，她将自己的用户名和密码提交给后台的服务器，服务器得到密码之后，采用同样的加密方法（MD5加密），也会得到密文，这个时候再与数据库中的密码字段的数据进行字符串的比较，相同就代表验证通过。</p>
-<p>PS：顺便提一句，MD5和BCrypt加密算法都比较流行，相对来说，BCrypt算法比MD5更安全，但是加密更慢。</p>
-<h2 id="加盐">加盐</h2><p>上文就是对于加密的一个简单陈述。那什么是加盐呢？当我第一次看到这个词的时候，我想到了我妈做的饭，因为我妈做饭一直都很淡= =</p>
-<p>回到咱们要讲的加盐(Salt)。其实加盐是为了应对这么一种情况：如果两个人或多个人的密码相同，那么通过相同的加密算法得到的是相同的结果。这样会造成哪些后果呢？首先，破解一个就有可能是相当于破一片密码。而且加入小明这个用户可以查看后台数据库，那么如果他观察到小红这个用户的密码跟自己的密码是一样的（虽然都是密文），那么，也就代表他们两个人的密码是相同的。所以他就可以用小红的身份进行登录了。</p>
-<p>其实，我们只要稍微混淆一下就能防范住了，这在加密术语中称为“加盐”。具体来说就是在原有材料（用户自定义密码）中加入其他成分（一般是用户自有且不变的因素），以此来增加系统复杂度。当这种盐和用户密码结合后，再通过摘要处理，就能得到隐蔽性更强的摘要值。</p>
-<h1 id="关于BCrypt加密的Demo">关于BCrypt加密的Demo</h1><hr>
-<p>在本文中，将不去介绍如何实现MD5加密以及加盐，因为MD5太普遍。我记得在大一开始学Java的时候，每当遇到用户管理，对用户信息的加密都是通过MD5来进行的，但鉴于我自身的情况，我也是后期才晓得BCrypt这个加密算法，所以我也自己做了Demo来进行学习一下。</p>
-<p>1、可以在官网中取得源代码<a href="http://www.mindrot.org/projects/jBCrypt/" target="_blank" rel="external">http://www.mindrot.org/projects/jBCrypt/</a><br>2、通过Ant进行编译。编译之后得到jbcrypt.jar。也可以不需要进行编译，而直接使用源码中的java文件（本身仅一个文件）。<br>3、下面是官网的一个Demo<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BCryptDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Hash a password for the first time</span></span><br><span class="line">		String password = <span class="string">"testpassword"</span>;</span><br><span class="line">		String hashed = BCrypt.hashpw(password, BCrypt.gensalt());</span><br><span class="line">		System.out.println(hashed);</span><br><span class="line">		<span class="comment">// gensalt's log_rounds parameter determines the complexity</span></span><br><span class="line">		<span class="comment">// the work factor is 2**log_rounds, and the default is 10</span></span><br><span class="line">		String hashed2 = BCrypt.hashpw(password, BCrypt.gensalt(<span class="number">12</span>));</span><br><span class="line">		<span class="comment">// Check that an unencrypted password matches one that has</span></span><br><span class="line">		<span class="comment">// previously been hashed</span></span><br><span class="line">		String candidate = <span class="string">"testpassword"</span>;</span><br><span class="line">		<span class="comment">//String candidate = "wrongtestpassword";</span></span><br><span class="line">		<span class="keyword">if</span> (BCrypt.checkpw(candidate, hashed))</span><br><span class="line">			System.out.println(<span class="string">"It matches"</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			System.out.println(<span class="string">"It does not match"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在这个例子中，<code>BCrypt.hashpw(password, BCrypt.gensalt())</code>是核心。通过调用BCrypt类的静态方法hashpw对password进行加密。第二个参数就是我们平时所说的加盐。<code>BCrypt.checkpw(candidate, hashed)</code>该方法就是对用户后来输入的密码进行比较。如果能够匹配，返回true。</p>
-
+<p>我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的信息为加密之后的密文。例如，如果小红在你的系统中注册了自己的账号，她提交的注册信息中的密码为”admin”，那么实际存到数据库中的密码为“21232F297A57A5A743894A0E4A801FC3”（假设采用MD5加密，并且不会被破解）。这样我们至少保证了只有小红本人能够通过其账号进行登录，因为密码只有她自己知道。<br>
         
         
         <p class="article-more-link">
+          
+            <a href="/2015/07/21/加密与加盐/#more">阅读更多</a>
           
        </p>
     </div>
