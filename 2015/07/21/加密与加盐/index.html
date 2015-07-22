@@ -4,27 +4,29 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>深入学习JVM1：总体介绍 | 李大辉</title>
+    <title>加密与加盐 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
+    <meta name="description" content="概述
+加密我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。
+我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入学习JVM1：总体介绍">
-<meta property="og:url" content="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/index.html">
+<meta property="og:title" content="加密与加盐">
+<meta property="og:url" content="http://yoursite.com/2015/07/21/加密与加盐/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
-<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/jvm1-1.png">
-<meta property="og:updated_time" content="2015-07-14T03:08:24.047Z">
+<meta property="og:description" content="概述
+加密我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。
+我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的">
+<meta property="og:updated_time" content="2015-07-22T01:01:14.527Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深入学习JVM1：总体介绍">
-<meta name="twitter:description" content="本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。关于JVM的学习一共包含三篇文章，本文是第一篇：深入学习JVM1：自动内存管理机制深入学习JVM2：自动内存管理机制深入学习JVM3：虚拟机类加载机制
-本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是">
+<meta name="twitter:title" content="加密与加盐">
+<meta name="twitter:description" content="概述
+加密我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。
+我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -88,14 +90,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/13/深入学习JVM1：总体介绍/" title="深入学习JVM1：总体介绍" itemprop="url">深入学习JVM1：总体介绍</a>
+      <a href="/2015/07/21/加密与加盐/" title="加密与加盐" itemprop="url">加密与加盐</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-13T03:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-13</time>
+    <time datetime="2015-07-21T14:48:18.000Z" itemprop="datePublished"> 发表于 2015-07-21</time>
     
   </p>
 </header>
@@ -104,19 +106,22 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#加密"><span class="toc-number">1.1.</span> <span class="toc-text">加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加盐"><span class="toc-number">1.2.</span> <span class="toc-text">加盐</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于BCrypt加密的Demo"><span class="toc-number">2.</span> <span class="toc-text">关于BCrypt加密的Demo</span></a></li></ol>
 		
 		</div>
 		
-		<p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第一篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/" target="_blank" rel="external">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/" target="_blank" rel="external">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" target="_blank" rel="external">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM的一个总体概述，其包含内容不多，主要是整体上了解一下。<br><a id="more"></a></p>
-<h1 id="概述">概述</h1><hr>
-<p>由于之前对JVM（Java虚拟机）已经有过了解，所以在这就不太注重很基础的知识。<br>首先，看一下JVM的体系结构：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/jvm1-1.png" alt="图1"></p>
-<p>初看这个图可能会觉得有点云里雾里，在我看来，关于JVM的学习有两点是比较重要的：</p>
-<ol>
-<li><strong>内存区域的管理，其中就包含了内存区域的结构以及垃圾回收</strong></li>
-<li><strong>Java文件到Class文件，然后通过类加载子系统加载到内存，继而执行这个流程</strong></li>
-</ol>
+		<h1 id="概述">概述</h1><hr>
+<h2 id="加密">加密</h2><p>我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。</p>
+<p>我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的信息为加密之后的密文。例如，如果小红在你的系统中注册了自己的账号，她提交的注册信息中的密码为”admin”，那么实际存到数据库中的密码为“21232F297A57A5A743894A0E4A801FC3”（假设采用MD5加密，并且不会被破解）。这样我们至少保证了只有小红本人能够通过其账号进行登录，因为密码只有她自己知道。</p>
+<p>当小红用其账号进行登录的过程中，她将自己的用户名和密码提交给后台的服务器，服务器得到密码之后，采用同样的加密方法（MD5加密），也会得到密文，这个时候再与数据库中的密码字段的数据进行字符串的比较，相同就代表验证通过。</p>
+<p>PS：顺便提一句，MD5和BCrypt加密算法都比较流行，相对来说，BCrypt算法比MD5更安全，但是加密更慢。</p>
+<h2 id="加盐">加盐</h2><p>上文就是对于加密的一个简单陈述。那什么是加盐呢？当我第一次看到这个词的时候，我想到了我妈做的饭，因为我妈做饭一直都很淡= =</p>
+<p>回到咱们要讲的加盐(Salt)。其实加盐是为了应对这么一种情况：如果两个人或多个人的密码相同，那么通过相同的加密算法得到的是相同的结果。这样会造成哪些后果呢？首先，破解一个就有可能是相当于破一片密码。而且加入小明这个用户可以查看后台数据库，那么如果他观察到小红这个用户的密码跟自己的密码是一样的（虽然都是密文），那么，也就代表他们两个人的密码是相同的。所以他就可以用小红的身份进行登录了。</p>
+<p>其实，我们只要稍微混淆一下就能防范住了，这在加密术语中称为“加盐”。具体来说就是在原有材料（用户自定义密码）中加入其他成分（一般是用户自有且不变的因素），以此来增加系统复杂度。当这种盐和用户密码结合后，再通过摘要处理，就能得到隐蔽性更强的摘要值。</p>
+<h1 id="关于BCrypt加密的Demo">关于BCrypt加密的Demo</h1><hr>
+<p>在本文中，将不去介绍如何实现MD5加密以及加盐，因为MD5太普遍。我记得在大一开始学Java的时候，每当遇到用户管理，对用户信息的加密都是通过MD5来进行的，但鉴于我自身的情况，我也是后期才晓得BCrypt这个加密算法，所以我也自己做了Demo来进行学习一下。</p>
+<p>1、可以在官网中取得源代码<a href="http://www.mindrot.org/projects/jBCrypt/" target="_blank" rel="external">http://www.mindrot.org/projects/jBCrypt/</a><br>2、通过Ant进行编译。编译之后得到jbcrypt.jar。也可以不需要进行编译，而直接使用源码中的java文件（本身仅一个文件）。<br>3、下面是官网的一个Demo<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BCryptDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Hash a password for the first time</span></span><br><span class="line">		String password = <span class="string">"testpassword"</span>;</span><br><span class="line">		String hashed = BCrypt.hashpw(password, BCrypt.gensalt());</span><br><span class="line">		System.out.println(hashed);</span><br><span class="line">		<span class="comment">// gensalt's log_rounds parameter determines the complexity</span></span><br><span class="line">		<span class="comment">// the work factor is 2**log_rounds, and the default is 10</span></span><br><span class="line">		String hashed2 = BCrypt.hashpw(password, BCrypt.gensalt(<span class="number">12</span>));</span><br><span class="line">		<span class="comment">// Check that an unencrypted password matches one that has</span></span><br><span class="line">		<span class="comment">// previously been hashed</span></span><br><span class="line">		String candidate = <span class="string">"testpassword"</span>;</span><br><span class="line">		<span class="comment">//String candidate = "wrongtestpassword";</span></span><br><span class="line">		<span class="keyword">if</span> (BCrypt.checkpw(candidate, hashed))</span><br><span class="line">			System.out.println(<span class="string">"It matches"</span>);</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			System.out.println(<span class="string">"It does not match"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这个例子中，<code>BCrypt.hashpw(password, BCrypt.gensalt())</code>是核心。通过调用BCrypt类的静态方法hashpw对password进行加密。第二个参数就是我们平时所说的加盐。<code>BCrypt.checkpw(candidate, hashed)</code>该方法就是对用户后来输入的密码进行比较。如果能够匹配，返回true。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -124,13 +129,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  <a class="article-category-link" href="/categories/密码加密/">密码加密</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/JVM/">JVM</a>
+  <span></span> <a href="/tags/加密/">加密</a><a href="/tags/加盐/">加盐</a>
   </div>
 
 </div>
@@ -139,7 +144,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/" data-title="深入学习JVM1：总体介绍 | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/21/加密与加盐/" data-title="加密与加盐 | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -152,19 +157,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/07/13/深入学习JVM2：自动内存管理机制/" title="深入学习JVM2：自动内存管理机制">
-  <strong>上一篇：</strong><br/>
-  <span>
-  深入学习JVM2：自动内存管理机制</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/12/Mocks Aren’t Stubs/"  title="Mocks vs Stubs">
+<a href="/2015/07/20/Hibernate：get和load/"  title="Hibernate：get和load">
  <strong>下一篇：</strong><br/> 
- <span>Mocks vs Stubs
+ <span>Hibernate：get和load
 </span>
 </a>
 </div>
@@ -173,7 +170,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/13/深入学习JVM1：总体介绍/" data-title="深入学习JVM1：总体介绍" data-url="http://yoursite.com/2015/07/13/深入学习JVM1：总体介绍/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/21/加密与加盐/" data-title="加密与加盐" data-url="http://yoursite.com/2015/07/21/加密与加盐/"></div>
 </section>
 
 
@@ -183,7 +180,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#加密"><span class="toc-number">1.1.</span> <span class="toc-text">加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#加盐"><span class="toc-number">1.2.</span> <span class="toc-text">加盐</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于BCrypt加密的Demo"><span class="toc-number">2.</span> <span class="toc-text">关于BCrypt加密的Demo</span></a></li></ol>
  
   </div>
 
