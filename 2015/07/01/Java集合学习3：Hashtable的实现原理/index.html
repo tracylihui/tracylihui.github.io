@@ -1,0 +1,592 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java集合学习3：Hashtable的实现原理 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="本文是对Java常用的集合的学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合学习3：Hashtable的实现原理">
+<meta property="og:url" content="http://yoursite.com/2015/07/01/Java集合学习3：Hashtable的实现原理/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="本文是对Java常用的集合的学习。">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable1.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable2.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable3.png">
+<meta property="og:updated_time" content="2015-07-23T02:38:49.063Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合学习3：Hashtable的实现原理">
+<meta name="twitter:description" content="本文是对Java常用的集合的学习。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/01/Java集合学习3：Hashtable的实现原理/" title="Java集合学习3：Hashtable的实现原理" itemprop="url">Java集合学习3：Hashtable的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-01T14:36:57.000Z" itemprop="datePublished"> 发表于 2015-07-01</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable源码解读"><span class="toc-number">2.</span> <span class="toc-text">Hashtable源码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#成员变量"><span class="toc-number">2.1.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构造方法"><span class="toc-number">2.2.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#put方法"><span class="toc-number">2.3.</span> <span class="toc-text">put方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get方法"><span class="toc-number">2.4.</span> <span class="toc-text">get方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable遍历方式"><span class="toc-number">3.</span> <span class="toc-text">Hashtable遍历方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable与HashMap的简单比较"><span class="toc-number">4.</span> <span class="toc-text">Hashtable与HashMap的简单比较</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="概述">概述</h1><hr>
+<p>和HashMap一样，Hashtable也是一个散列表，它存储的内容是键值对。<br>Hashtable在Java中的定义为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hashtable</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;  </span><br><span class="line">    <span class="keyword">extends</span> <span class="title">Dictionary</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;  </span><br><span class="line">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从源码中，我们可以看出，Hashtable继承于Dictionary类，实现了Map, Cloneable, java.io.Serializable接口。其中Dictionary类是任何可将键映射到相应值的类（如 Hashtable）的抽象父类，每个键和值都是对象（源码注释为：The <code>Dictionary</code> class is the abstract parent of any class, such as <code>Hashtable</code>, which maps keys to values. Every key and every value is an object.）。但在这一点我开始有点怀疑，因为我查看了HashMap以及TreeMap的源码，都没有继承于这个类。不过当我看到注释中的解释也就明白了，其Dictionary源码注释是这样的：NOTE: This class is obsolete.  New implementations should implement the Map interface, rather than extending this class. 该话指出Dictionary这个类过时了，新的实现类应该实现Map接口。<br><a id="more"></a></p>
+<h1 id="Hashtable源码解读">Hashtable源码解读</h1><hr>
+<h2 id="成员变量">成员变量</h2><p>Hashtable是通过”拉链法”实现的哈希表。它包括几个重要的成员变量：table, count, threshold, loadFactor, modCount。</p>
+<ul>
+<li>table是一个Entry[]数组类型，而Entry（在HashMap中有讲解过）实际上就是一个单向链表。哈希表的”key-value键值对”都是存储在Entry数组中的。</li>
+<li>count是Hashtable的大小，它是Hashtable保存的键值对的数量。</li>
+<li>threshold是Hashtable的阈值，用于判断是否需要调整Hashtable的容量。threshold的值=”容量*加载因子”。</li>
+<li>loadFactor就是加载因子。</li>
+<li>modCount是用来实现fail-fast机制的。</li>
+</ul>
+<p>关于变量的解释在源码注释中都有，最好还是应该看英文注释。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">     * The hash table data.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Entry&lt;K,V&gt;[] table;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * The total number of entries in the hash table.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * The table is rehashed when its size exceeds this threshold.  (The</span><br><span class="line">     * value of this field is (int)(capacity * loadFactor).)</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@serial</span></span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> threshold;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * The load factor for the hashtable.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@serial</span></span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> loadFactor;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * The number of times this Hashtable has been structurally modified</span><br><span class="line">     * Structural modifications are those that change the number of entries in</span><br><span class="line">     * the Hashtable or otherwise modify its internal structure (e.g.,</span><br><span class="line">     * rehash).  This field is used to make iterators on Collection-views of</span><br><span class="line">     * the Hashtable fail-fast.  (See ConcurrentModificationException).</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="构造方法">构造方法</h2><p>Hashtable一共提供了4个构造方法：</p>
+<ul>
+<li><code>public Hashtable(int initialCapacity, float loadFactor)</code>： 用指定初始容量和指定加载因子构造一个新的空哈希表。useAltHashing为boolean，其如果为真，则执行另一散列的字符串键，以减少由于弱哈希计算导致的哈希冲突的发生。</li>
+<li><code>public Hashtable(int initialCapacity)</code>：用指定初始容量和默认的加载因子 (0.75) 构造一个新的空哈希表。</li>
+<li><code>public Hashtable()</code>：默认构造函数，容量为11，加载因子为0.75。</li>
+<li><code>public Hashtable(Map&lt;? extends K, ? extends V&gt; t)</code>：构造一个与给定的 Map 具有相同映射关系的新哈希表。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">     * Constructs a new, empty hashtable with the specified initial</span><br><span class="line">     * capacity and the specified load factor.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span>      initialCapacity   the initial capacity of the hashtable.</span><br><span class="line">     * <span class="doctag">@param</span>      loadFactor        the load factor of the hashtable.</span><br><span class="line">     * <span class="doctag">@exception</span>  IllegalArgumentException  if the initial capacity is less</span><br><span class="line">     *             than zero, or if the load factor is nonpositive.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Hashtable</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                               initialCapacity);</span><br><span class="line">        <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Load: "</span>+loadFactor);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (initialCapacity==<span class="number">0</span>)</span><br><span class="line">            initialCapacity = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">        table = <span class="keyword">new</span> Entry[initialCapacity];</span><br><span class="line">        threshold = (<span class="keyword">int</span>)Math.min(initialCapacity * loadFactor, MAX_ARRAY_SIZE + <span class="number">1</span>);</span><br><span class="line">        useAltHashing = sun.misc.VM.isBooted() &amp;&amp;</span><br><span class="line">                (initialCapacity &gt;= Holder.ALTERNATIVE_HASHING_THRESHOLD);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Constructs a new, empty hashtable with the specified initial capacity</span><br><span class="line">     * and default load factor (0.75).</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span>     initialCapacity   the initial capacity of the hashtable.</span><br><span class="line">     * <span class="doctag">@exception</span> IllegalArgumentException if the initial capacity is less</span><br><span class="line">     *              than zero.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Hashtable</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(initialCapacity, <span class="number">0.75f</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Constructs a new, empty hashtable with a default initial capacity (11)</span><br><span class="line">     * and load factor (0.75).</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Hashtable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="number">11</span>, <span class="number">0.75f</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Constructs a new hashtable with the same mappings as the given</span><br><span class="line">     * Map.  The hashtable is created with an initial capacity sufficient to</span><br><span class="line">     * hold the mappings in the given Map and a default load factor (0.75).</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> t the map whose mappings are to be placed in this map.</span><br><span class="line">     * <span class="doctag">@throws</span> NullPointerException if the specified map is null.</span><br><span class="line">     * <span class="doctag">@since</span>   1.2</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Hashtable</span><span class="params">(Map&lt;? extends K, ? extends V&gt; t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(Math.max(<span class="number">2</span>*t.size(), <span class="number">11</span>), <span class="number">0.75f</span>);</span><br><span class="line">        putAll(t);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="put方法">put方法</h2><p>put方法的整个流程为：</p>
+<ol>
+<li>判断value是否为空，为空则抛出异常；</li>
+<li>计算key的hash值，并根据hash值获得key在table数组中的位置index，如果table[index]元素不为空，则进行迭代，如果遇到相同的key，则直接替换，并返回旧value；</li>
+<li>否则，我们可以将其插入到table[index]位置。</li>
+</ol>
+<p>我在下面的代码中也进行了一些注释：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Make sure the value is not null确保value不为null</span></span><br><span class="line">        <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">        <span class="comment">//确保key不在hashtable中</span></span><br><span class="line">        <span class="comment">//首先，通过hash方法计算key的哈希值，并计算得出index值，确定其在table[]中的位置</span></span><br><span class="line">        <span class="comment">//其次，迭代index索引位置的链表，如果该位置处的链表存在相同的key，则替换value，返回旧的value</span></span><br><span class="line">        Entry tab[] = table;</span><br><span class="line">        <span class="keyword">int</span> hash = hash(key);</span><br><span class="line">        <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">        <span class="keyword">for</span> (Entry&lt;K,V&gt; e = tab[index] ; e != <span class="keyword">null</span> ; e = e.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((e.hash == hash) &amp;&amp; e.key.equals(key)) &#123;</span><br><span class="line">                V old = e.value;</span><br><span class="line">                e.value = value;</span><br><span class="line">                <span class="keyword">return</span> old;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        modCount++;</span><br><span class="line">        <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">            <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">            <span class="comment">//如果超过阀值，就进行rehash操作</span></span><br><span class="line">            rehash();</span><br><span class="line"></span><br><span class="line">            tab = table;</span><br><span class="line">            hash = hash(key);</span><br><span class="line">            index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Creates the new entry.</span></span><br><span class="line">        <span class="comment">//将值插入，返回的为null</span></span><br><span class="line">        Entry&lt;K,V&gt; e = tab[index];</span><br><span class="line">        <span class="comment">// 创建新的Entry节点，并将新的Entry插入Hashtable的index位置，并设置e为新的Entry的下一个元素</span></span><br><span class="line">        tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">        count++;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过一个实际的例子来演示一下这个过程：<br>假设我们现在Hashtable的容量为5，已经存在了(5,5)，(13,13)，(16,16)，(17,17)，(21,21)这5个键值对，目前他们在Hashtable中的位置如下：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable1.png" alt="图1"><br>现在，我们插入一个新的键值对，put(16,22)，假设key=16的索引为1.但现在索引1的位置有两个Entry了，所以程序会对链表进行迭代。迭代的过程中，发现其中有一个Entry的key和我们要插入的键值对的key相同，所以现在会做的工作就是将newValue=22替换oldValue=16，然后返回oldValue=16.<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable2.png" alt="图2"><br>然后我们现在再插入一个，put(33,33)，key=33的索引为3，并且在链表中也不存在key=33的Entry，所以将该节点插入链表的第一个位置。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/hashtable3.png" alt="图3"></p>
+<h2 id="get方法">get方法</h2><p>相比较于put方法，get方法则简单很多。其过程就是首先通过hash()方法求得key的哈希值，然后根据hash值得到index索引（上述两步所用的算法与put方法都相同）。然后迭代链表，返回匹配的key的对应的value；找不到则返回null。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        Entry tab[] = table;</span><br><span class="line">        <span class="keyword">int</span> hash = hash(key);</span><br><span class="line">        <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">        <span class="keyword">for</span> (Entry&lt;K,V&gt; e = tab[index] ; e != <span class="keyword">null</span> ; e = e.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((e.hash == hash) &amp;&amp; e.key.equals(key)) &#123;</span><br><span class="line">                <span class="keyword">return</span> e.value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Hashtable遍历方式">Hashtable遍历方式</h1><hr>
+<p>Hashtable有多种遍历方式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1、使用keys()</span></span><br><span class="line">Enumeration&lt;String&gt; en1 = table.keys();</span><br><span class="line">    <span class="keyword">while</span>(en1.hasMoreElements()) &#123;</span><br><span class="line">    en1.nextElement();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2、使用elements()</span></span><br><span class="line">Enumeration&lt;String&gt; en2 = table.elements();</span><br><span class="line">    <span class="keyword">while</span>(en2.hasMoreElements()) &#123;</span><br><span class="line">    en2.nextElement();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//3、使用keySet()</span></span><br><span class="line">Iterator&lt;String&gt; it1 = table.keySet().iterator();</span><br><span class="line">    <span class="keyword">while</span>(it1.hasNext()) &#123;</span><br><span class="line">    it1.next();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//4、使用entrySet()</span></span><br><span class="line">Iterator&lt;Entry&lt;String, String&gt;&gt; it2 = table.entrySet().iterator();</span><br><span class="line">    <span class="keyword">while</span>(it2.hasNext()) &#123;</span><br><span class="line">    it2.next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Hashtable与HashMap的简单比较">Hashtable与HashMap的简单比较</h1><hr>
+<ol>
+<li>HashTable基于Dictionary类，而HashMap是基于AbstractMap。Dictionary是任何可将键映射到相应值的类的抽象父类，而AbstractMap是基于Map接口的实现，它以最大限度地减少实现此接口所需的工作。</li>
+<li>HashMap的key和value都允许为null，而Hashtable的key和value都不允许为null。HashMap遇到key为null的时候，调用putForNullKey方法进行处理，而对value没有处理；Hashtable遇到null，直接返回NullPointerException。</li>
+<li>Hashtable方法是同步，而HashMap则不是。我们可以看一下源码，Hashtable中的几乎所有的public的方法都是synchronized的，而有些方法也是在内部通过synchronized代码块来实现。所以有人一般都建议如果是涉及到多线程同步时采用HashTable，没有涉及就采用HashMap，但是在Collections类中存在一个静态方法：synchronizedMap()，该方法创建了一个线程安全的Map对象，并把它作为一个封装的对象来返回。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/01/Java集合学习3：Hashtable的实现原理/" data-title="Java集合学习3：Hashtable的实现原理 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/01/Java集合学习：HashSet和HashMap的比较/" title="Java集合学习：HashSet和HashMap的比较">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Java集合学习：HashSet和HashMap的比较</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/01/Java集合学习2：HashSet的实现原理/"  title="Java集合学习2：HashSet的实现原理">
+ <strong>下一篇：</strong><br/> 
+ <span>Java集合学习2：HashSet的实现原理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/01/Java集合学习3：Hashtable的实现原理/" data-title="Java集合学习3：Hashtable的实现原理" data-url="http://yoursite.com/2015/07/01/Java集合学习3：Hashtable的实现原理/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable源码解读"><span class="toc-number">2.</span> <span class="toc-text">Hashtable源码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#成员变量"><span class="toc-number">2.1.</span> <span class="toc-text">成员变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构造方法"><span class="toc-number">2.2.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#put方法"><span class="toc-number">2.3.</span> <span class="toc-text">put方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get方法"><span class="toc-number">2.4.</span> <span class="toc-text">get方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable遍历方式"><span class="toc-number">3.</span> <span class="toc-text">Hashtable遍历方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hashtable与HashMap的简单比较"><span class="toc-number">4.</span> <span class="toc-text">Hashtable与HashMap的简单比较</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>8</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>8</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
