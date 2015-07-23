@@ -1,0 +1,586 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Hibernate关系映射4：N-N关联 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="我最近在复习一下关于Hibernate关系映射的知识，看了书本的介绍以及视频。这几篇博客都是对学到知识的一点总结。当然，这些这是最基本的能够实现关联关系的配置，在实际的使用中，还有很多参数需要根据情况来设置。但也算是对以后开发过程中遇到遗忘的地方可以进行查阅。
+在本文中使用的Demo也都已经上传到github中，里边有详细的运行说明。Hibernate关系映射1：单向N-1关联Hibernate关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate关系映射4：N-N关联">
+<meta property="og:url" content="http://yoursite.com/2015/07/08/Hibernate关系映射4：N-N关联/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="我最近在复习一下关于Hibernate关系映射的知识，看了书本的介绍以及视频。这几篇博客都是对学到知识的一点总结。当然，这些这是最基本的能够实现关联关系的配置，在实际的使用中，还有很多参数需要根据情况来设置。但也算是对以后开发过程中遇到遗忘的地方可以进行查阅。
+在本文中使用的Demo也都已经上传到github中，里边有详细的运行说明。Hibernate关系映射1：单向N-1关联Hibernate关">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/nn1.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/nn2.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/nn3.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/nn4.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/nn5.png">
+<meta property="og:updated_time" content="2015-07-23T09:48:13.342Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hibernate关系映射4：N-N关联">
+<meta name="twitter:description" content="我最近在复习一下关于Hibernate关系映射的知识，看了书本的介绍以及视频。这几篇博客都是对学到知识的一点总结。当然，这些这是最基本的能够实现关联关系的配置，在实际的使用中，还有很多参数需要根据情况来设置。但也算是对以后开发过程中遇到遗忘的地方可以进行查阅。
+在本文中使用的Demo也都已经上传到github中，里边有详细的运行说明。Hibernate关系映射1：单向N-1关联Hibernate关">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/08/Hibernate关系映射4：N-N关联/" title="Hibernate关系映射4：N-N关联" itemprop="url">Hibernate关系映射4：N-N关联</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-08T00:58:48.000Z" itemprop="datePublished"> 发表于 2015-07-08</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#单向N-N关联"><span class="toc-number">1.</span> <span class="toc-text">单向N-N关联</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#域模型"><span class="toc-number">1.1.</span> <span class="toc-text">域模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关系数据模型"><span class="toc-number">1.2.</span> <span class="toc-text">关系数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">1.3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类"><span class="toc-number">1.3.1.</span> <span class="toc-text">实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Category-hbm-xml"><span class="toc-number">1.3.2.</span> <span class="toc-text">Category.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Item-hbm-xml"><span class="toc-number">1.3.3.</span> <span class="toc-text">Item.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Junit"><span class="toc-number">1.3.4.</span> <span class="toc-text">Junit</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#双向N-N关联"><span class="toc-number">2.</span> <span class="toc-text">双向N-N关联</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#域模型-1"><span class="toc-number">2.1.</span> <span class="toc-text">域模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关系数据模型-1"><span class="toc-number">2.2.</span> <span class="toc-text">关系数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现-1"><span class="toc-number">2.3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类-1"><span class="toc-number">2.3.1.</span> <span class="toc-text">实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Category-hbm-xml-1"><span class="toc-number">2.3.2.</span> <span class="toc-text">Category.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Item-hbm-xml-1"><span class="toc-number">2.3.3.</span> <span class="toc-text">Item.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Notice"><span class="toc-number">2.3.4.</span> <span class="toc-text">Notice</span></a></li></ol></li></ol></li></ol>
+		
+		</div>
+		
+		<p>我最近在复习一下关于Hibernate关系映射的知识，看了书本的介绍以及视频。这几篇博客都是对学到知识的一点总结。当然，这些这是最基本的能够实现关联关系的配置，在实际的使用中，还有很多参数需要根据情况来设置。但也算是对以后开发过程中遇到遗忘的地方可以进行查阅。</p>
+<p>在本文中使用的Demo也都已经上传到github中，里边有详细的运行说明。<br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%841%EF%BC%9A%E5%8D%95%E5%90%91N-1%E5%85%B3%E8%81%94/" target="_blank" rel="external">Hibernate关系映射1：单向N-1关联</a><br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%842%EF%BC%9A%E5%8F%8C%E5%90%911-N%E5%85%B3%E8%81%94/" target="_blank" rel="external">Hibernate关系映射2：双向1-N关联</a><br><a href="http://tracylihui.github.io/2015/07/07/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%843%EF%BC%9A%E5%8F%8C%E5%90%911-1%E5%85%B3%E8%81%94/" target="_blank" rel="external">Hibernate关系映射3：双向1-1关联</a><br><a href="http://tracylihui.github.io/2015/07/08/Hibernate%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%844%EF%BC%9AN-N%E5%85%B3%E8%81%94/" target="_blank" rel="external">Hibernate关系映射4：N-N关联</a></p>
+<p>Github地址：<a href="https://github.com/tracylihui/HibernateRelationMapping" target="_blank" rel="external">HibernateRelationMapping</a><br><a id="more"></a></p>
+<h1 id="单向N-N关联">单向N-N关联</h1><hr>
+<p>N-N关联映射增加一张表才完成基本映射。</p>
+<p>与1-N映射相似，必须为set集合元素添加key子元素，指定CATEGORIES_ITEMS表中参照CATEGORIES表的外键为CATEGORIY_ID。</p>
+<p>与1-N不同的是，建立N-N关联时，集合中的元素使用many-to-many。关于配置文件的属性的介绍，将在代码实现部分介绍。</p>
+<h2 id="域模型">域模型</h2><p><img src="http://7xk5ao.com1.z0.glb.clouddn.com/nn1.png" alt="图1"></p>
+<h2 id="关系数据模型">关系数据模型</h2><p><img src="http://7xk5ao.com1.z0.glb.clouddn.com/nn2.png" alt="图2"></p>
+<h2 id="代码实现">代码实现</h2><h3 id="实体类">实体类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer categoryId;</span><br><span class="line">	<span class="keyword">private</span> String catregoryName;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Set&lt;Item&gt; items = <span class="keyword">new</span> HashSet&lt;Item&gt;();</span><br><span class="line">  <span class="comment">//省去get和set方法</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer itemId;</span><br><span class="line">	<span class="keyword">private</span> String itemName;</span><br><span class="line">	<span class="comment">//省去get和set方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Category-hbm-xml">Category.hbm.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">hibernate-mapping</span> <span class="attribute">package</span>=<span class="value">"com.lihui.hibernate.single_n_n"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">class</span> <span class="attribute">name</span>=<span class="value">"Category"</span> <span class="attribute">table</span>=<span class="value">"CATEGORIES"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">id</span> <span class="attribute">name</span>=<span class="value">"categoryId"</span> <span class="attribute">type</span>=<span class="value">"java.lang.Integer"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"CATEGORY_ID"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">generator</span> <span class="attribute">class</span>=<span class="value">"native"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"catregoryName"</span> <span class="attribute">type</span>=<span class="value">"java.lang.String"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"CATREGORY_NAME"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">set</span> <span class="attribute">name</span>=<span class="value">"items"</span> <span class="attribute">table</span>=<span class="value">"CATEGORIES_ITEMS"</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;<span class="title">key</span>&gt;</span></span><br><span class="line">        		<span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"C_ID"</span>&gt;</span><span class="tag">&lt;/<span class="title">column</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;/<span class="title">key</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;<span class="title">many-to-many</span> <span class="attribute">class</span>=<span class="value">"Item"</span> <span class="attribute">column</span>=<span class="value">"I_ID"</span>&gt;</span><span class="tag">&lt;/<span class="title">many-to-many</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">hibernate-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>table:指定中间表</li>
+<li>many-to-many:指定多对多的关联关系</li>
+<li>column:执行set集合中的持久化类在中间表的外键列的名称</li>
+</ul>
+<h3 id="Item-hbm-xml">Item.hbm.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">hibernate-mapping</span> <span class="attribute">package</span>=<span class="value">"com.lihui.hibernate.single_n_n"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">class</span> <span class="attribute">name</span>=<span class="value">"Item"</span> <span class="attribute">table</span>=<span class="value">"ITEMS"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">id</span> <span class="attribute">name</span>=<span class="value">"itemId"</span> <span class="attribute">type</span>=<span class="value">"java.lang.Integer"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"ITEM_ID"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">generator</span> <span class="attribute">class</span>=<span class="value">"native"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"itemName"</span> <span class="attribute">type</span>=<span class="value">"java.lang.String"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"ITEM_NAME"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">hibernate-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Junit">Junit</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSave</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Category c1 = <span class="keyword">new</span> Category();</span><br><span class="line">		c1.setCatregoryName(<span class="string">"C-AA"</span>);</span><br><span class="line"></span><br><span class="line">		Category c2 = <span class="keyword">new</span> Category();</span><br><span class="line">		c2.setCatregoryName(<span class="string">"C-BB"</span>);</span><br><span class="line"></span><br><span class="line">		Item i1 = <span class="keyword">new</span> Item();</span><br><span class="line">		i1.setItemName(<span class="string">"I-AA"</span>);</span><br><span class="line">		Item i2 = <span class="keyword">new</span> Item();</span><br><span class="line">		i2.setItemName(<span class="string">"I-BB"</span>);</span><br><span class="line"></span><br><span class="line">		c1.getItems().add(i1);</span><br><span class="line">		c1.getItems().add(i2);</span><br><span class="line">		c2.getItems().add(i1);</span><br><span class="line">		c2.getItems().add(i2);</span><br><span class="line"></span><br><span class="line">		session.save(c1);</span><br><span class="line">		session.save(c2);</span><br><span class="line">		session.save(i1);</span><br><span class="line">		session.save(i2);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="双向N-N关联">双向N-N关联</h1><hr>
+<p>双向N-N关联需要两端都使用set集合属性，两端都增加对集合属性的访问。</p>
+<p>在双向N-N关联的两边都需指定连接表的表名及外键列的列名. 两个集合元素 set 的 table 元素的值必须指定，而且必须相同。set元素的两个子元素：key 和 many-to-many 都必须指定 column 属性，其中，key 和 many-to-many 分别指定本持久化类和关联类在连接表中的外键列名，因此两边的 key 与 many-to-many 的column属性交叉相同。也就是说，一边的set元素的key的 cloumn值为a,many-to-many 的 column 为b；则另一边的 set 元素的 key 的 column 值 b,many-to-many的 column 值为 a。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/nn3.png" alt="图3"><br>对于双向 n-n 关联, <font color="#ff0000">必须把其中一端的 inverse 设置为 true, 否则两端都维护关联关系可能会造成主键冲突。</font></p>
+<h2 id="域模型-1">域模型</h2><p><img src="http://7xk5ao.com1.z0.glb.clouddn.com/nn4.png" alt="图4"></p>
+<h2 id="关系数据模型-1">关系数据模型</h2><p><img src="http://7xk5ao.com1.z0.glb.clouddn.com/nn5.png" alt="图5"></p>
+<h2 id="代码实现-1">代码实现</h2><h3 id="实体类-1">实体类</h3><p>与上文中实体类相似，但是在Item中增加了category的set集合。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer categoryId;</span><br><span class="line">	<span class="keyword">private</span> String catregoryName;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Set&lt;Item&gt; items = <span class="keyword">new</span> HashSet&lt;Item&gt;();</span><br><span class="line">  <span class="comment">//省去get和set方法</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer itemId;</span><br><span class="line">	<span class="keyword">private</span> String itemName;</span><br><span class="line">	<span class="comment">//省去get和set方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Category-hbm-xml-1">Category.hbm.xml</h3><p>与上文中相同，不再复述。</p>
+<h3 id="Item-hbm-xml-1">Item.hbm.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">hibernate-mapping</span> <span class="attribute">package</span>=<span class="value">"com.lihui.hibernate.single_n_n"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">class</span> <span class="attribute">name</span>=<span class="value">"Item"</span> <span class="attribute">table</span>=<span class="value">"ITEMS"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">id</span> <span class="attribute">name</span>=<span class="value">"itemId"</span> <span class="attribute">type</span>=<span class="value">"java.lang.Integer"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"ITEM_ID"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">generator</span> <span class="attribute">class</span>=<span class="value">"native"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"itemName"</span> <span class="attribute">type</span>=<span class="value">"java.lang.String"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"ITEM_NAME"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">set</span> <span class="attribute">name</span>=<span class="value">"categories"</span> <span class="attribute">table</span>=<span class="value">"CATEGORIES_ITEMS"</span> <span class="attribute">inverse</span>=<span class="value">"true"</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;<span class="title">key</span>&gt;</span></span><br><span class="line">        		<span class="tag">&lt;<span class="title">column</span> <span class="attribute">name</span>=<span class="value">"I_ID"</span>&gt;</span><span class="tag">&lt;/<span class="title">column</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;/<span class="title">key</span>&gt;</span></span><br><span class="line">        	<span class="tag">&lt;<span class="title">many-to-many</span> <span class="attribute">class</span>=<span class="value">"Category"</span> <span class="attribute">column</span>=<span class="value">"C_ID"</span>&gt;</span><span class="tag">&lt;/<span class="title">many-to-many</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">hibernate-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Notice">Notice</h3><p>注意要在其中一端加入<code>inverse=&quot;true&quot;</code>，否则会造成主键冲突。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/关系映射/">关系映射</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/08/Hibernate关系映射4：N-N关联/" data-title="Hibernate关系映射4：N-N关联 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/08/Hibernate：深入HQL学习/" title="Hibernate：深入HQL学习">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Hibernate：深入HQL学习</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/07/Hibernate关系映射3：双向1-1关联/"  title="Hibernate关系映射3：双向1-1关联">
+ <strong>下一篇：</strong><br/> 
+ <span>Hibernate关系映射3：双向1-1关联
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/08/Hibernate关系映射4：N-N关联/" data-title="Hibernate关系映射4：N-N关联" data-url="http://yoursite.com/2015/07/08/Hibernate关系映射4：N-N关联/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#单向N-N关联"><span class="toc-number">1.</span> <span class="toc-text">单向N-N关联</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#域模型"><span class="toc-number">1.1.</span> <span class="toc-text">域模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关系数据模型"><span class="toc-number">1.2.</span> <span class="toc-text">关系数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">1.3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类"><span class="toc-number">1.3.1.</span> <span class="toc-text">实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Category-hbm-xml"><span class="toc-number">1.3.2.</span> <span class="toc-text">Category.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Item-hbm-xml"><span class="toc-number">1.3.3.</span> <span class="toc-text">Item.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Junit"><span class="toc-number">1.3.4.</span> <span class="toc-text">Junit</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#双向N-N关联"><span class="toc-number">2.</span> <span class="toc-text">双向N-N关联</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#域模型-1"><span class="toc-number">2.1.</span> <span class="toc-text">域模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关系数据模型-1"><span class="toc-number">2.2.</span> <span class="toc-text">关系数据模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现-1"><span class="toc-number">2.3.</span> <span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体类-1"><span class="toc-number">2.3.1.</span> <span class="toc-text">实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Category-hbm-xml-1"><span class="toc-number">2.3.2.</span> <span class="toc-text">Category.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Item-hbm-xml-1"><span class="toc-number">2.3.3.</span> <span class="toc-text">Item.hbm.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Notice"><span class="toc-number">2.3.4.</span> <span class="toc-text">Notice</span></a></li></ol></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,568 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java集合学习2：HashSet的实现原理 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="本文是对Java常用的集合的学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合学习2：HashSet的实现原理">
+<meta property="og:url" content="http://yoursite.com/2015/07/01/Java集合学习2：HashSet的实现原理/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="本文是对Java常用的集合的学习。">
+<meta property="og:updated_time" content="2015-07-21T02:55:06.570Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java集合学习2：HashSet的实现原理">
+<meta name="twitter:description" content="本文是对Java常用的集合的学习。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/01/Java集合学习2：HashSet的实现原理/" title="Java集合学习2：HashSet的实现原理" itemprop="url">Java集合学习2：HashSet的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-01T14:20:11.000Z" itemprop="datePublished"> 发表于 2015-07-01</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet概述"><span class="toc-number">1.</span> <span class="toc-text">HashSet概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet的实现"><span class="toc-number">2.</span> <span class="toc-text">HashSet的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构造方法"><span class="toc-number">2.1.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#add方法"><span class="toc-number">2.2.</span> <span class="toc-text">add方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其余方法"><span class="toc-number">2.3.</span> <span class="toc-text">其余方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#相关说明"><span class="toc-number">3.</span> <span class="toc-text">相关说明</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="HashSet概述">HashSet概述</h1><hr>
+<p>对于HashSet而言，它是基于HashMap实现的，底层采用HashMap来保存元素，所以如果对HashMap比较熟悉了，那么学习HashSet也是很轻松的。</p>
+<p>我们先通过HashSet最简单的构造函数和几个成员变量来看一下，证明咱们上边说的，其底层是HashMap：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> HashMap&lt;E,Object&gt; map;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Dummy value to associate with an Object in the backing Map</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object PRESENT = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * Constructs a new, empty set; the backing &lt;tt&gt;HashMap&lt;/tt&gt; instance has</span><br><span class="line"> * default initial capacity (16) and load factor (0.75).</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实在英文注释中已经说的比较明确了。首先有一个HashMap的成员变量，我们在HashSet的构造函数中将其初始化，默认情况下采用的是initial capacity为16，load factor为0.75。<br><a id="more"></a></p>
+<h1 id="HashSet的实现">HashSet的实现</h1><hr>
+<p>对于HashSet而言，它是基于HashMap实现的，HashSet底层使用HashMap来保存所有元素，因此HashSet 的实现比较简单，相关HashSet的操作，基本上都是直接调用底层HashMap的相关方法来完成，我们应该为保存到HashSet中的对象覆盖hashCode()和equals()</p>
+<h2 id="构造方法">构造方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * 默认的无参构造器，构造一个空的HashSet。</span><br><span class="line"> *</span><br><span class="line"> * 实际底层会初始化一个空的HashMap，并使用默认初始容量为16和加载因子0.75。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * 构造一个包含指定collection中的元素的新set。</span><br><span class="line"> *</span><br><span class="line"> * 实际底层使用默认的加载因子0.75和足以包含指定collection中所有元素的初始容量来创建一个HashMap。</span><br><span class="line"> * <span class="doctag">@param</span> c 其中的元素将存放在此set中的collection。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(Math.max((<span class="keyword">int</span>) (c.size()/.<span class="number">75f</span>) + <span class="number">1</span>, <span class="number">16</span>));</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * 以指定的initialCapacity和loadFactor构造一个空的HashSet。</span><br><span class="line"> *</span><br><span class="line"> * 实际底层以相应的参数构造一个空的HashMap。</span><br><span class="line"> * <span class="doctag">@param</span> initialCapacity 初始容量。</span><br><span class="line"> * <span class="doctag">@param</span> loadFactor 加载因子。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * 以指定的initialCapacity构造一个空的HashSet。</span><br><span class="line"> *</span><br><span class="line"> * 实际底层以相应的参数及加载因子loadFactor为0.75构造一个空的HashMap。</span><br><span class="line"> * <span class="doctag">@param</span> initialCapacity 初始容量。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(initialCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * 以指定的initialCapacity和loadFactor构造一个新的空链接哈希集合。此构造函数为包访问权限，不对外公开，</span><br><span class="line"> * 实际只是是对LinkedHashSet的支持。</span><br><span class="line"> *</span><br><span class="line"> * 实际底层会以指定的参数构造一个空LinkedHashMap实例来实现。</span><br><span class="line"> * <span class="doctag">@param</span> initialCapacity 初始容量。</span><br><span class="line"> * <span class="doctag">@param</span> loadFactor 加载因子。</span><br><span class="line"> * <span class="doctag">@param</span> dummy 标记。</span><br><span class="line"> */</span></span><br><span class="line">HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;</span><br><span class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;E,Object&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="add方法">add方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"></span><br><span class="line"> * <span class="doctag">@param</span> e 将添加到此set中的元素。</span><br><span class="line"> * <span class="doctag">@return</span> 如果此set尚未包含指定元素，则返回true。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果此set中尚未包含指定元素，则添加指定元素。更确切地讲，如果此 set 没有包含满足(e==null ? e2==null : e.equals(e2))的元素e2，则向此set 添加指定的元素e。如果此set已包含该元素，则该调用不更改set并返回false。但底层实际将将该元素作为key放入HashMap。思考一下为什么？</p>
+<p>由于HashMap的put()方法添加key-value对时，当新放入HashMap的Entry中key与集合中原有Entry的key相同（hashCode()返回值相等，通过equals比较也返回true），新添加的Entry的value会将覆盖原来Entry的value（HashSet中的value都是<code>PRESENT</code>），但key不会有任何改变，因此如果向HashSet中添加一个已经存在的元素时，新添加的集合元素将不会被放入HashMap中，原来的元素也不会有任何改变，这也就满足了Set中元素不重复的特性。</p>
+<p>该方法如果添加的是在HashSet中不存在的，则返回true；如果添加的元素已经存在，返回false。其原因在于我们之前提到的关于HashMap的put方法。该方法在添加key不重复的键值对的时候，会返回null。</p>
+<h2 id="其余方法">其余方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span><br><span class="line">     * 如果此set包含指定元素，则返回true。</span><br><span class="line">     * 更确切地讲，当且仅当此set包含一个满足(o==null ? e==null : o.equals(e))的e元素时，返回true。</span><br><span class="line">     *</span><br><span class="line">     * 底层实际调用HashMap的containsKey判断是否包含指定key。</span><br><span class="line">     * <span class="doctag">@param</span> o 在此set中的存在已得到测试的元素。</span><br><span class="line">     * <span class="doctag">@return</span> 如果此set包含指定元素，则返回true。</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.containsKey(o);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 如果指定元素存在于此set中，则将其移除。更确切地讲，如果此set包含一个满足(o==null ? e==null : o.equals(e))的元素e，</span><br><span class="line">     * 则将其移除。如果此set已包含该元素，则返回true</span><br><span class="line">     *</span><br><span class="line">     * 底层实际调用HashMap的remove方法删除指定Entry。</span><br><span class="line">     * <span class="doctag">@param</span> o 如果存在于此set中则需要将其移除的对象。</span><br><span class="line">     * <span class="doctag">@return</span> 如果set包含指定元素，则返回true。</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.remove(o)==PRESENT;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 返回此HashSet实例的浅表副本：并没有复制这些元素本身。</span><br><span class="line">     *</span><br><span class="line">     * 底层实际调用HashMap的clone()方法，获取HashMap的浅表副本，并设置到HashSet中。</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            HashSet&lt;E&gt; newSet = (HashSet&lt;E&gt;) <span class="keyword">super</span>.clone();</span><br><span class="line">            newSet.map = (HashMap&lt;E, Object&gt;) map.clone();</span><br><span class="line">            <span class="keyword">return</span> newSet;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="相关说明">相关说明</h1><hr>
+<ol>
+<li>相关HashMap的实现原理，请参考我的上一遍总结：<a href="http://tracylihui.github.io/2015/07/01/Java%E9%9B%86%E5%90%88%E5%AD%A6%E4%B9%A01%EF%BC%9AHashMap%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank" rel="external">Java集合学习1：HashMap的实现原理</a>。</li>
+<li>对于HashSet中保存的对象，请注意正确重写其equals和hashCode方法，以保证放入的对象的唯一性。这两个方法是比较重要的，希望大家在以后的开发过程中需要注意一下。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/01/Java集合学习2：HashSet的实现原理/" data-title="Java集合学习2：HashSet的实现原理 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/01/Java集合学习3：Hashtable的实现原理/" title="Java集合学习3：Hashtable的实现原理">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Java集合学习3：Hashtable的实现原理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/01/Java集合学习1：HashMap的实现原理/"  title="Java集合学习1：HashMap的实现原理">
+ <strong>下一篇：</strong><br/> 
+ <span>Java集合学习1：HashMap的实现原理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/01/Java集合学习2：HashSet的实现原理/" data-title="Java集合学习2：HashSet的实现原理" data-url="http://yoursite.com/2015/07/01/Java集合学习2：HashSet的实现原理/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet概述"><span class="toc-number">1.</span> <span class="toc-text">HashSet概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet的实现"><span class="toc-number">2.</span> <span class="toc-text">HashSet的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构造方法"><span class="toc-number">2.1.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#add方法"><span class="toc-number">2.2.</span> <span class="toc-text">add方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其余方法"><span class="toc-number">2.3.</span> <span class="toc-text">其余方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#相关说明"><span class="toc-number">3.</span> <span class="toc-text">相关说明</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,627 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Hibernate：缓存机制的学习 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate：缓存机制的学习">
+<meta property="og:url" content="http://yoursite.com/2015/07/20/Hibernate：缓存机制的学习/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
+<meta property="og:updated_time" content="2015-07-22T03:13:39.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hibernate：缓存机制的学习">
+<meta name="twitter:description" content="Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。
+这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/20/Hibernate：缓存机制的学习/" title="Hibernate：缓存机制的学习" itemprop="url">Hibernate：缓存机制的学习</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-20T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-07-20</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate缓存"><span class="toc-number">1.</span> <span class="toc-text">Hibernate缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate一级缓存"><span class="toc-number">2.</span> <span class="toc-text">Hibernate一级缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">2.1.</span> <span class="toc-text">Demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#作用"><span class="toc-number">2.2.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">2.3.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate二级缓存"><span class="toc-number">3.</span> <span class="toc-text">Hibernate二级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#查询缓存"><span class="toc-number">4.</span> <span class="toc-text">查询缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+		
+		</div>
+		
+		<p>Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。</p>
+<p>这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可以很方便的将与其相关联的Order集合查询出来，这也非常符合我们的实际业务，毕竟我们不可能给这个Cutomer对象别人的Order吧，这既不安全，而且对Customer的普通顾客来说，并无卵用。所以我们不得不说Hibernate的ORM做的很好，但凡事都有但是（要是没有但是，也就没有写这篇文章的必要了）。</p>
+<p>我们再对数据库进行访问的时候必须要考虑性能问题（通俗点讲，就是用少发SQL语句），当我们设定了1-N这种关系后，查询过程中就有可能出现N+1问题。</p>
+<p>关于N+1问题，并不是本文的重点。但关于N+1问题，我们需要知道的是，这个问题会导致SQL语句的增加，也就是要与数据库进行更多的交互，这无疑会给项目以及后台数据库带来影响。<br><a id="more"></a></p>
+<h1 id="Hibernate缓存">Hibernate缓存</h1><hr>
+<p>Hibernate是一个持久化框架，经常需要访问数据库。如果我们能够降低应用程序对物理数据库访问的频次，那会提供应用程序的运行性能。缓存内的数据是对物理数据源中的数据的复制，应用程序运行时先从缓存中读写数据。</p>
+<p>缓存就是数据库数据在内存中的临时容器，包括数据库数据在内存中的临时拷贝，它位于数据库与数据库访问层中间。ORM在查询数据时首先会根据自身的缓存管理策略，在缓存中查找相关数据，如发现所需的数据，则直接将此数据作为结果加以利用，从而避免了数据库调用性能的开销。而相对内存操作而言，数据库调用是一个代价高昂的过程。</p>
+<p>Hibernate缓存包括两大类：一级缓存和二级缓存。</p>
+<ul>
+<li>Hibernate一级缓存又被成为“Session的缓存”。Session缓存是内置的，不能被卸载，是事务范围的缓存。在一级缓存中，持久化类的每个实例都具有唯一的OID。</li>
+<li>Hibernate二级缓存又被称为“SessionFactory的缓存”。由于SessionFactory对象的生命周期和应用程序的整个过程对应，因此Hibernate二级缓存是进程范围或者集群范围的缓存，有可能出现并发问题，因此需要采用适当的并发访问策略，该策略为被缓存的数据提供了事务隔离级别。第二级缓存是可选的，是一个可配置的插件，默认下SessionFactory不会启用这个插件。</li>
+</ul>
+<p>那么什么样的数据适合放入到缓存中？</p>
+<ul>
+<li>很少被修改的数据 　　</li>
+<li>不是很重要的数据，允许出现偶尔并发的数据 　　</li>
+<li>不会被并发访问的数据 　　</li>
+<li>常量数据</li>
+</ul>
+<p>什么样的数据不适合放入到缓存中？　</p>
+<ul>
+<li>经常被修改的数据 　　</li>
+<li>绝对不允许出现并发访问的数据，如财务数据，绝对不允许出现并发 　　</li>
+<li>与其他应用共享的数据</li>
+</ul>
+<h1 id="Hibernate一级缓存">Hibernate一级缓存</h1><hr>
+<h2 id="Demo">Demo</h2><p>首先看一个非常简单的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Customer customer1 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer1.getCustomerName());</span><br><span class="line"></span><br><span class="line">	Customer customer2 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer2.getCustomerName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看一下控制台的输出：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.CUSTOMER_ID=?</span><br><span class="line">Customer1</span><br><span class="line">Customer1</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到，虽然我们调用了两次session的load方法，但实际上只发送了一条SQL语句。我们第一次调用load方法时候，得到了查询结果，然后将结果放到了session的一级缓存中。此时，当我们再次调用load方法，会首先去看缓存中是否存在该对象，如果存在，则直接从缓存中取出，就不会在发送SQL语句了。</p>
+<p>但是，我们看一下下面这个例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Customer customer1 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer1.getCustomerName());</span><br><span class="line">	transaction.commit();</span><br><span class="line">	session.close();</span><br><span class="line">	session = sessionFactory.openSession();</span><br><span class="line">	transaction = session.beginTransaction();</span><br><span class="line">	Customer customer2 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer2.getCustomerName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们解释一下上面的代码，在第5、6、7、8行，我们是先将session关闭，然后又重新打开了新的session，这个时候，我们再看一下控制台的输出结果：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.CUSTOMER_ID=?</span><br><span class="line">Customer1</span><br><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.CUSTOMER_ID=?</span><br><span class="line">Customer1</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到，发送了两条SQL语句。其原因是：Hibernate一级缓存是session级别的，所以如果session关闭后，缓存就没了，当我们再次打开session的时候，缓存中是没有了之前查询的对象的，所以会再次发送SQL语句。</p>
+<p>我们稍微对一级缓存的知识点进行总结一下，然后再开始讨论关于二级缓存的内容。</p>
+<h2 id="作用">作用</h2><p>Session的缓存有三大作用：</p>
+<ol>
+<li>减少访问数据库的频率。应用程序从缓存中读取持久化对象的速度显然比到数据中查询数据的速度快多了，因此Session的缓存可以提高数据访问的性能。</li>
+<li>当缓存中的持久化对象之间存在循环关联关系时，Session会保证不出现访问对象图的死循环，以及由死循环引起的JVM堆栈溢出异常。</li>
+<li>保证数据库中的相关记录与缓存中的相应对象保持同步。</li>
+</ol>
+<h2 id="小结">小结</h2><ul>
+<li>一级缓存是事务级别的，每个事务(session)都有单独的一级缓存。这一级别的缓存是由Hibernate进行管理，一般情况下无需进行干预。</li>
+<li>每个事务都拥有单独的一级缓存不会出现并发问题，因此无须提供并发访问策略。</li>
+<li>当应用程序调用Session的save()、update()、saveOrUpdate()、get()或load()，以及调用查询接口的 list()、iterate()(该方法会出现N+1问题，先查id)方法时，如果在Session缓存中还不存在相应的对象，Hibernate就会把该对象加入到第一级缓存中。当清理缓存时，Hibernate会根据缓存中对象的状态变化来同步更新数据库。 Session为应用程序提供了两个管理缓存的方法： evict(Object obj)：从缓存中清除参数指定的持久化对象。 clear()：清空缓存中所有持久化对象,flush():使缓存与数据库同步。</li>
+<li>当查询相应的字段，而不是对象时，不支持缓存。我们可以很容易举一个例子来说明，看一下下面的代码。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	List&lt;Customer&gt; customers = session.createQuery(<span class="string">"select c.customerName from Customer c"</span>).list();</span><br><span class="line">	System.out.println(customers.size());</span><br><span class="line">	Customer customer2 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer2.getCustomerName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们首先是只取出Customer的name属性，然后又尝试着去Load一个Customer对象，看一下控制台的输出：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> col_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line"><span class="number">3</span></span><br><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">        customer0_.CUSTOMER_ID=?</span><br><span class="line">Customer1</span><br></pre></td></tr></table></figure></p>
+<p>这一点其实很好理解，我本身就没有查处Customer的所有属性，那我又怎么能给你把所有属性都缓存到这个对象中呢？</p>
+<p>我们在讲之前的例子中，提到我们关闭session再打开，这个时候一级缓存就不存在了，所以我们再次查询的时候，会再次发送SQL语句。那么如果要解决这个问题，我们该怎么做？二级缓存可以帮我们解决这个问题。</p>
+<h1 id="Hibernate二级缓存">Hibernate二级缓存</h1><p>Hibernate中没有自己去实现二级缓存，而是利用第三方的。简单叙述一下配置过程，也作为自己以后用到的时候配置的一个参考。</p>
+<p>1、我们需要加入额外的二级缓存包，例如EHcache，将其包导入。需要：ehcache-core-2.4.3.jar ， hibernate-ehcache-4.2.4.Final.jar ，slf4j-api-1.6.1.jar<br>2、在hibernate.cfg.xml配置文件中配置我们二级缓存的一些属性（此处针对的是Hibernate4）：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 启用二级缓存 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"cache.use_second_level_cache"</span>&gt;</span>true<span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置使用的二级缓存的产品 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"hibernate.cache.region.factory_class"</span>&gt;</span>org.hibernate.cache.ehcache.EhCacheRegionFactory<span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>3、我们使用的是EHcache，所以我们需要创建一个ehcache.xml的配置文件，来配置我们的缓存信息，这个是EHcache要求的。该文件放到根目录下。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">ehcache</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--  </span><br><span class="line">    	指定一个目录：当 EHCache 把数据写到硬盘上时, 将把数据写到这个目录下.</span><br><span class="line">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">diskStore</span> <span class="attribute">path</span>=<span class="value">"d:\\tempDirectory"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--Default Cache configuration. These will applied to caches programmatically created through</span><br><span class="line">        the CacheManager.</span><br><span class="line">        The following attributes are required for defaultCache:</span><br><span class="line">        maxInMemory       - Sets the maximum number of objects that will be created in memory</span><br><span class="line">        eternal           - Sets whether elements are eternal. If eternal,  timeouts are ignored and the element</span><br><span class="line">                            is never expired.</span><br><span class="line">        timeToIdleSeconds - Sets the time to idle for an element before it expires. Is only used</span><br><span class="line">                            if the element is not eternal. Idle time is now - last accessed time</span><br><span class="line">        timeToLiveSeconds - Sets the time to live for an element before it expires. Is only used</span><br><span class="line">                            if the element is not eternal. TTL is now - creation time</span><br><span class="line">        overflowToDisk    - Sets whether elements can overflow to disk when the in-memory cache</span><br><span class="line">                            has reached the maxInMemory limit.</span><br><span class="line">        --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--  </span><br><span class="line">    	设置缓存的默认数据过期策略</span><br><span class="line">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">defaultCache</span></span><br><span class="line">        <span class="attribute">maxElementsInMemory</span>=<span class="value">"10000"</span></span><br><span class="line">        <span class="attribute">eternal</span>=<span class="value">"false"</span></span><br><span class="line">        <span class="attribute">timeToIdleSeconds</span>=<span class="value">"120"</span></span><br><span class="line">        <span class="attribute">timeToLiveSeconds</span>=<span class="value">"120"</span></span><br><span class="line">        <span class="attribute">overflowToDisk</span>=<span class="value">"true"</span></span><br><span class="line">        /&gt;</span></span><br><span class="line">   	<span class="comment">&lt;!--  </span><br><span class="line">   		设定具体的命名缓存的数据过期策略。每个命名缓存代表一个缓存区域</span><br><span class="line">   		缓存区域(region)：一个具有名称的缓存块，可以给每一个缓存块设置不同的缓存策略。</span><br><span class="line">   		如果没有设置任何的缓存区域，则所有被缓存的对象，都将使用默认的缓存策略。即：&lt;defaultCache.../&gt;</span><br><span class="line">   		Hibernate 在不同的缓存区域保存不同的类/集合。</span><br><span class="line">			对于类而言，区域的名称是类名。如:com.atguigu.domain.Customer</span><br><span class="line">			对于集合而言，区域的名称是类名加属性名。如com.atguigu.domain.Customer.orders</span><br><span class="line">   	--&gt;</span></span><br><span class="line">   	<span class="comment">&lt;!--  </span><br><span class="line">   		name: 设置缓存的名字,它的取值为类的全限定名或类的集合的名字</span><br><span class="line">		maxElementsInMemory: 设置基于内存的缓存中可存放的对象最大数目</span><br><span class="line"></span><br><span class="line">		eternal: 设置对象是否为永久的, true表示永不过期,</span><br><span class="line">		此时将忽略timeToIdleSeconds 和 timeToLiveSeconds属性; 默认值是false</span><br><span class="line">		timeToIdleSeconds:设置对象空闲最长时间,以秒为单位, 超过这个时间,对象过期。</span><br><span class="line">		当对象过期时,EHCache会把它从缓存中清除。如果此值为0,表示对象可以无限期地处于空闲状态。</span><br><span class="line">		timeToLiveSeconds:设置对象生存最长时间,超过这个时间,对象过期。</span><br><span class="line">		如果此值为0,表示对象可以无限期地存在于缓存中. 该属性值必须大于或等于 timeToIdleSeconds 属性值</span><br><span class="line"></span><br><span class="line">		overflowToDisk:设置基于内存的缓存中的对象数目达到上限后,是否把溢出的对象写到基于硬盘的缓存中</span><br><span class="line">   	--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">cache</span> <span class="attribute">name</span>=<span class="value">"com.atguigu.hibernate.entities.Employee"</span></span><br><span class="line">        <span class="attribute">maxElementsInMemory</span>=<span class="value">"1"</span></span><br><span class="line">        <span class="attribute">eternal</span>=<span class="value">"false"</span></span><br><span class="line">        <span class="attribute">timeToIdleSeconds</span>=<span class="value">"300"</span></span><br><span class="line">        <span class="attribute">timeToLiveSeconds</span>=<span class="value">"600"</span></span><br><span class="line">        <span class="attribute">overflowToDisk</span>=<span class="value">"true"</span></span><br><span class="line">        /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">cache</span> <span class="attribute">name</span>=<span class="value">"com.atguigu.hibernate.entities.Department.emps"</span></span><br><span class="line">        <span class="attribute">maxElementsInMemory</span>=<span class="value">"1000"</span></span><br><span class="line">        <span class="attribute">eternal</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">timeToIdleSeconds</span>=<span class="value">"0"</span></span><br><span class="line">        <span class="attribute">timeToLiveSeconds</span>=<span class="value">"0"</span></span><br><span class="line">        <span class="attribute">overflowToDisk</span>=<span class="value">"false"</span></span><br><span class="line">        /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">ehcache</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在注释中，有一些对变量的解释。</p>
+<p>4、开启二级缓存。我们在这里使用的xml的配置方式，所以要在Customer.hbm.xml文件加一点配置信息：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">cache</span> <span class="attribute">usage</span>=<span class="value">"read-only"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意是在<class>标签内。<br>如果是使用注解的方法，在要在Customer这个类中，加入<code>@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)</code>这个注解。</class></p>
+<p>5、下面我们再进行一下测试。还是上面的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Customer customer1 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer1.getCustomerName());</span><br><span class="line">	transaction.commit();</span><br><span class="line">	session.close();</span><br><span class="line">  session = sessionFactory.openSession();</span><br><span class="line">	transaction = session.beginTransaction();</span><br><span class="line">	Customer customer2 = (Customer) session.load(Customer.class, <span class="number">1</span>);</span><br><span class="line">	System.out.println(customer2.getCustomerName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以发现控制台只发出了一条SQL语句。这是我们二级缓存的一个小Demo。</p>
+<p>我们的二级缓存是sessionFactory级别的，所以当我们session关闭再打开之后，我们再去查询对象的时候，此时Hibernate会先去二级缓存中查询是否有该对象。</p>
+<p>同样，二级缓存缓存的是对象，如果我们查询的是对象的一些属性，则不会加入到缓存中。</p>
+<p><strong>我们通过二级缓存是可以解决之前提到的N+1问题。</strong></p>
+<p>已经写了这么多了，但好像我们关于缓存的内容还没有讲完。不要着急，再坚持一下，我们的内容不多了。我们还是通过一个例子来引出下一个话题。<br>我们说通过二级缓存可以缓存对象，那么我们看一下下面的代码以及输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	List&lt;Customer&gt; customers1 = session.createQuery(<span class="string">"from Customer"</span>).list();</span><br><span class="line">	System.out.println(customers1.size());</span><br><span class="line">	tansaction.commit();</span><br><span class="line">	session.close();</span><br><span class="line">	session = sessionFactory.openSession();</span><br><span class="line">	transaction = session.beginTransaction();</span><br><span class="line">	List&lt;Customer&gt; customers2 = session.createQuery(<span class="string">"from Customer"</span>).list();</span><br><span class="line">	System.out.println(customers2.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>控制台的结果：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line"><span class="number">3</span></span><br><span class="line">Hibernate:</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        customer0_.CUSTOMER_ID <span class="keyword">as</span> CUSTOMER1_0_,</span><br><span class="line">        customer0_.CUSTOMER_NAME <span class="keyword">as</span> CUSTOMER2_0_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        CUSTOMERS customer0_</span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<p>我们的缓存好像没有起作用哎？这是为啥？当我们通过list()去查询两次对象的时候，二级缓存虽然会缓存插叙出来的对象，但不会缓存我们的hql查询语句，要想解决这个问题，我们需要用到查询缓存。</p>
+<h1 id="查询缓存">查询缓存</h1><hr>
+<p>在前文中也提到了，我们的一级二级缓存都是对整个实体进行缓存，它不会缓存普通属性，如果想对普通属性进行缓存，则可以考虑使用查询缓存。</p>
+<p>但需要注意的是，大部分情况下，查询缓存并不能提高应用程序的性能，甚至反而会降低应用性能，因此实际项目中要谨慎的使用查询缓存。</p>
+<p>对于查询缓存来说，它缓存的key就是查询所用的HQL或者SQL语句，需要指出的是：查询缓存不仅要求所使用的HQL、SQL语句相同，甚至要求所传入的参数也相同，Hibernate才能直接从缓存中取得数据。只有经常使用相同的查询语句、并且使用相同查询参数才能通过查询缓存获得好处，查询缓存的生命周期直到属性被修改了为止。</p>
+<p>查询缓存默认是关闭。要想使用查询缓存，只需要在hibernate.cfg.xml中加入一条配置即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">property</span> <span class="attribute">name</span>=<span class="value">"hibernate.cache.use_query_cache"</span>&gt;</span>true<span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>而且，我们在查询hql语句时，要想使用查询缓存，就需要在语句中设置这样一个方法：<code>setCacheable(true)</code>。关于这个的demo我就不进行演示了，大家可以自己慢慢试着玩一下。</p>
+<p>但需要注意的是，我们在开启查询缓存的时候，也应该开启二级缓存。因为如果不使用二级缓存，也有可能出现N+1的问题。</p>
+<p>这是因为查询缓存缓存的仅仅是对象的ID，所以首先会通过一条SQL将对象的ID都查询出来，但是当我们后面要得到每个对象的信息的时候，此时又会发送SQL语句，所以如果我们使用查询缓存，一定也要开启二级缓存。</p>
+<h1 id="总结">总结</h1><p>这些就是自己今晚上研究的关于Hibernate缓存的一些问题，其出发点也是为了自己能够对Hibernate缓存的知识有一定的总结。当然了，下一步还需要深入到缓存是如何实现的这个深度中。</p>
+<p>另外PS一句，最近打球打的很累，都感觉自己打的有点乏力了。休息几天再去玩。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/缓存/">缓存</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/20/Hibernate：缓存机制的学习/" data-title="Hibernate：缓存机制的学习 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/20/Hibernate：get和load/" title="Hibernate：get和load">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Hibernate：get和load</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/14/深入学习JVM3：JVM类加载机制/"  title="深入学习JVM3：JVM类加载机制">
+ <strong>下一篇：</strong><br/> 
+ <span>深入学习JVM3：JVM类加载机制
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/20/Hibernate：缓存机制的学习/" data-title="Hibernate：缓存机制的学习" data-url="http://yoursite.com/2015/07/20/Hibernate：缓存机制的学习/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate缓存"><span class="toc-number">1.</span> <span class="toc-text">Hibernate缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate一级缓存"><span class="toc-number">2.</span> <span class="toc-text">Hibernate一级缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">2.1.</span> <span class="toc-text">Demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#作用"><span class="toc-number">2.2.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">2.3.</span> <span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Hibernate二级缓存"><span class="toc-number">3.</span> <span class="toc-text">Hibernate二级缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#查询缓存"><span class="toc-number">4.</span> <span class="toc-text">查询缓存</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,702 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Hibernate：检索策略的学习2 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="概述
+本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。
+Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate：检索策略的学习2">
+<meta property="og:url" content="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习2/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="概述
+本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。
+Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
+<meta property="og:updated_time" content="2015-07-10T15:10:05.487Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hibernate：检索策略的学习2">
+<meta name="twitter:description" content="概述
+本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。
+Hibernate：检索策略的学习1Hibernate：检索策略的学习2">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/10/Hibernate：检索策略的学习2/" title="Hibernate：检索策略的学习2" itemprop="url">Hibernate：检索策略的学习2</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-10T14:14:15.000Z" itemprop="datePublished"> 发表于 2015-07-10</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#N-1和1-1的检索策略"><span class="toc-number">2.</span> <span class="toc-text">N-1和1-1的检索策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类级别和关联级别可选的检索策略"><span class="toc-number">3.1.</span> <span class="toc-text">类级别和关联级别可选的检索策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3种检索策略的运行机制"><span class="toc-number">3.2.</span> <span class="toc-text">3种检索策略的运行机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设定检索策略的属性"><span class="toc-number">3.3.</span> <span class="toc-text">设定检索策略的属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lazy"><span class="toc-number">3.3.1.</span> <span class="toc-text">lazy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fetch"><span class="toc-number">3.3.2.</span> <span class="toc-text">fetch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#batch-size"><span class="toc-number">3.3.3.</span> <span class="toc-text">batch-size</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三种检索策略比较"><span class="toc-number">3.4.</span> <span class="toc-text">三种检索策略比较</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#立即检索"><span class="toc-number">3.4.1.</span> <span class="toc-text">立即检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#延迟检索"><span class="toc-number">3.4.2.</span> <span class="toc-text">延迟检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#迫切左外连接检索"><span class="toc-number">3.4.3.</span> <span class="toc-text">迫切左外连接检索</span></a></li></ol></li></ol></li></ol>
+		
+		</div>
+		
+		<h1 id="概述">概述</h1><hr>
+<p>本文是在进行Hibernate检索策略学习过程中所总结的知识点的第二部分。其中在第一部分中，已经学习了类级别的检索策略以及1-N和N-N的检索策略。在该文中将学习N-1和1-1的检索策略，并对检索策略进行总结。</p>
+<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01" target="_blank" rel="external">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/" target="_blank" rel="external">Hibernate：检索策略的学习2</a><br><a id="more"></a></p>
+<h1 id="N-1和1-1的检索策略">N-1和1-1的检索策略</h1><hr>
+<p>这个小节中的内容其实与第二部分的关于1-N和N-N部分有很多相似之处。只不过操作的对象不一样。比如说，我们之前考虑的是在获得了Customer时，如何获取其对应的orders集合；而在该节，我们考虑的是，在获取了Order对象，如何获取相对应的Customer。</p>
+<p>在这里，我们需要考虑的是在Order.hbm.xml中的<many-to-one>标签的属性，同样，其也有lazy属性和fetch属性：</many-to-one></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">lazy属性(默认值proxy)</th>
+<th style="text-align:center">fetch属性(默认值select)</th>
+<th style="text-align:center">检索Order对象时对关联的Customer对象使用的检索策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">proxy</td>
+<td style="text-align:center">未设置(取默认值select)</td>
+<td style="text-align:center">采用延迟检索策略</td>
+</tr>
+<tr>
+<td style="text-align:center">no-proxy</td>
+<td style="text-align:center">未设置(取默认值select)</td>
+<td style="text-align:center">无代理延迟检索策略</td>
+</tr>
+<tr>
+<td style="text-align:center">false</td>
+<td style="text-align:center">未设置(取默认值select)</td>
+<td style="text-align:center">立即检索</td>
+</tr>
+<tr>
+<td style="text-align:center">proxy</td>
+<td style="text-align:center">join</td>
+<td style="text-align:center">迫切左外连接检索</td>
+</tr>
+</tbody>
+</table>
+<p>需要注意的点：</p>
+<ul>
+<li>若fetch属性设置为join，那么lazy属性将被忽略；</li>
+<li>迫切左外连接检索策略的优点在于比立即检索策略使用的SELECT语句更少；</li>
+<li>no-proxy延迟检索需要增强持久化类的字节码才能实现。</li>
+<li>Query的list方法会忽略映射文件配置的迫切左外连接检索策略（join），而采用延迟检索策略。</li>
+</ul>
+<p>如果在关联级别使用了延迟加载或立即加载检索策略，可以设定批量检索的大小，以帮助提高延迟检索或立即检索的运行性能。该属性需要设置在 1 那一的 class 元素中，也就是Customer的<class>元素：<code>&lt;class name=&quot;Customer&quot; table=&quot;CUSTOMERS&quot; lazy=&quot;true&quot; batch-size=&quot;5&quot;&gt;</code>。其作用可以批量的初始化Customer对象。</class></p>
+<h1 id="总结">总结</h1><hr>
+<h2 id="类级别和关联级别可选的检索策略">类级别和关联级别可选的检索策略</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">检索策略作用域</th>
+<th style="text-align:center">可选检索策略</th>
+<th style="text-align:center">默认检索策略</th>
+<th>运行时行为受影响的检索方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">类级别</td>
+<td style="text-align:center">立即检索<br>延迟检索</td>
+<td style="text-align:center">延迟检索</td>
+<td>仅影响Session的load()方法</td>
+</tr>
+<tr>
+<td style="text-align:center">关联级别</td>
+<td style="text-align:center">立即检索<br>延迟检索<br>迫切左外连接检索</td>
+<td style="text-align:center">延迟检索</td>
+<td>影响Session的load()方法和get()方法，以及Query API和Criteria<br> API，例外情况是Query API会忽略迫切左外连接策略</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3种检索策略的运行机制">3种检索策略的运行机制</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">检索策略类型</th>
+<th style="text-align:center">类级别</th>
+<th>关联级别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">立即检索</td>
+<td style="text-align:center">立即加载检索方法指定的对象</td>
+<td>立即加载与检索方法指定的对象的关联对象，可以设定批量检索数量</td>
+</tr>
+<tr>
+<td style="text-align:center">延迟检索</td>
+<td style="text-align:center">延迟加载检索方法指定的对象</td>
+<td>延迟加载与检索方式指定的对象的关联对象，可以设定批量检索数量</td>
+</tr>
+<tr>
+<td style="text-align:center">迫切左外连接</td>
+<td style="text-align:center">不适用</td>
+<td>通过左外连接加载与检索方法指定的对象的关联对象</td>
+</tr>
+</tbody>
+</table>
+<h2 id="设定检索策略的属性">设定检索策略的属性</h2><h3 id="lazy">lazy</h3><ul>
+<li>类级别<ul>
+<li><class>元素中lazy属性的可选值为true（延迟检索）和false（立即检索）</class></li>
+<li><class>元素的lazy属性默认为true</class></li>
+</ul>
+</li>
+<li>1-N和N-N关联级别<ul>
+<li><set>元素中lazy属性的可选值为true（延迟检索）和false（立即检索）</set></li>
+<li><set>元素的lazy属性默认为true</set></li>
+</ul>
+</li>
+<li>多对多关联级别<ul>
+<li><many-to-one>元素中lazy属性的可选值为proxy（延迟检索）、no-proxy（无代理延迟检索）和false（立即检索）</many-to-one></li>
+<li><many-to-one>元素的lazy属性默认为proxy</many-to-one></li>
+</ul>
+</li>
+</ul>
+<h3 id="fetch">fetch</h3><ul>
+<li>类级别<ul>
+<li>没有此属性</li>
+</ul>
+</li>
+<li>1-N和N-N关联级别<ul>
+<li><set>元素中fetch属性的可选值为select（select查询语句）、subselect（带子查询的select语句）和join（迫切左外连接检索）</set></li>
+<li><set>元素的fetch属性默认为select</set></li>
+</ul>
+</li>
+<li>N-1和1-1关联级别<ul>
+<li><many-to-one>元素中fetch属性的可选值为select（select查询语句）和join（迫切左外连接检索）</many-to-one></li>
+<li><many-to-one>元素的fetch属性默认为select</many-to-one></li>
+</ul>
+</li>
+</ul>
+<h3 id="batch-size">batch-size</h3><p>设定批量检索的数量，可选值为一个正整数，默认值为1。如果设定此项，合理的取值在3-10之间。仅适用于关联级别的立即检索和延迟检索，在<class>和<set>元素中包含此属性</set></class></p>
+<h2 id="三种检索策略比较">三种检索策略比较</h2><h3 id="立即检索">立即检索</h3><ol>
+<li>优点：对应用程序完全透明，无论对象处于持久化状态还是游离状态（session是否关闭），应用程序可以方便的从一个对象导航到与它相关的对象。</li>
+<li>缺点：select语句数目多，可能会加载应用程序不需要访问的对象，白白浪费内存空间。</li>
+<li>优先考虑的场合：(1)类级别；(2)应用程序需要立即访问的对象；<strong>(3)使用了二级缓存</strong></li>
+</ol>
+<h3 id="延迟检索">延迟检索</h3><ol>
+<li>优点：由应用程序决定需要加载哪些对象，可以避免执行多余的select语句，以及避免加载应用程序不需要访问的对象。因此能提高检索性能，并且节省内存空间。</li>
+<li>缺点：应用程序如果希望访问游离状态的代理类实例，必须保证它在持久化状态已经被初始化。</li>
+<li>优先考虑的场合：(1)1-N关联或者N-N关联；(2)应用程序不需要立即访问或者根本不会访问的对象</li>
+</ol>
+<h3 id="迫切左外连接检索">迫切左外连接检索</h3><ol>
+<li>优点：对应用程序完全透明，不管对象处于持久状态，还是游离状态，应用程序可以方便的从一个对象导航到与它相关的对象。</li>
+<li>缺点：可能会加载应用程序不需要访问的对象，白白浪费内存空间；<strong>复杂的数据库表连接也会影响检索性能。</strong></li>
+<li>优先考虑的场合：(1)N-1或者N-N关联；(2)应用程序需要立即访问的对象；(3)数据库具有良好的表连接性能。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/检索策略/">检索策略</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习2/" data-title="Hibernate：检索策略的学习2 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/12/Mocks Aren’t Stubs/" title="Mocks vs Stubs">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Mocks vs Stubs</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/10/Hibernate：检索策略的学习1/"  title="Hibernate：检索策略的学习1">
+ <strong>下一篇：</strong><br/> 
+ <span>Hibernate：检索策略的学习1
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/10/Hibernate：检索策略的学习2/" data-title="Hibernate：检索策略的学习2" data-url="http://yoursite.com/2015/07/10/Hibernate：检索策略的学习2/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#N-1和1-1的检索策略"><span class="toc-number">2.</span> <span class="toc-text">N-1和1-1的检索策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类级别和关联级别可选的检索策略"><span class="toc-number">3.1.</span> <span class="toc-text">类级别和关联级别可选的检索策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3种检索策略的运行机制"><span class="toc-number">3.2.</span> <span class="toc-text">3种检索策略的运行机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设定检索策略的属性"><span class="toc-number">3.3.</span> <span class="toc-text">设定检索策略的属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lazy"><span class="toc-number">3.3.1.</span> <span class="toc-text">lazy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fetch"><span class="toc-number">3.3.2.</span> <span class="toc-text">fetch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#batch-size"><span class="toc-number">3.3.3.</span> <span class="toc-text">batch-size</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三种检索策略比较"><span class="toc-number">3.4.</span> <span class="toc-text">三种检索策略比较</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#立即检索"><span class="toc-number">3.4.1.</span> <span class="toc-text">立即检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#延迟检索"><span class="toc-number">3.4.2.</span> <span class="toc-text">延迟检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#迫切左外连接检索"><span class="toc-number">3.4.3.</span> <span class="toc-text">迫切左外连接检索</span></a></li></ol></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
