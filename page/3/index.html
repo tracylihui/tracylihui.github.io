@@ -85,6 +85,207 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/03/Java集合比较：HashSet和HashMap的比较/" title="Java集合比较：HashSet和HashMap的比较" itemprop="url">Java集合比较：HashSet和HashMap的比较</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-03T00:36:58.000Z" itemprop="datePublished"> 发表于 2015-07-03</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>HashMap和HashSet都是collection框架的一部分，它们让我们能够使用对象的集合。collection框架有自己的接口和实现，主要分为Set接口，List接口和Queue接口。它们有各自的特点，Set的集合里不允许对象有重复的值，List允许有重复，它对集合中的对象进行索引，Queue的工作原理是FCFS算法(First Come, First Serve)。</p>
+<p>首先让我们来看看什么是HashMap和HashSet，然后再来比较它们之间的分别。</p>
+<h1 id="什么是HashSet">什么是HashSet</h1><hr>
+<p>HashSet实现了Set接口，它不允许集合中有重复的值，当我们提到HashSet时，第一件事情就是在将对象存储在HashSet之前，要先确保对象重写equals()和hashCode()方法，这样才能比较对象的值是否相等，以确保set中没有储存相等的对象。如果我们没有重写这两个方法，将会使用这个方法的默认实现。</p>
+<p><code>public boolean add(Object o)</code>方法用来在Set中添加元素，当元素值重复时则会立即返回false，如果成功添加的话会返回true。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/03/Java集合比较：HashSet和HashMap的比较/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/03/Java集合比较：HashSet和HashMap的比较/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/03/Java集合比较：HashSet和HashMap的比较/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/03/集合应用：LinkedHashMap与LRUcache/" title="集合应用：LinkedHashMap与LRUcache" itemprop="url">集合应用：LinkedHashMap与LRUcache</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T23:43:15.000Z" itemprop="datePublished"> 发表于 2015-07-03</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="LRU缓存介绍">LRU缓存介绍</h1><hr>
+<p>我们平时总会有一个电话本记录所有朋友的电话，但是，如果有朋友经常联系，那些朋友的电话号码不用翻电话本我们也能记住，但是，如果长时间没有联系了，要再次联系那位朋友的时候，我们又不得不求助电话本，但是，通过电话本查找还是很费时间的。但是，我们大脑能够记住的东西是一定的，我们只能记住自己最熟悉的，而长时间不熟悉的自然就忘记了。</p>
+<p>其实，计算机也用到了同样的一个概念，我们用缓存来存放以前读取的数据，而不是直接丢掉，这样，再次读取的时候，可以直接在缓存里面取，而不用再重新查找一遍，这样系统的反应能力会有很大提高。但是，当我们读取的个数特别大的时候，我们不可能把所有已经读取的数据都放在缓存里，毕竟内存大小是一定的，我们一般把最近常读取的放在缓存里（相当于我们把最近联系的朋友的姓名和电话放在大脑里一样）。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/03/集合应用：LinkedHashMap与LRUcache/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/03/集合应用：LinkedHashMap与LRUcache/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/03/集合应用：LinkedHashMap与LRUcache/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" title="Java集合学习8：ConcurrentHashMap的实现原理" itemprop="url">Java集合学习8：ConcurrentHashMap的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T06:42:09.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="概述">概述</h1><hr>
+<p>我们在之前的博文中了解到关于HashMap和Hashtable这两种集合。其中HashMap是非线程安全的，当我们只有一个线程在使用HashMap的时候，自然不会有问题，但如果涉及到多个线程，并且有读有写的过程中，HashMap就不能满足我们的需要了(fail-fast)。在不考虑性能问题的时候，我们的解决方案有Hashtable或者Collections.synchronizedMap(hashMap)，这两种方式基本都是对整个hash表结构做锁定操作的，这样在锁表的期间，别的线程就需要等待了，无疑性能不高。</p>
+<p>所以我们在本文中学习一个util.concurrent包的重要成员，ConcurrentHashMap。</p>
+<p>ConcurrentHashMap的实现是依赖于Java内存模型，所以我们在了解ConcurrentHashMap的前提是必须了解Java内存模型。但Java内存模型并不是本文的重点，所以我假设读者已经对Java内存模型有所了解。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/02/Java集合学习7：LinkedList的实现原理/" title="Java集合学习7：LinkedList的实现原理" itemprop="url">Java集合学习7：LinkedList的实现原理</a>
   </h1>
   <p class="article-author">By
@@ -593,6 +794,10 @@
 			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
 		  
 		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+		  
+		
 		</ul>
 </div>
 
@@ -615,6 +820,10 @@
 			
 		
 			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
 			
 		
@@ -623,19 +832,7 @@
 			
 		
 			
-				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -643,7 +840,7 @@
 			
 		
 			
-				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -660,6 +857,18 @@
 		
 			
 				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
 		</ul>
