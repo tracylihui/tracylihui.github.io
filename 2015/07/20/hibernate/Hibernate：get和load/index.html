@@ -4,23 +4,29 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Java集合比较：HashSet和HashMap的比较 | 李大辉</title>
+    <title>Hibernate：get和load | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="本文是对Java常用的集合的学习。">
+    <meta name="description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java集合比较：HashSet和HashMap的比较">
-<meta property="og:url" content="http://yoursite.com/2015/07/03/Java集合比较：HashSet和HashMap的比较/index.html">
+<meta property="og:title" content="Hibernate：get和load">
+<meta property="og:url" content="http://yoursite.com/2015/07/20/hibernate/Hibernate：get和load/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="本文是对Java常用的集合的学习。">
-<meta property="og:updated_time" content="2015-07-23T08:50:39.132Z">
+<meta property="og:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
+<meta property="og:updated_time" content="2015-07-20T14:46:21.144Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java集合比较：HashSet和HashMap的比较">
-<meta name="twitter:description" content="本文是对Java常用的集合的学习。">
+<meta name="twitter:title" content="Hibernate：get和load">
+<meta name="twitter:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
+这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
+PS，概念什么的就不详细">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -84,14 +90,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/03/Java集合比较：HashSet和HashMap的比较/" title="Java集合比较：HashSet和HashMap的比较" itemprop="url">Java集合比较：HashSet和HashMap的比较</a>
+      <a href="/2015/07/20/hibernate/Hibernate：get和load/" title="Hibernate：get和load" itemprop="url">Hibernate：get和load</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-03T00:36:58.000Z" itemprop="datePublished"> 发表于 2015-07-03</time>
+    <time datetime="2015-07-20T14:22:14.000Z" itemprop="datePublished"> 发表于 2015-07-20</time>
     
   </p>
 </header>
@@ -100,49 +106,28 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashSet"><span class="toc-number">1.</span> <span class="toc-text">什么是HashSet</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashMap"><span class="toc-number">2.</span> <span class="toc-text">什么是HashMap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet和HashMap的区别"><span class="toc-number">3.</span> <span class="toc-text">HashSet和HashMap的区别</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
 		
 		</div>
 		
-		<p>HashMap和HashSet都是collection框架的一部分，它们让我们能够使用对象的集合。collection框架有自己的接口和实现，主要分为Set接口，List接口和Queue接口。它们有各自的特点，Set的集合里不允许对象有重复的值，List允许有重复，它对集合中的对象进行索引，Queue的工作原理是FCFS算法(First Come, First Serve)。</p>
-<p>首先让我们来看看什么是HashMap和HashSet，然后再来比较它们之间的分别。</p>
-<h1 id="什么是HashSet">什么是HashSet</h1><hr>
-<p>HashSet实现了Set接口，它不允许集合中有重复的值，当我们提到HashSet时，第一件事情就是在将对象存储在HashSet之前，要先确保对象重写equals()和hashCode()方法，这样才能比较对象的值是否相等，以确保set中没有储存相等的对象。如果我们没有重写这两个方法，将会使用这个方法的默认实现。</p>
-<p><code>public boolean add(Object o)</code>方法用来在Set中添加元素，当元素值重复时则会立即返回false，如果成功添加的话会返回true。<br><a id="more"></a></p>
-<h1 id="什么是HashMap">什么是HashMap</h1><hr>
-<p>HashMap实现了Map接口，Map接口对键值对进行映射。Map中不允许重复的键。Map接口有两个基本的实现，HashMap和TreeMap。TreeMap保存了对象的排列次序，而HashMap则不能。HashMap允许键和值为null。HashMap是非synchronized的，但collection框架提供方法能保证HashMap synchronized，这样多个线程同时访问HashMap时，能保证只有一个线程更改Map。</p>
-<p><code>public Object put(Object Key,Object value)</code>方法用来将元素添加到map中。</p>
-<h1 id="HashSet和HashMap的区别">HashSet和HashMap的区别</h1><hr>
-<table>
-<thead>
-<tr>
-<th>HashMap</th>
-<th style="text-align:center">HashSet</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>HashMap实现了Map接口</td>
-<td style="text-align:center">HashSet实现了Set接口</td>
-</tr>
-<tr>
-<td>HashMap储存键值对</td>
-<td style="text-align:center">HashSet仅仅存储对象</td>
-</tr>
-<tr>
-<td>使用put()方法将元素放入map中</td>
-<td style="text-align:center">使用add()方法将元素放入set中</td>
-</tr>
-<tr>
-<td>HashMap中使用键对象来计算hashcode值</td>
-<td style="text-align:center">HashSet使用成员对象来计算hashcode值，对于两个对象来说hashcode可能相同，所以equals()方法用来判断对象的相等性，如果两个对象不同的话，那么返回false</td>
-</tr>
-<tr>
-<td>HashMap比较快，因为是使用唯一的键来获取对象</td>
-<td style="text-align:center">HashSet较HashMap来说比较慢</td>
-</tr>
-</tbody>
-</table>
+		<p>当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。</p>
+<p>这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。</p>
+<p>PS，概念什么的就不详细介绍了，主要就是列举一下而已，因为我自己本身是对这个点比较了解了。<br><a id="more"></a></p>
+<h1 id="load和get的简单介绍">load和get的简单介绍</h1><hr>
+<ul>
+<li>load代表的是采用延迟加载方法，即当我们采用load()方法加载一个对象时，并不会发送SQL语句，<strong>得到的只是一个包含了实体对象ID值的代理对象</strong>，只有当我们使用具体属性时候，才会发送SQL语句。</li>
+<li>get则非常直白，当我们通过get方法的时候，不管后边怎样，就先通过SQL将该对象查询出来，也就是常说的立即加载。</li>
+<li>使用load的加载方式要比get的加载方式性能好一点，因为load加载的时候，只是得到一个代理对象，当真正需要的时候才会去查询。这也代表了延迟加载与立即加载的同比。</li>
+</ul>
+<h1 id="小Tips">小Tips</h1><hr>
+<p>1、get()方法来加载对象，当我们试图得到一个id不存在的对象时候，会报空指针异常，也就是NullPointException。</p>
+<p>2、load()方法来加载对象，如果id不存在，若我们不使用该对象的任何属性，啥事没有；但如果需要使用属性（也就是真正的去查询该对象），会报异常，但该异常并不是空指针，而是ObjectNotFoundException。</p>
+<p>为啥呢？还是因为延迟加载，得到的是仅包含ID的代理对象；虽然我们在使用具体的属性时候，会发送SQL语句去进行查询，但却查询不到结果，这个就好尴尬。所以你要查询的属性是不存在的，所以会报ObjectNotFoundException。</p>
+<p>3、关于load还有一点比较重要，就是LazyInitializationException（懒加载异常，用过Hibernate的应该都会接触过N次）。</p>
+<p>其原因还是因为延迟加载！我们通过load方法得到了代理对象，但此时我们的session关闭了，但我们的对象还是存在的啊，所以当我们准备使用该对象属性的时候，就会报LazyInitializationException异常了。Session都关了，我还怎么去初始化= =</p>
+<h1 id="想到的一个SSH整合的事情">想到的一个SSH整合的事情</h1><hr>
+<p>提到懒加载异常，突然想到一个点，就是我们之前在开发web项目的时候，通过load()方法得到的对象，经常会在session关闭之后再使用。那这个时候一般都是如何解决的？</p>
+<p>答案就是OpenSessionInViewer。关于这个嘛，随便百度有的是教程，它在Spring与Hibernate整合过程中有一个比较重要的作用。将其配置在web.xml中。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -150,13 +135,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
   </div>
 
 </div>
@@ -165,7 +150,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/03/Java集合比较：HashSet和HashMap的比较/" data-title="Java集合比较：HashSet和HashMap的比较 | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/20/hibernate/Hibernate：get和load/" data-title="Hibernate：get和load | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -179,18 +164,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/07/04/MySQL索引的数据结构和算法原理以及查询优化/" title="MySQL索引的数据结构和算法原理以及查询优化">
+ <a href="/2015/07/21/加密与加盐/" title="加密与加盐">
   <strong>上一篇：</strong><br/>
   <span>
-  MySQL索引的数据结构和算法原理以及查询优化</span>
+  加密与加盐</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/07/03/集合应用：LinkedHashMap与LRUcache/"  title="集合应用：LinkedHashMap与LRUcache">
+<a href="/2015/07/20/hibernate/Hibernate：缓存机制的学习/"  title="Hibernate：缓存机制的学习">
  <strong>下一篇：</strong><br/> 
- <span>集合应用：LinkedHashMap与LRUcache
+ <span>Hibernate：缓存机制的学习
 </span>
 </a>
 </div>
@@ -199,7 +184,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/03/Java集合比较：HashSet和HashMap的比较/" data-title="Java集合比较：HashSet和HashMap的比较" data-url="http://yoursite.com/2015/07/03/Java集合比较：HashSet和HashMap的比较/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/20/hibernate/Hibernate：get和load/" data-title="Hibernate：get和load" data-url="http://yoursite.com/2015/07/20/hibernate/Hibernate：get和load/"></div>
 </section>
 
 
@@ -209,7 +194,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashSet"><span class="toc-number">1.</span> <span class="toc-text">什么是HashSet</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是HashMap"><span class="toc-number">2.</span> <span class="toc-text">什么是HashMap</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashSet和HashMap的区别"><span class="toc-number">3.</span> <span class="toc-text">HashSet和HashMap的区别</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
  
   </div>
 

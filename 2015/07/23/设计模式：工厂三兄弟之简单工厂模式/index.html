@@ -4,29 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hibernate：get和load | 李大辉</title>
+    <title>设计模式：工厂三兄弟之简单工厂模式 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
-这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
-PS，概念什么的就不详细">
+    <meta name="description" content="给自己提供一个总结的平台">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hibernate：get和load">
-<meta property="og:url" content="http://yoursite.com/2015/07/20/Hibernate：get和load/index.html">
+<meta property="og:title" content="设计模式：工厂三兄弟之简单工厂模式">
+<meta property="og:url" content="http://yoursite.com/2015/07/23/设计模式：工厂三兄弟之简单工厂模式/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
-这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
-PS，概念什么的就不详细">
-<meta property="og:updated_time" content="2015-07-20T14:46:21.144Z">
+<meta property="og:description" content="给自己提供一个总结的平台">
+<meta property="og:updated_time" content="2015-07-23T09:37:03.643Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hibernate：get和load">
-<meta name="twitter:description" content="当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。
-这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。
-PS，概念什么的就不详细">
+<meta name="twitter:title" content="设计模式：工厂三兄弟之简单工厂模式">
+<meta name="twitter:description" content="给自己提供一个总结的平台">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -90,14 +84,14 @@ PS，概念什么的就不详细">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/20/Hibernate：get和load/" title="Hibernate：get和load" itemprop="url">Hibernate：get和load</a>
+      <a href="/2015/07/23/设计模式：工厂三兄弟之简单工厂模式/" title="设计模式：工厂三兄弟之简单工厂模式" itemprop="url">设计模式：工厂三兄弟之简单工厂模式</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-20T14:22:14.000Z" itemprop="datePublished"> 发表于 2015-07-20</time>
+    <time datetime="2015-07-23T09:37:03.000Z" itemprop="datePublished"> 发表于 2015-07-23</time>
     
   </p>
 </header>
@@ -106,43 +100,15 @@ PS，概念什么的就不详细">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
+			
 		
 		</div>
 		
-		<p>当我们从数据库得到一个对象的时候，我们通常有两种比较简单的方式，一种是通过session的get()方法，另一种是load()方法，但其实这两种是有区别的。写这篇文章的目的并不是为了通过Demo去给读者演示这两者到底是有什么区别，只是一篇总结性的文章。告诉自己需要记住Hibernate的这个点。</p>
-<p>这两种在查询性能上是有一定区别的，但在项目中更倾向的肯定是load()方法。</p>
-<p>PS，概念什么的就不详细介绍了，主要就是列举一下而已，因为我自己本身是对这个点比较了解了。<br><a id="more"></a></p>
-<h1 id="load和get的简单介绍">load和get的简单介绍</h1><hr>
-<ul>
-<li>load代表的是采用延迟加载方法，即当我们采用load()方法加载一个对象时，并不会发送SQL语句，<strong>得到的只是一个包含了实体对象ID值的代理对象</strong>，只有当我们使用具体属性时候，才会发送SQL语句。</li>
-<li>get则非常直白，当我们通过get方法的时候，不管后边怎样，就先通过SQL将该对象查询出来，也就是常说的立即加载。</li>
-<li>使用load的加载方式要比get的加载方式性能好一点，因为load加载的时候，只是得到一个代理对象，当真正需要的时候才会去查询。这也代表了延迟加载与立即加载的同比。</li>
-</ul>
-<h1 id="小Tips">小Tips</h1><hr>
-<p>1、get()方法来加载对象，当我们试图得到一个id不存在的对象时候，会报空指针异常，也就是NullPointException。</p>
-<p>2、load()方法来加载对象，如果id不存在，若我们不使用该对象的任何属性，啥事没有；但如果需要使用属性（也就是真正的去查询该对象），会报异常，但该异常并不是空指针，而是ObjectNotFoundException。</p>
-<p>为啥呢？还是因为延迟加载，得到的是仅包含ID的代理对象；虽然我们在使用具体的属性时候，会发送SQL语句去进行查询，但却查询不到结果，这个就好尴尬。所以你要查询的属性是不存在的，所以会报ObjectNotFoundException。</p>
-<p>3、关于load还有一点比较重要，就是LazyInitializationException（懒加载异常，用过Hibernate的应该都会接触过N次）。</p>
-<p>其原因还是因为延迟加载！我们通过load方法得到了代理对象，但此时我们的session关闭了，但我们的对象还是存在的啊，所以当我们准备使用该对象属性的时候，就会报LazyInitializationException异常了。Session都关了，我还怎么去初始化= =</p>
-<h1 id="想到的一个SSH整合的事情">想到的一个SSH整合的事情</h1><hr>
-<p>提到懒加载异常，突然想到一个点，就是我们之前在开发web项目的时候，通过load()方法得到的对象，经常会在session关闭之后再使用。那这个时候一般都是如何解决的？</p>
-<p>答案就是OpenSessionInViewer。关于这个嘛，随便百度有的是教程，它在Spring与Hibernate整合过程中有一个比较重要的作用。将其配置在web.xml中。</p>
-  
+		  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
 
 </div>
 
@@ -150,7 +116,7 @@ PS，概念什么的就不详细">
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/20/Hibernate：get和load/" data-title="Hibernate：get和load | 李大辉" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/07/23/设计模式：工厂三兄弟之简单工厂模式/" data-title="设计模式：工厂三兄弟之简单工厂模式 | 李大辉" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -163,19 +129,11 @@ PS，概念什么的就不详细">
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/07/21/加密与加盐/" title="加密与加盐">
-  <strong>上一篇：</strong><br/>
-  <span>
-  加密与加盐</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/20/Hibernate：缓存机制的学习/"  title="Hibernate：缓存机制的学习">
+<a href="/2015/07/21/加密与加盐/"  title="加密与加盐">
  <strong>下一篇：</strong><br/> 
- <span>Hibernate：缓存机制的学习
+ <span>加密与加盐
 </span>
 </a>
 </div>
@@ -184,7 +142,7 @@ PS，概念什么的就不详细">
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/20/Hibernate：get和load/" data-title="Hibernate：get和load" data-url="http://yoursite.com/2015/07/20/Hibernate：get和load/"></div>
+	<div class="ds-thread" data-thread-key="2015/07/23/设计模式：工厂三兄弟之简单工厂模式/" data-title="设计模式：工厂三兄弟之简单工厂模式" data-url="http://yoursite.com/2015/07/23/设计模式：工厂三兄弟之简单工厂模式/"></div>
 </section>
 
 
@@ -194,7 +152,7 @@ PS，概念什么的就不详细">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#load和get的简单介绍"><span class="toc-number">1.</span> <span class="toc-text">load和get的简单介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#小Tips"><span class="toc-number">2.</span> <span class="toc-text">小Tips</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#想到的一个SSH整合的事情"><span class="toc-number">3.</span> <span class="toc-text">想到的一个SSH整合的事情</span></a></li></ol>
+ 
  
   </div>
 
@@ -265,7 +223,19 @@ PS，概念什么的就不详细">
 			
 		
 			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -273,7 +243,7 @@ PS，概念什么的就不详细">
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
 			
@@ -290,18 +260,6 @@ PS，概念什么的就不详细">
 		
 			
 				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
 		</ul>
