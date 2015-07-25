@@ -12,29 +12,23 @@
 
     
     <meta name="description" content="单例模式-Singleton Pattern【学习难度：★☆☆☆☆，使用频率：★★★★☆】
-该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。原文链接：史上最全设计模式导学目录（完整版）
-单例模式的动机
-对于一个软件系统的某些类而言，我们无须创建多个实例。举个大家都熟知的例子——Windows任务管理器，如图3-1所示，我们可以做一个这样的尝试，在Windows的“">
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式：确保对象的唯一性——单例模式">
 <meta property="og:url" content="http://yoursite.com/2015/07/23/designPattern/设计模式：确保对象的唯一性——单例模式/index.html">
 <meta property="og:site_name" content="李大辉">
 <meta property="og:description" content="单例模式-Singleton Pattern【学习难度：★☆☆☆☆，使用频率：★★★★☆】
-该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。原文链接：史上最全设计模式导学目录（完整版）
-单例模式的动机
-对于一个软件系统的某些类而言，我们无须创建多个实例。举个大家都熟知的例子——Windows任务管理器，如图3-1所示，我们可以做一个这样的尝试，在Windows的“">
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton1.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton2.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton3.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton4.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton5.gif">
-<meta property="og:updated_time" content="2015-07-23T13:27:56.590Z">
+<meta property="og:updated_time" content="2015-07-24T01:48:26.674Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式：确保对象的唯一性——单例模式">
 <meta name="twitter:description" content="单例模式-Singleton Pattern【学习难度：★☆☆☆☆，使用频率：★★★★☆】
-该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。原文链接：史上最全设计模式导学目录（完整版）
-单例模式的动机
-对于一个软件系统的某些类而言，我们无须创建多个实例。举个大家都熟知的例子——Windows任务管理器，如图3-1所示，我们可以做一个这样的尝试，在Windows的“">
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -119,7 +113,7 @@
 		</div>
 		
 		<p>单例模式-Singleton Pattern【学习难度：★☆☆☆☆，使用频率：★★★★☆】</p>
-<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。<br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern" target="_blank" rel="external">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
 <h1 id="单例模式的动机">单例模式的动机</h1><hr>
 <p>对于一个软件系统的某些类而言，我们无须创建多个实例。举个大家都熟知的例子——Windows任务管理器，如图3-1所示，我们可以做一个这样的尝试，在Windows的“任务栏”的右键弹出菜单上多次点击“启动任务管理器”，看能否打开多个任务管理器窗口？如果你的桌面出现多个任务管理器，我请你吃饭，微笑（注：电脑中毒或私自修改Windows内核者除外）。<br><a id="more"></a><br>通常情况下，无论我们启动任务管理多少次，Windows系统始终只能弹出一个任务管理器窗口，也就是说在一个Windows系统中，任务管理器存在唯一性。为什么要这样设计呢？我们可以从以下两个方面来分析：其一，如果能弹出多个窗口，且这些窗口的内容完全一致，全部是重复对象，这势必会浪费系统资源，任务管理器需要获取系统运行时的诸多信息，这些信息的获取需要消耗一定的系统资源，包括CPU资源及内存资源等，浪费是可耻的，而且根本没有必要显示多个内容完全相同的窗口；其二，如果弹出的多个窗口内容不一致，问题就更加严重了，这意味着在某一瞬间系统资源使用情况和进程、服务等信息存在多个状态，例如任务管理器窗口A显示“CPU使用率”为10%，窗口B显示“CPU使用率”为15%，到底哪个才是真实的呢？这纯属“调戏”用户，偷笑，给用户带来误解，更不可取。由此可见，确保Windows任务管理器在系统中有且仅有一个非常重要。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/Singleton1.gif" alt="图3-1 Windows任务管理器"><br>回到实际开发中，我们也经常遇到类似的情况，为了节约系统资源，有时需要确保系统中某个类只有唯一一个实例，当这个唯一实例创建成功之后，我们无法再创建一个同类型的其他对象，所有的操作都只能基于这个唯一实例。为了确保对象的唯一性，我们可以通过单例模式来实现，这就是单例模式的动机所在。</p>
 <h1 id="单例模式概述">单例模式概述</h1><hr>
@@ -221,6 +215,14 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/" title="设计模式：对象的克隆——原型模式">
+  <strong>上一篇：</strong><br/>
+  <span>
+  设计模式：对象的克隆——原型模式</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2015/07/23/designPattern/设计模式：工厂三兄弟之抽象工厂模式/"  title="设计模式：设计模式：工厂三兄弟之抽象工厂模式">
@@ -286,7 +288,7 @@
 		  
 		
 		  
-			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
 		  
 		
 		</ul>
@@ -307,11 +309,11 @@
 			
 		
 			
-				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
 			
 		
 			

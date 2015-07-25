@@ -1,0 +1,664 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>设计模式：对象的克隆——原型模式 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="原型模式-Prototype Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式：对象的克隆——原型模式">
+<meta property="og:url" content="http://yoursite.com/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="原型模式-Prototype Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype1.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype2.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype3.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype4.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype5.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype6.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype7.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype8.gif">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/prototype9.gif">
+<meta property="og:updated_time" content="2015-07-24T04:51:59.152Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式：对象的克隆——原型模式">
+<meta name="twitter:description" content="原型模式-Prototype Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/" title="设计模式：对象的克隆——原型模式" itemprop="url">设计模式：对象的克隆——原型模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-24T02:17:03.000Z" itemprop="datePublished"> 发表于 2015-07-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#大同小异的工作周报"><span class="toc-number">1.</span> <span class="toc-text">大同小异的工作周报</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型模式概述"><span class="toc-number">2.</span> <span class="toc-text">原型模式概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#通用实现方法"><span class="toc-number">2.1.</span> <span class="toc-text">通用实现方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java语言提供的clone()方法"><span class="toc-number">2.2.</span> <span class="toc-text">Java语言提供的clone()方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#带附件的周报"><span class="toc-number">4.</span> <span class="toc-text">带附件的周报</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#浅克隆"><span class="toc-number">4.1.</span> <span class="toc-text">浅克隆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深克隆"><span class="toc-number">4.2.</span> <span class="toc-text">深克隆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扩展"><span class="toc-number">4.3.</span> <span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型管理器的引入和实现"><span class="toc-number">5.</span> <span class="toc-text">原型管理器的引入和实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型模式总结"><span class="toc-number">6.</span> <span class="toc-text">原型模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">6.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">6.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">6.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>原型模式-Prototype Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern" target="_blank" rel="external">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
+<p>张纪中版《西游记》以出乎意料的造型和雷人的台词遭到广大观众朋友的热议，我们在此对该话题不作过多讨论。但无论是哪个版本的《西游记》，孙悟空都是其中的一号雄性主角，关于他（或它）拔毛变小猴的故事几乎人人皆知，孙悟空可以用猴毛根据自己的形象，复制（又称“克隆”或“拷贝”）出很多跟自己长得一模一样的“身外身”来。在设计模式中也存在一个类似的模式，可以通过一个原型对象克隆出多个一模一样的对象，该模式称之为原型模式。<br><a id="more"></a></p>
+<h1 id="大同小异的工作周报">大同小异的工作周报</h1><hr>
+<p>Sunny软件公司一直使用自行开发的一套OA (Office Automatic，办公自动化)系统进行日常工作办理，但在使用过程中，越来越多的人对工作周报的创建和编写模块产生了抱怨。追其原因，Sunny软件公司的OA管理员发现，由于某些岗位每周工作存在重复性，工作周报内容都大同小异，如图1工作周报示意图。这些周报只有一些小地方存在差异，但是现行系统每周默认创建的周报都是空白报表，用户只能通过重新输入或不断复制粘贴来填写重复的周报内容，极大降低了工作效率，浪费宝贵的时间。如何快速创建相同或者相似的工作周报，成为Sunny公司OA开发人员面临的一个新问题。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype1.gif" alt="图1 工作周报示意图"></p>
+<p>Sunny公司的开发人员通过对问题进行仔细分析，决定按照如下思路对工作周报模块进行重新设计和实现：</p>
+<ol>
+<li>除了允许用户创建新周报外，还允许用户将创建好的周报保存为模板；</li>
+<li>用户在再次创建周报时，可以创建全新的周报，还可以选择合适的模板复制生成一份相同的周报，然后对新生成的周报根据实际情况进行修改，产生新的周报。</li>
+</ol>
+<p>只要按照如上两个步骤进行处理，工作周报的创建效率将得以大大提高。这个过程让我们想到平时经常进行的两个电脑基本操作：复制和粘贴，快捷键通常为Ctrl + C和Ctrl + V，通过对已有对象的复制和粘贴，我们可以创建大量的相同对象。如何在一个面向对象系统中实现对象的复制和粘贴呢？不用着急，本章我们介绍的原型模式正为解决此类问题而诞生。</p>
+<h1 id="原型模式概述">原型模式概述</h1><hr>
+<p>在使用原型模式时，我们需要首先创建一个原型对象，再通过复制这个原型对象来创建更多同类型的对象。试想，如果连孙悟空的模样都不知道，怎么拔毛变小猴子呢？原型模式的定义如下：</p>
+<p><strong>原型模式(Prototype  Pattern)：使用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。原型模式是一种对象创建型模式。</strong></p>
+<p>原型模式的工作原理很简单：将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝自己来实现创建过程。由于在软件系统中我们经常会遇到需要创建多个相同或者相似对象的情况，因此原型模式在真实开发中的使用频率还是非常高的。原型模式是一种“另类”的创建型模式，创建克隆对象的工厂就是原型类自身，工厂方法由克隆方法来实现。</p>
+<p>需要注意的是通过克隆方法所创建的对象是全新的对象，它们在内存中拥有新的地址，通常对克隆所产生的对象进行修改对原型对象不会造成任何影响，每一个克隆对象都是相互独立的。通过不同的方式修改可以得到一系列相似但不完全相同的对象。<br>原型模式的结构如图2所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype2.gif" alt="图2 原型模式结构图"></p>
+<p>在原型模式结构图中包含如下几个角色：</p>
+<ul>
+<li><strong>Prototype（抽象原型类）</strong>：它是声明克隆方法的接口，是所有具体原型类的公共父类，可以是抽象类也可以是接口，甚至还可以是具体实现类。</li>
+<li><strong>ConcretePrototype（具体原型类）</strong>：它实现在抽象原型类中声明的克隆方法，在克隆方法中返回自己的一个克隆对象。</li>
+<li><strong>Client（客户类）</strong>：让一个原型对象克隆自身从而创建一个新的对象，在客户类中只需要直接实例化或通过工厂方法等方式创建一个原型对象，再通过调用该对象的克隆方法即可得到多个相同的对象。由于客户类针对抽象原型类Prototype编程，因此用户可以根据需要选择具体原型类，系统具有较好的可扩展性，增加或更换具体原型类都很方便。</li>
+</ul>
+<p>原型模式的核心在于如何实现克隆方法，下面将介绍两种在Java语言中常用的克隆实现方法：</p>
+<h2 id="通用实现方法">通用实现方法</h2><p>通用的克隆实现方法是在具体原型类的克隆方法中实例化一个与自身类型相同的对象并将其返回，并将相关的参数传入新创建的对象中，保证它们的成员属性相同。示意代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype</span> <span class="keyword">implements</span> <span class="title">Prototype</span></span><br><span class="line"></span>&#123;</span><br><span class="line">      <span class="keyword">private</span> String  attr; <span class="comment">//成员属性</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span>  <span class="title">setAttr</span><span class="params">(String attr)</span></span><br><span class="line">      </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.attr = attr;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> String  <span class="title">getAttr</span><span class="params">()</span></span><br><span class="line">      </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.attr;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> Prototype  <span class="title">clone</span><span class="params">()</span> <span class="comment">//克隆方法</span></span><br><span class="line">      </span>&#123;</span><br><span class="line">            Prototype  prototype = <span class="keyword">new</span> ConcretePrototype(); <span class="comment">//创建新对象</span></span><br><span class="line">            prototype.setAttr(<span class="keyword">this</span>.attr);</span><br><span class="line">            <span class="keyword">return</span> prototype;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>思考</strong>：能否将上述代码中的clone()方法写成：public Prototype clone() { return this; }？给出你的理由。</p>
+<p>在客户类中我们只需要创建一个ConcretePrototype对象作为原型对象，然后调用其clone()方法即可得到对应的克隆对象，如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Prototype obj1  = <span class="keyword">new</span> ConcretePrototype();</span><br><span class="line">obj1.setAttr(<span class="string">"Sunny"</span>);</span><br><span class="line">Prototype obj2  = obj1.clone();</span><br></pre></td></tr></table></figure></p>
+<p>这种方法可作为原型模式的通用实现，它与编程语言特性无关，任何面向对象语言都可以使用这种形式来实现对原型的克隆。</p>
+<h2 id="Java语言提供的clone()方法">Java语言提供的clone()方法</h2><p>学过Java语言的人都知道，所有的Java类都继承自java.lang.Object。事实上，Object类提供一个clone()方法，可以将一个Java对象复制一份。因此在Java中可以直接使用Object提供的clone()方法来实现对象的克隆，Java语言中的原型模式实现很简单。</p>
+<p>需要注意的是能够实现克隆的Java类必须实现一个标识接口Cloneable，表示这个Java类支持被复制。如果一个类没有实现这个接口但是调用了clone()方法，Java编译器将抛出一个CloneNotSupportedException异常。如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype</span> <span class="keyword">implements</span>  <span class="title">Cloneable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">……</span><br><span class="line">      <span class="function"><span class="keyword">public</span> Prototype  <span class="title">clone</span><span class="params">()</span></span><br><span class="line">      </span>&#123;</span><br><span class="line">            Object object = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                  object = <span class="keyword">super</span>.clone();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (CloneNotSupportedException exception) &#123;</span><br><span class="line">                  System.err.println(<span class="string">"Not support cloneable"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">                  <span class="keyword">return</span> (Prototype )object;</span><br><span class="line">      &#125;</span><br><span class="line">……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在客户端创建原型对象和克隆对象也很简单，如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Prototype obj1  = <span class="keyword">new</span> ConcretePrototype();</span><br><span class="line">Prototype obj2  = obj1.clone();</span><br></pre></td></tr></table></figure></p>
+<p>一般而言，Java语言中的clone()方法满足：</p>
+<ol>
+<li>对任何对象x，都有x.clone() != x，即克隆对象与原型对象不是同一个对象；</li>
+<li>对任何对象x，都有x.clone().getClass() == x.getClass()，即克隆对象与原型对象的类型一样；</li>
+<li>如果对象x的equals()方法定义恰当，那么x.clone().equals(x)应该成立。</li>
+</ol>
+<p>为了获取对象的一份拷贝，我们可以直接利用Object类的clone()方法，具体步骤如下：</p>
+<ol>
+<li>在派生类中覆盖基类的clone()方法，并声明为public；</li>
+<li>在派生类的clone()方法中，调用super.clone()；</li>
+<li>派生类需实现Cloneable接口。</li>
+</ol>
+<p>此时，Object类相当于抽象原型类，所有实现了Cloneable接口的类相当于具体原型类。</p>
+<h1 id="完整解决方案">完整解决方案</h1><hr>
+<p>Sunny公司开发人员决定使用原型模式来实现工作周报的快速创建，快速创建工作周报结构图如图7-3所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype3.gif" alt="图3 快速创建工作周报结构图"><br>在图3中，WeeklyLog充当具体原型类，Object类充当抽象原型类，clone()方法为原型方法。WeeklyLog类的代码如下所示：<br>//工作周报WeeklyLog：具体原型类，考虑到代码的可读性和易理解性，只列出部分与模式相关的核心代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WeeklyLog</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="keyword">private</span>  String name;</span><br><span class="line">       <span class="keyword">private</span>  String date;</span><br><span class="line">       <span class="keyword">private</span>  String content;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.name  = name;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(String date)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.date  = date;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setContent</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.content  = content;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.name);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.date);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.content);</span><br><span class="line">       &#125;</span><br><span class="line">     <span class="comment">//克隆方法clone()，此处使用Java语言提供的克隆机制</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> WeeklyLog <span class="title">clone</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              Object obj = <span class="keyword">null</span>;</span><br><span class="line">              <span class="keyword">try</span></span><br><span class="line">              &#123;</span><br><span class="line">                     obj = <span class="keyword">super</span>.clone();</span><br><span class="line">                     <span class="keyword">return</span> (WeeklyLog)obj;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">catch</span>(CloneNotSupportedException e)</span><br><span class="line">              &#123;</span><br><span class="line">                     System.out.println(<span class="string">"不支持复制！"</span>);</span><br><span class="line">                     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">              &#125;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编写如下客户端测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              WeeklyLog log_previous = <span class="keyword">new</span> WeeklyLog();  <span class="comment">//创建原型对象</span></span><br><span class="line">              log_previous.setName(<span class="string">"张无忌"</span>);</span><br><span class="line">              log_previous.setDate(<span class="string">"第12周"</span>);</span><br><span class="line">              log_previous.setContent(<span class="string">"这周工作很忙，每天加班！"</span>);</span><br><span class="line"></span><br><span class="line">              System.out.println(<span class="string">"****周报****"</span>);</span><br><span class="line">              System.out.println(<span class="string">"周次："</span> +  log_previous.getDate());</span><br><span class="line">              System.out.println(<span class="string">"姓名："</span> +  log_previous.getName());</span><br><span class="line">              System.out.println(<span class="string">"内容："</span> +  log_previous.getContent());</span><br><span class="line">              System.out.println(<span class="string">"--------------------------------"</span>);</span><br><span class="line"></span><br><span class="line">              WeeklyLog  log_new;</span><br><span class="line">              log_new  = log_previous.clone(); <span class="comment">//调用克隆方法创建克隆对象</span></span><br><span class="line">              log_new.setDate(<span class="string">"第13周"</span>);</span><br><span class="line">              System.out.println(<span class="string">"****周报****"</span>);</span><br><span class="line">              System.out.println(<span class="string">"周次："</span> + log_new.getDate());</span><br><span class="line">              System.out.println(<span class="string">"姓名："</span> + log_new.getName());</span><br><span class="line">              System.out.println(<span class="string">"内容："</span> + log_new.getContent());</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>周报<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span></span><br><span class="line">周次：第12周</span><br><span class="line">姓名：张无忌</span><br><span class="line">内容：这周工作很忙，每天加班！</span><br><span class="line">--------------------------------</span><br><span class="line"><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>周报<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span></span><br><span class="line">周次：第13周</span><br><span class="line">姓名：张无忌</span><br><span class="line">内容：这周工作很忙，每天加班！</span><br></pre></td></tr></table></figure></p>
+<p>通过已创建的工作周报可以快速创建新的周报，然后再根据需要修改周报，无须再从头开始创建。原型模式为工作流系统中任务单的快速生成提供了一种解决方案。</p>
+<p><strong>思考</strong>：<br>如果在Client类的main()函数中增加如下几条语句：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(log_previous == log_new);</span><br><span class="line">System.out.println(log_previous.getDate() == log_new.getDate());</span><br><span class="line">System.out.println(log_previous.getName() == log_new.getName());</span><br><span class="line">System.out.println(log_previous.getContent() == log_new.getContent());</span><br></pre></td></tr></table></figure></p>
+<p>预测这些语句的输出结果。</p>
+<h1 id="带附件的周报">带附件的周报</h1><hr>
+<p>通过引入原型模式，Sunny软件公司OA系统支持工作周报的快速克隆，极大提高了工作周报的编写效率，受到员工的一致好评。但有员工又发现一个问题，有些工作周报带有附件，例如经理助理“小龙女”的周报通常附有本周项目进展报告汇总表、本周客户反馈信息汇总表等，如果使用上述原型模式来复制周报，周报虽然可以复制，但是周报的附件并不能复制，这是由于什么原因导致的呢？如何才能实现周报和附件的同时复制呢？我们在本节将讨论如何解决这些问题。</p>
+<p>在回答这些问题之前，先介绍一下两种不同的克隆方法，浅克隆(ShallowClone)和深克隆(DeepClone)。在Java语言中，数据类型分为值类型（基本数据类型）和引用类型，值类型包括int、double、byte、boolean、char等简单数据类型，引用类型包括类、接口、数组等复杂类型。浅克隆和深克隆的主要区别在于是否支持引用类型的成员变量的复制，下面将对两者进行详细介绍。</p>
+<h2 id="浅克隆">浅克隆</h2><p>在浅克隆中，如果原型对象的成员变量是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象，也就是说原型对象和克隆对象的成员变量指向相同的内存地址。简单来说，在浅克隆中，当对象被复制时只复制它本身和其中包含的值类型的成员变量，而引用类型的成员对象并没有复制，如图4所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype4.gif" alt="图4 浅克隆示意图"></p>
+<p>在Java语言中，通过覆盖Object类的clone()方法可以实现浅克隆。为了让大家更好地理解浅克隆和深克隆的区别，我们首先使用浅克隆来实现工作周报和附件类的复制，其结构如图7-5所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype5.gif" alt="图5 浅带附件的周报结构图（浅克隆）"><br>附件类Attachment代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//附件类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Attachment</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="keyword">private</span>  String name; <span class="comment">//附件名</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.name  = name;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getName</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  <span class="keyword">this</span>.name;</span><br><span class="line">       &#125;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">download</span><span class="params">()</span></span><br><span class="line">     </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"下载附件，文件名为"</span> + name);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改工作周报类WeeklyLog，修改后的代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//工作周报WeeklyLog</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WeeklyLog</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">     <span class="comment">//为了简化设计和实现，假设一份工作周报中只有一个附件对象，实际情况中可以包含多个附件，可以通过List等集合对象来实现</span></span><br><span class="line">       <span class="keyword">private</span> Attachment attachment;</span><br><span class="line"><span class="keyword">private</span> String name;</span><br><span class="line">       <span class="keyword">private</span>  String date;</span><br><span class="line">       <span class="keyword">private</span>  String content;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAttachment</span><span class="params">(Attachment  attachment)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.attachment = attachment;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.name  = name;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(String date)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.date  = date;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setContent</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.content  = content;</span><br><span class="line">       &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Attachment  <span class="title">getAttachment</span><span class="params">()</span></span>&#123;</span><br><span class="line">              <span class="keyword">return</span> (<span class="keyword">this</span>.attachment);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.name);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.date);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.content);</span><br><span class="line">       &#125;</span><br><span class="line">     <span class="comment">//使用clone()方法实现浅克隆</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> WeeklyLog <span class="title">clone</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              Object obj = <span class="keyword">null</span>;</span><br><span class="line">              <span class="keyword">try</span></span><br><span class="line">              &#123;</span><br><span class="line">                     obj = <span class="keyword">super</span>.clone();</span><br><span class="line">                     <span class="keyword">return</span> (WeeklyLog)obj;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">catch</span>(CloneNotSupportedException  e)</span><br><span class="line">              &#123;</span><br><span class="line">                     System.out.println(<span class="string">"不支持复制！"</span>);</span><br><span class="line">                     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">              &#125;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>客户端代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              WeeklyLog  log_previous, log_new;</span><br><span class="line">              log_previous  = <span class="keyword">new</span> WeeklyLog(); <span class="comment">//创建原型对象</span></span><br><span class="line">              Attachment  attachment = <span class="keyword">new</span> Attachment(); <span class="comment">//创建附件对象</span></span><br><span class="line">              log_previous.setAttachment(attachment);  <span class="comment">//将附件添加到周报中</span></span><br><span class="line">              log_new  = log_previous.clone(); <span class="comment">//调用克隆方法创建克隆对象</span></span><br><span class="line">              <span class="comment">//比较周报</span></span><br><span class="line">              System.out.println(<span class="string">"周报是否相同？ "</span> + (log_previous ==  log_new));</span><br><span class="line">              <span class="comment">//比较附件</span></span><br><span class="line">              System.out.println(<span class="string">"附件是否相同？ "</span> +  (log_previous.getAttachment() == log_new.getAttachment()));</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">周报是否相同？  <span class="literal">false</span></span><br><span class="line">附件是否相同？ <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
+<p>由于使用的是浅克隆技术，因此工作周报对象复制成功，通过“==”比较原型对象和克隆对象的内存地址时输出false；但是比较附件对象的内存地址时输出true，说明它们在内存中是同一个对象。</p>
+<h2 id="深克隆">深克隆</h2><p>在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象，深克隆将原型对象的所有引用对象也复制一份给克隆对象。简单来说，在深克隆中，除了对象本身被复制外，对象所包含的所有成员变量也将复制，如图6所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype6.gif" alt="图6 深克隆示意图"><br>在Java语言中，如果需要实现深克隆，可以通过序列化(Serialization)等方式来实现。序列化就是将对象写到流的过程，写到流中的对象是原有对象的一个拷贝，而原对象仍然存在于内存中。通过序列化实现的拷贝不仅可以复制对象本身，而且可以复制其引用的成员对象，因此通过序列化将对象写到一个流中，再从流里将其读出来，可以实现深克隆。需要注意的是能够实现序列化的对象其类必须实现Serializable接口，否则无法实现序列化操作。下面我们使用深克隆技术来实现工作周报和附件对象的复制，由于要将附件对象和工作周报对象都写入流中，因此两个类均需要实现Serializable接口，其结构如图7所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype7.gif" alt="图7 带附件的周报结构图（深克隆）"><br>修改后的附件类Attachment代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  java.io.*;</span><br><span class="line"><span class="comment">//附件类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span>  <span class="title">Attachment</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="keyword">private</span>  String name; <span class="comment">//附件名</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.name  = name;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getName</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  <span class="keyword">this</span>.name;</span><br><span class="line">       &#125;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">download</span><span class="params">()</span></span><br><span class="line">     </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"下载附件，文件名为"</span> + name);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>工作周报类WeeklyLog不再使用Java自带的克隆机制，而是通过序列化来从头实现对象的深克隆，我们需要重新编写clone()方法，修改后的代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  java.io.*;</span><br><span class="line"><span class="comment">//工作周报类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span>  <span class="title">WeeklyLog</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="keyword">private</span>  Attachment attachment;</span><br><span class="line">       <span class="keyword">private</span>  String name;</span><br><span class="line">       <span class="keyword">private</span>  String date;</span><br><span class="line">       <span class="keyword">private</span>  String content;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setAttachment</span><span class="params">(Attachment attachment)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.attachment  = attachment;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.name  = name;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setDate</span><span class="params">(String date)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.date  = date;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">setContent</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.content  = content;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  Attachment <span class="title">getAttachment</span><span class="params">()</span></span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.attachment);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.name);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.date);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  String <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  (<span class="keyword">this</span>.content);</span><br><span class="line">       &#125;</span><br><span class="line">   <span class="comment">//使用序列化技术实现深克隆</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> WeeklyLog <span class="title">deepClone</span><span class="params">()</span> <span class="keyword">throws</span>  IOException, ClassNotFoundException, OptionalDataException</span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="comment">//将对象写入流中</span></span><br><span class="line">              ByteArrayOutputStream bao=<span class="keyword">new</span>  ByteArrayOutputStream();</span><br><span class="line">              ObjectOutputStream oos=<span class="keyword">new</span>  ObjectOutputStream(bao);</span><br><span class="line">              oos.writeObject(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">              <span class="comment">//将对象从流中取出</span></span><br><span class="line">              ByteArrayInputStream bis=<span class="keyword">new</span>  ByteArrayInputStream(bao.toByteArray());</span><br><span class="line">              ObjectInputStream ois=<span class="keyword">new</span>  ObjectInputStream(bis);</span><br><span class="line">              <span class="keyword">return</span>  (WeeklyLog)ois.readObject();</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>客户端代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              WeeklyLog  log_previous, log_new = <span class="keyword">null</span>;</span><br><span class="line">              log_previous  = <span class="keyword">new</span> WeeklyLog(); <span class="comment">//创建原型对象</span></span><br><span class="line">              Attachment  attachment = <span class="keyword">new</span> Attachment(); <span class="comment">//创建附件对象</span></span><br><span class="line">              log_previous.setAttachment(attachment);  <span class="comment">//将附件添加到周报中</span></span><br><span class="line">              <span class="keyword">try</span></span><br><span class="line">              &#123;</span><br><span class="line">                     log_new =  log_previous.deepClone(); <span class="comment">//调用深克隆方法创建克隆对象</span></span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">catch</span>(Exception e)</span><br><span class="line">              &#123;</span><br><span class="line">                     System.err.println(<span class="string">"克隆失败！"</span>);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="comment">//比较周报</span></span><br><span class="line">              System.out.println(<span class="string">"周报是否相同？ "</span> + (log_previous ==  log_new));</span><br><span class="line">              <span class="comment">//比较附件</span></span><br><span class="line">              System.out.println(<span class="string">"附件是否相同？ "</span> +  (log_previous.getAttachment() == log_new.getAttachment()));</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">周报是否相同？  <span class="literal">false</span></span><br><span class="line">附件是否相同？  <span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<p>从输出结果可以看出，由于使用了深克隆技术，附件对象也得以复制，因此用“==”比较原型对象的附件和克隆对象的附件时输出结果均为false。深克隆技术实现了原型对象和克隆对象的完全独立，对任意克隆对象的修改都不会给其他对象产生影响，是一种更为理想的克隆实现方式。</p>
+<p>需要注意的是：WeeklyLog和Attachment都需要实现Serializable接口。</p>
+<h2 id="扩展">扩展</h2><p>Java语言提供的Cloneable接口和Serializable接口的代码非常简单，它们都是空接口，这种空接口也称为标识接口，标识接口中没有任何方法的定义，其作用是告诉JRE这些接口的实现类是否具有某个功能，如是否支持克隆、是否支持序列化等。</p>
+<h1 id="原型管理器的引入和实现">原型管理器的引入和实现</h1><hr>
+<p>原型管理器(Prototype Manager)是将多个原型对象存储在一个集合中供客户端使用，它是一个专门负责克隆对象的工厂，其中定义了一个集合用于存储原型对象，如果需要某个原型对象的一个克隆，可以通过复制集合中对应的原型对象来获得。在原型管理器中针对抽象原型类进行编程，以便扩展。其结构如图8所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype8.gif" alt="图8 带原型管理器的原型模式"><br>下面通过模拟一个简单的公文管理器来介绍原型管理器的设计与实现：</p>
+<p>Sunny软件公司在日常办公中有许多公文需要创建、递交和审批，例如《可行性分析报告》、《立项建议书》、《软件需求规格说明书》、《项目进展报告》等，为了提高工作效率，在OA系统中为各类公文均创建了模板，用户可以通过这些模板快速创建新的公文，这些公文模板需要统一进行管理，系统根据用户请求的不同生成不同的新公文。</p>
+<p>我们使用带原型管理器的原型模式实现公文管理器的设计，其结构如图9所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/prototype9.gif" alt="图9 公文管理器结构图"><br>以下是实现该功能的一些核心代码，考虑到代码的可读性，我们对所有的类都进行了简化：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">//抽象公文接口，也可定义为抽象类，提供clone()方法的实现，将业务方法声明为抽象方法</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">OfficialDocument</span> <span class="keyword">extends</span>  <span class="title">Cloneable</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  OfficialDocument <span class="title">clone</span><span class="params">()</span></span>;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//可行性分析报告(Feasibility Analysis Report)类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FAR</span> <span class="keyword">implements</span> <span class="title">OfficialDocument</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  OfficialDocument <span class="title">clone</span><span class="params">()</span></span><br><span class="line">      </span>&#123;</span><br><span class="line">              OfficialDocument  far = <span class="keyword">null</span>;</span><br><span class="line">              <span class="keyword">try</span></span><br><span class="line">              &#123;</span><br><span class="line">                     far  = (OfficialDocument)<span class="keyword">super</span>.clone();</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">catch</span>(CloneNotSupportedException  e)</span><br><span class="line">              &#123;</span><br><span class="line">                      System.out.println(<span class="string">"不支持复制！"</span>);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">return</span>  far;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              System.out.println(<span class="string">"《可行性分析报告》"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//软件需求规格说明书(Software Requirements Specification)类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SRS</span> <span class="keyword">implements</span> <span class="title">OfficialDocument</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  OfficialDocument <span class="title">clone</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              OfficialDocument  srs = <span class="keyword">null</span>;</span><br><span class="line">              <span class="keyword">try</span></span><br><span class="line">              &#123;</span><br><span class="line">                     srs  = (OfficialDocument)<span class="keyword">super</span>.clone();</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">catch</span>(CloneNotSupportedException  e)</span><br><span class="line">              &#123;</span><br><span class="line">                     System.out.println(<span class="string">"不支持复制！"</span>);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">return</span>  srs;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              System.out.println(<span class="string">"《软件需求规格说明书》"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//原型管理器（使用饿汉式单例实现）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span>  <span class="title">PrototypeManager</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="comment">//定义一个Hashtable，用于存储原型对象</span></span><br><span class="line">       <span class="keyword">private</span> Hashtable ht=<span class="keyword">new</span> Hashtable();</span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">static</span> PrototypeManager pm =  <span class="keyword">new</span> PrototypeManager();</span><br><span class="line"></span><br><span class="line">       <span class="comment">//为Hashtable增加公文对象</span></span><br><span class="line">     <span class="function"><span class="keyword">private</span>  <span class="title">PrototypeManager</span><span class="params">()</span></span><br><span class="line">     </span>&#123;</span><br><span class="line">              ht.put(<span class="string">"far"</span>,<span class="keyword">new</span>  FAR());</span><br><span class="line">              ht.put(<span class="string">"srs"</span>,<span class="keyword">new</span>  SRS());</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//增加新的公文对象</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addOfficialDocument</span><span class="params">(String  key,OfficialDocument doc)</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              ht.put(key,doc);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">//通过浅克隆获取新的公文对象</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> OfficialDocument  <span class="title">getOfficialDocument</span><span class="params">(String key)</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">return</span>  ((OfficialDocument)ht.get(key)).clone();</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PrototypeManager  <span class="title">getPrototypeManager</span><span class="params">()</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="keyword">return</span> pm;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>客户端代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line"></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span><br><span class="line">       </span>&#123;</span><br><span class="line">              <span class="comment">//获取原型管理器对象</span></span><br><span class="line">              PrototypeManager pm =  PrototypeManager.getPrototypeManager();  </span><br><span class="line"></span><br><span class="line">              OfficialDocument  doc1,doc2,doc3,doc4;</span><br><span class="line"></span><br><span class="line">              doc1  = pm.getOfficialDocument(<span class="string">"far"</span>);</span><br><span class="line">              doc1.display();</span><br><span class="line">              doc2  = pm.getOfficialDocument(<span class="string">"far"</span>);</span><br><span class="line">              doc2.display();</span><br><span class="line">              System.out.println(doc1  == doc2);</span><br><span class="line"></span><br><span class="line">              doc3  = pm.getOfficialDocument(<span class="string">"srs"</span>);</span><br><span class="line">              doc3.display();</span><br><span class="line">              doc4  = pm.getOfficialDocument(<span class="string">"srs"</span>);</span><br><span class="line">              doc4.display();</span><br><span class="line">              System.out.println(doc3  == doc4);</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">《可行性分析报告》</span><br><span class="line">《可行性分析报告》</span><br><span class="line"><span class="literal">false</span></span><br><span class="line">《软件需求规格说明书》</span><br><span class="line">《软件需求规格说明书》</span><br><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<p>在PrototypeManager中定义了一个Hashtable类型的集合对象，使用“键值对”来存储原型对象，客户端可以通过Key（如“far”或“srs”）来获取对应原型对象的克隆对象。PrototypeManager类提供了类似工厂方法的getOfficialDocument()方法用于返回一个克隆对象。在本实例代码中，我们将PrototypeManager设计为单例类，使用饿汉式单例实现，确保系统中有且仅有一个PrototypeManager对象，有利于节省系统资源，并可以更好地对原型管理器对象进行控制。</p>
+<h1 id="原型模式总结">原型模式总结</h1><hr>
+<p>原型模式作为一种快速创建大量相同或相似对象的方式，在软件开发中应用较为广泛，很多软件提供的复制(Ctrl + C)和粘贴(Ctrl + V)操作就是原型模式的典型应用，下面对该模式的使用效果和适用情况进行简单的总结。</p>
+<h2 id="主要优点">主要优点</h2><p>原型模式的主要优点如下：</p>
+<ol>
+<li>当创建新的对象实例较为复杂时，使用原型模式可以简化对象的创建过程，通过复制一个已有实例可以提高新实例的创建效率。</li>
+<li>扩展性较好，由于在原型模式中提供了抽象原型类，在客户端可以针对抽象原型类进行编程，而将具体原型类写在配置文件中，增加或减少产品类对原有系统都没有任何影响。</li>
+<li>原型模式提供了简化的创建结构，工厂方法模式常常需要有一个与产品类等级结构相同的工厂等级结构，而原型模式就不需要这样，原型模式中产品的复制是通过封装在原型类中的克隆方法实现的，无须专门的工厂类来创建产品。</li>
+<li>可以使用深克隆的方式保存对象的状态，使用原型模式将对象复制一份并将其状态保存起来，以便在需要的时候使用（如恢复到某一历史状态），可辅助实现撤销操作。</li>
+</ol>
+<h2 id="主要缺点">主要缺点</h2><p>原型模式的主要缺点如下：</p>
+<ol>
+<li>需要为每一个类配备一个克隆方法，而且该克隆方法位于一个类的内部，当对已有的类进行改造时，需要修改源代码，违背了“开闭原则”。</li>
+<li>在实现深克隆时需要编写较为复杂的代码，而且当对象之间存在多重的嵌套引用时，为了实现深克隆，每一层对象对应的类都必须支持深克隆，实现起来可能会比较麻烦。</li>
+</ol>
+<h2 id="适用场景">适用场景</h2><p>在以下情况下可以考虑使用原型模式：</p>
+<ol>
+<li>创建新对象成本较大（如初始化需要占用较长的时间，占用太多的CPU资源或网络资源），新的对象可以通过原型模式对已有对象进行复制来获得，如果是相似对象，则可以对其成员变量稍作修改。</li>
+<li>如果系统要保存对象的状态，而对象的状态变化很小，或者对象本身占用内存较少时，可以使用原型模式配合备忘录模式来实现。</li>
+<li>需要避免使用分层次的工厂类来创建分层次的对象，并且类的实例对象只有一个或很少的几个组合状态，通过复制原型对象得到新实例可能比使用构造函数创建一个新实例更加方便。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/" data-title="设计模式：对象的克隆——原型模式 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/24/designPattern/不兼容结构的协调——适配器模式/" title="设计模式：不兼容结构的协调——适配器模式">
+  <strong>上一篇：</strong><br/>
+  <span>
+  设计模式：不兼容结构的协调——适配器模式</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/23/designPattern/设计模式：确保对象的唯一性——单例模式/"  title="设计模式：确保对象的唯一性——单例模式">
+ <strong>下一篇：</strong><br/> 
+ <span>设计模式：确保对象的唯一性——单例模式
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/24/designPattern/设计模式：对象的克隆——原型模式/" data-title="设计模式：对象的克隆——原型模式" data-url="http://yoursite.com/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#大同小异的工作周报"><span class="toc-number">1.</span> <span class="toc-text">大同小异的工作周报</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型模式概述"><span class="toc-number">2.</span> <span class="toc-text">原型模式概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#通用实现方法"><span class="toc-number">2.1.</span> <span class="toc-text">通用实现方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java语言提供的clone()方法"><span class="toc-number">2.2.</span> <span class="toc-text">Java语言提供的clone()方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#带附件的周报"><span class="toc-number">4.</span> <span class="toc-text">带附件的周报</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#浅克隆"><span class="toc-number">4.1.</span> <span class="toc-text">浅克隆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深克隆"><span class="toc-number">4.2.</span> <span class="toc-text">深克隆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#扩展"><span class="toc-number">4.3.</span> <span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型管理器的引入和实现"><span class="toc-number">5.</span> <span class="toc-text">原型管理器的引入和实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#原型模式总结"><span class="toc-number">6.</span> <span class="toc-text">原型模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">6.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">6.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">6.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

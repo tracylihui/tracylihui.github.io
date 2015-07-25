@@ -22,7 +22,7 @@
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/designPattern1.jpg">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/designPattern2.jpg">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/designPattern3.jpg">
-<meta property="og:updated_time" content="2015-07-23T13:28:57.180Z">
+<meta property="og:updated_time" content="2015-07-24T01:48:40.176Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式：工厂三兄弟之简单工厂模式">
 <meta name="twitter:description" content="简单工厂模式-Simple Factory Pattern【学习难度：★★☆☆☆，使用频率：★★★☆☆】
@@ -111,7 +111,7 @@
 		</div>
 		
 		<p>简单工厂模式-Simple Factory Pattern【学习难度：★★☆☆☆，使用频率：★★★☆☆】</p>
-<p>工厂模式是最常用的一类创建型设计模式，通常我们所说的工厂模式是指<strong>工厂方法模式</strong>，它也是使用频率最高的工厂模式。本章将要学习的<strong>简单工厂模式</strong>是工厂方法模式的“小弟”，它不属于GoF 23种设计模式，但在软件开发中应用也较为频繁，通常将它作为学习其他工厂模式的入门。此外，工厂方法模式还有一位“大哥”——<strong>抽象工厂模式</strong>。这三种工厂模式各具特色，难度也逐个加大，在软件开发中它们都得到了广泛的应用，成为面向对象软件中常用的创建对象的工具。<br><a id="more"></a><br>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。<br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
+<p>工厂模式是最常用的一类创建型设计模式，通常我们所说的工厂模式是指<strong>工厂方法模式</strong>，它也是使用频率最高的工厂模式。本章将要学习的<strong>简单工厂模式</strong>是工厂方法模式的“小弟”，它不属于GoF 23种设计模式，但在软件开发中应用也较为频繁，通常将它作为学习其他工厂模式的入门。此外，工厂方法模式还有一位“大哥”——<strong>抽象工厂模式</strong>。这三种工厂模式各具特色，难度也逐个加大，在软件开发中它们都得到了广泛的应用，成为面向对象软件中常用的创建对象的工具。<br><a id="more"></a><br>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern" target="_blank" rel="external">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
 <h1 id="图表库的设计">图表库的设计</h1><hr>
 <p>Sunny软件公司欲基于Java语言开发一套图表库，该图表库可以为应用系统提供各种不同外观的图表，例如柱状图、饼状图、折线图等。Sunny软件公司图表库设计人员希望为应用系统开发人员提供一套灵活易用的图表库，而且可以较为方便地对图表库进行扩展，以便能够在将来增加一些新类型的图表。</p>
 <p>Sunny软件公司图表库设计人员提出了一个初始设计方案，将所有图表的实现代码封装在一个Chart类中，其框架代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Chart</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> String type; <span class="comment">//图表类型  </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Chart</span><span class="params">(Object[][] data, String type)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.type = type;  </span><br><span class="line">        <span class="keyword">if</span> (type.equalsIgnoreCase(<span class="string">"histogram"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//初始化柱状图  </span></span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (type.equalsIgnoreCase(<span class="string">"pie"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//初始化饼状图  </span></span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (type.equalsIgnoreCase(<span class="string">"line"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//初始化折线图  </span></span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.type.equalsIgnoreCase(<span class="string">"histogram"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//显示柱状图  </span></span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.type.equalsIgnoreCase(<span class="string">"pie"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//显示饼状图  </span></span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.type.equalsIgnoreCase(<span class="string">"line"</span>)) &#123;  </span><br><span class="line">            <span class="comment">//显示折线图  </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -295,7 +295,7 @@
 		  
 		
 		  
-			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
 		  
 		
 		</ul>
@@ -316,11 +316,11 @@
 			
 		
 			
-				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>4</sup></a></li>
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
 			
 		
 			

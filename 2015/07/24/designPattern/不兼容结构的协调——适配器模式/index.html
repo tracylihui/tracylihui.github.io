@@ -1,0 +1,645 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>设计模式：不兼容结构的协调——适配器模式 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihui">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式：不兼容结构的协调——适配器模式">
+<meta property="og:url" content="http://yoursite.com/2015/07/24/designPattern/不兼容结构的协调——适配器模式/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihui">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter1.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter2.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter3.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter4.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter5.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter6.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter7.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/adapter8.jpg">
+<meta property="og:updated_time" content="2015-07-24T06:47:33.914Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式：不兼容结构的协调——适配器模式">
+<meta name="twitter:description" content="适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihui">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/24/designPattern/不兼容结构的协调——适配器模式/" title="设计模式：不兼容结构的协调——适配器模式" itemprop="url">设计模式：不兼容结构的协调——适配器模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-24T05:31:03.000Z" itemprop="datePublished"> 发表于 2015-07-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#没有源码的算法库"><span class="toc-number">1.</span> <span class="toc-text">没有源码的算法库</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式概述"><span class="toc-number">2.</span> <span class="toc-text">适配器模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#类适配器"><span class="toc-number">4.</span> <span class="toc-text">类适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#双向适配器"><span class="toc-number">5.</span> <span class="toc-text">双向适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#缺省适配器"><span class="toc-number">6.</span> <span class="toc-text">缺省适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式总结"><span class="toc-number">7.</span> <span class="toc-text">适配器模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">7.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">7.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">7.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern" target="_blank" rel="external">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
+<p>我的笔记本电脑的工作电压是20V，而我国的家庭用电是220V，如何让20V的笔记本电脑能够在220V的电压下工作？答案是引入一个电源适配器(AC Adapter)，俗称充电器或变压器，有了这个电源适配器，生活用电和笔记本电脑即可兼容，如图1所示：<br><a id="more"></a><br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter1.jpg" alt="图1 电源适配器示意图"></p>
+<p>在软件开发中，有时也存在类似这种不兼容的情况，我们也可以像引入一个电源适配器一样引入一个称之为适配器的角色来协调这些存在不兼容的结构，这种设计方案即为适配器模式。</p>
+<h1 id="没有源码的算法库">没有源码的算法库</h1><hr>
+<p>Sunny软件公司在很久以前曾开发了一个算法库，里面包含了一些常用的算法，例如排序算法和查找算法，在进行各类软件开发时经常需要重用该算法库中的算法。在为某学校开发教务管理系统时，开发人员发现需要对学生成绩进行排序和查找，该系统的设计人员已经开发了一个成绩操作接口ScoreOperation，在该接口中声明了排序方法sort(int[]) 和查找方法search(int[], int)，为了提高排序和查找的效率，开发人员决定重用算法库中的快速排序算法类QuickSort和二分查找算法类BinarySearch，其中QuickSort的quickSort(int[])方法实现了快速排序，BinarySearch 的binarySearch (int[], int)方法实现了二分查找。</p>
+<p>由于某些原因，现在Sunny公司开发人员已经找不到该算法库的源代码，无法直接通过复制和粘贴操作来重用其中的代码；部分开发人员已经针对ScoreOperation接口编程，如果再要求对该接口进行修改或要求大家直接使用QuickSort类和BinarySearch类将导致大量代码需要修改。</p>
+<p>Sunny软件公司开发人员面对这个没有源码的算法库，遇到一个幸福而又烦恼的问题：如何在既不修改现有接口又不需要任何算法库代码的基础上能够实现算法库的重用？</p>
+<p>通过分析，我们不难得知，现在Sunny软件公司面对的问题有点类似本章最开始所提到的电压问题，成绩操作接口ScoreOperation好比只支持20V电压的笔记本，而算法库好比220V的家庭用电，这两部分都没有办法再进行修改，而且它们原本是两个完全不相关的结构，如图2所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter2.jpg" alt="图2 需协调的两个系统的结构示意图"></p>
+<p>现在我们需要ScoreOperation接口能够和已有算法库一起工作，让它们在同一个系统中能够兼容，最好的实现方法是增加一个类似电源适配器一样的适配器角色，通过适配器来协调这两个原本不兼容的结构。如何在软件开发中设计和实现适配器是本章我们将要解决的核心问题，下面就让我们正式开始学习这种用于解决不兼容结构问题的适配器模式。</p>
+<h1 id="适配器模式概述">适配器模式概述</h1><hr>
+<p>与电源适配器相似，在适配器模式中引入了一个被称为适配器(Adapter)的包装类，而它所包装的对象称为适配者(Adaptee)，即被适配的类。适配器的实现就是把客户类的请求转化为对适配者的相应接口的调用。也就是说：当客户类调用适配器的方法时，在适配器类的内部将调用适配者类的方法，而这个过程对客户类是透明的，客户类并不直接访问适配者类。因此，适配器让那些由于接口不兼容而不能交互的类可以一起工作。</p>
+<p>适配器模式可以将一个类的接口和另一个类的接口匹配起来，而无须修改原来的适配者接口和抽象目标类接口。适配器模式定义如下：</p>
+<p><strong>适配器模式(Adapter Pattern)：将一个接口转换成客户希望的另一个接口，使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。适配器模式既可以作为类结构型模式，也可以作为对象结构型模式。</strong>【注：在适配器模式定义中所提及的接口是指广义的接口，它可以表示一个方法或者方法的集合。】</p>
+<p>在适配器模式中，我们通过增加一个新的适配器类来解决接口不兼容的问题，使得原本没有任何关系的类可以协同工作。根据适配器类与适配者类的关系不同，适配器模式可分为对象适配器和类适配器两种，在对象适配器模式中，适配器与适配者之间是关联关系；在类适配器模式中，适配器与适配者之间是继承（或实现）关系。在实际开发中，对象适配器的使用频率更高，对象适配器模式结构如图3所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter3.jpg" alt="图3 对象适配器模式结构图"></p>
+<p>在对象适配器模式结构图中包含如下几个角色：</p>
+<ul>
+<li><strong>Target（目标抽象类）</strong>：目标抽象类定义客户所需接口，可以是一个抽象类或接口，也可以是具体类。</li>
+<li><strong>Adapter（适配器类）</strong>：适配器可以调用另一个接口，作为一个转换器，对Adaptee和Target进行适配，适配器类是适配器模式的核心，在对象适配器中，它通过继承Target并关联一个Adaptee对象使二者产生联系。</li>
+<li><strong>Adaptee（适配者类）</strong>：适配者即被适配的角色，它定义了一个已经存在的接口，这个接口需要适配，适配者类一般是一个具体类，包含了客户希望使用的业务方法，在某些情况下可能没有适配者类的源代码。</li>
+</ul>
+<p>根据对象适配器模式结构图，在对象适配器中，客户端需要调用request()方法，而适配者类Adaptee没有该方法，但是它所提供的specificRequest()方法却是客户端所需要的。为了使客户端能够使用适配者类，需要提供一个包装类Adapter，即适配器类。这个包装类包装了一个适配者的实例，从而将客户端与适配者衔接起来，在适配器的request()方法中调用适配者的specificRequest()方法。因为适配器类与适配者类是关联关系（也可称之为委派关系），所以这种适配器模式称为对象适配器模式。典型的对象适配器代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">Target</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> Adaptee adaptee; <span class="comment">//维持一个对适配者对象的引用  </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">(Adaptee adaptee)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.adaptee=adaptee;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        adaptee.specificRequest(); <span class="comment">//转发调用  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="完整解决方案">完整解决方案</h1><hr>
+<p>Sunny软件公司开发人员决定使用适配器模式来重用算法库中的算法，其基本结构如图4所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter4.jpg" alt="图4 算法库重用结构图"><br>在图4中，ScoreOperation接口充当抽象目标，QuickSort和BinarySearch类充当适配者，OperationAdapter充当适配器。完整代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//抽象成绩操作类：目标接口  </span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ScoreOperation</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] sort(<span class="keyword">int</span> array[]); <span class="comment">//成绩排序  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> array[],<span class="keyword">int</span> key)</span></span>; <span class="comment">//成绩查找  </span></span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//快速排序类：适配者  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QuickSort</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] quickSort(<span class="keyword">int</span> array[]) &#123;  </span><br><span class="line">        sort(array,<span class="number">0</span>,array.length-<span class="number">1</span>);  </span><br><span class="line">        <span class="keyword">return</span> array;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span> array[],<span class="keyword">int</span> p, <span class="keyword">int</span> r)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">int</span> q=<span class="number">0</span>;  </span><br><span class="line">        <span class="keyword">if</span>(p&lt;r) &#123;  </span><br><span class="line">            q=partition(array,p,r);  </span><br><span class="line">            sort(array,p,q-<span class="number">1</span>);  </span><br><span class="line">            sort(array,q+<span class="number">1</span>,r);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> p, <span class="keyword">int</span> r)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">int</span> x=a[r];  </span><br><span class="line">        <span class="keyword">int</span> j=p-<span class="number">1</span>;  </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=p;i&lt;=r-<span class="number">1</span>;i++) &#123;  </span><br><span class="line">            <span class="keyword">if</span> (a[i]&lt;=x) &#123;  </span><br><span class="line">                j++;  </span><br><span class="line">                swap(a,j,i);  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        swap(a,j+<span class="number">1</span>,r);  </span><br><span class="line">        <span class="keyword">return</span> j+<span class="number">1</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>[] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> t = a[i];</span><br><span class="line">        a[i] = a[j];</span><br><span class="line">        a[j] = t;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//二分查找类：适配者  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BinarySearch</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span> array[],<span class="keyword">int</span> key)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">int</span> low = <span class="number">0</span>;  </span><br><span class="line">        <span class="keyword">int</span> high = array.length -<span class="number">1</span>;  </span><br><span class="line">        <span class="keyword">while</span>(low &lt;= high) &#123;  </span><br><span class="line">            <span class="keyword">int</span> mid = (low + high) / <span class="number">2</span>;  </span><br><span class="line">            <span class="keyword">int</span> midVal = array[mid];  </span><br><span class="line">            <span class="keyword">if</span>(midVal &lt; key) &#123;</span><br><span class="line">                low = mid +<span class="number">1</span>;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (midVal &gt; key) &#123;</span><br><span class="line">                high = mid -<span class="number">1</span>;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">//找到元素返回1</span></span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;  <span class="comment">//未找到元素返回-1  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//操作适配器：适配器  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OperationAdapter</span> <span class="keyword">implements</span> <span class="title">ScoreOperation</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> QuickSort sortObj; <span class="comment">//定义适配者QuickSort对象  </span></span><br><span class="line">    <span class="keyword">private</span> BinarySearch searchObj; <span class="comment">//定义适配者BinarySearch对象  </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OperationAdapter</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        sortObj = <span class="keyword">new</span> QuickSort();  </span><br><span class="line">        searchObj = <span class="keyword">new</span> BinarySearch();  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] sort(<span class="keyword">int</span> array[]) &#123;</span><br><span class="line">        <span class="keyword">return</span> sortObj.quickSort(array); <span class="comment">//调用适配者类QuickSort的排序方法  </span></span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> array[],<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> searchObj.binarySearch(array,key); <span class="comment">//调用适配者类BinarySearch的查找方法  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了让系统具备良好的灵活性和可扩展性，我们引入了工具类XMLUtil和配置文件，其中，XMLUtil类的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.xml.parsers.*;  </span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.*;  </span><br><span class="line"><span class="keyword">import</span> org.xml.sax.SAXException;  </span><br><span class="line"><span class="keyword">import</span> java.io.*;  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">XMLUtil</span> </span>&#123;  </span><br><span class="line"><span class="comment">//该方法用于从XML配置文件中提取具体类类名，并返回一个实例对象  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getBean</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="comment">//创建文档对象  </span></span><br><span class="line">            DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();  </span><br><span class="line">            DocumentBuilder builder = dFactory.newDocumentBuilder();  </span><br><span class="line">            Document doc;</span><br><span class="line">            doc = builder.parse(<span class="keyword">new</span> File(<span class="string">"config.xml"</span>));</span><br><span class="line"></span><br><span class="line">            <span class="comment">//获取包含类名的文本节点  </span></span><br><span class="line">            NodeList nl = doc.getElementsByTagName(<span class="string">"className"</span>);  </span><br><span class="line">            Node classNode=nl.item(<span class="number">0</span>).getFirstChild();  </span><br><span class="line">            String cName=classNode.getNodeValue();  </span><br><span class="line"></span><br><span class="line">            <span class="comment">//通过类名生成实例对象并将其返回  </span></span><br><span class="line">            Class c=Class.forName(cName);  </span><br><span class="line">            Object obj=c.newInstance();  </span><br><span class="line">            <span class="keyword">return</span> obj;  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span>(Exception e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置文件config.xml中存储了适配器类的类名，代码如下所示：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0"?&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="title">config</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">className</span>&gt;</span>OperationAdapter<span class="tag">&lt;/<span class="title">className</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="title">config</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>编写如下客户端测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;  </span><br><span class="line">        ScoreOperation operation;  <span class="comment">//针对抽象目标接口编程  </span></span><br><span class="line">        operation = (ScoreOperation)XMLUtil.getBean(); <span class="comment">//读取配置文件，反射生成对象  </span></span><br><span class="line">        <span class="keyword">int</span> scores[] = &#123;<span class="number">84</span>,<span class="number">76</span>,<span class="number">50</span>,<span class="number">69</span>,<span class="number">90</span>,<span class="number">91</span>,<span class="number">88</span>,<span class="number">96</span>&#125;; <span class="comment">//定义成绩数组  </span></span><br><span class="line">        <span class="keyword">int</span> result[];  </span><br><span class="line">        <span class="keyword">int</span> score;  </span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"成绩排序结果："</span>);  </span><br><span class="line">        result = operation.sort(scores);  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历输出成绩  </span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i : scores) &#123;  </span><br><span class="line">            System.out.print(i + <span class="string">","</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">        System.out.println();  </span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"查找成绩90："</span>);  </span><br><span class="line">        score = operation.search(result,<span class="number">90</span>);  </span><br><span class="line">        <span class="keyword">if</span> (score != -<span class="number">1</span>) &#123;  </span><br><span class="line">            System.out.println(<span class="string">"找到成绩90。"</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> &#123;  </span><br><span class="line">            System.out.println(<span class="string">"没有找到成绩90。"</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"查找成绩92："</span>);  </span><br><span class="line">        score = operation.search(result,<span class="number">92</span>);  </span><br><span class="line">        <span class="keyword">if</span> (score != -<span class="number">1</span>) &#123;  </span><br><span class="line">            System.out.println(<span class="string">"找到成绩92。"</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">else</span> &#123;  </span><br><span class="line">            System.out.println(<span class="string">"没有找到成绩92。"</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">成绩排序结果：</span><br><span class="line"><span class="number">50,69,76,84</span>,<span class="number">88,90,91,96</span>,</span><br><span class="line">查找成绩90：</span><br><span class="line">找到成绩90。</span><br><span class="line">查找成绩92：</span><br><span class="line">没有找到成绩92。</span><br></pre></td></tr></table></figure></p>
+<p>在本实例中使用了对象适配器模式，同时引入了配置文件，将适配器类的类名存储在配置文件中。如果需要使用其他排序算法类和查找算法类，可以增加一个新的适配器类，使用新的适配器来适配新的算法，原有代码无须修改。通过引入配置文件和反射机制，可以在不修改客户端代码的情况下使用新的适配器，无须修改源代码，符合“开闭原则”。</p>
+<h1 id="类适配器">类适配器</h1><hr>
+<p>除了对象适配器模式之外，适配器模式还有一种形式，那就是类适配器模式，类适配器模式和对象适配器模式最大的区别在于适配器和适配者之间的关系不同，对象适配器模式中适配器和适配者之间是关联关系，而类适配器模式中适配器和适配者是继承关系，类适配器模式结构如图5所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter5.jpg" alt="图5 类适配器模式结构图"><br>根据类适配器模式结构图，适配器类实现了抽象目标类接口Target，并继承了适配者类，在适配器类的request()方法中调用所继承的适配者类的specificRequest()方法，实现了适配。<br>典型的类适配器代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">Adaptee</span> <span class="keyword">implements</span> <span class="title">Target</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        specificRequest();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于Java、C#等语言不支持多重类继承，因此类适配器的使用受到很多限制，例如如果目标抽象类Target不是接口，而是一个类，就无法使用类适配器；此外，如果适配者Adapter为最终(Final)类，也无法使用类适配器。在Java等面向对象编程语言中，大部分情况下我们使用的是对象适配器，类适配器较少使用。</p>
+<h1 id="双向适配器">双向适配器</h1><p>在对象适配器的使用过程中，如果在适配器中同时包含对目标类和适配者类的引用，适配者可以通过它调用目标类中的方法，目标类也可以通过它调用适配者类中的方法，那么该适配器就是一个双向适配器，其结构示意图如图6所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter6.jpg" alt="图6 双向适配器结构示意图"><br>双向适配器的实现较为复杂，其典型代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">implements</span> <span class="title">Target</span>,<span class="title">Adaptee</span> </span>&#123;  </span><br><span class="line">    <span class="comment">//同时维持对抽象目标类和适配者的引用  </span></span><br><span class="line">    <span class="keyword">private</span> Target target;  </span><br><span class="line">    <span class="keyword">private</span> Adaptee adaptee;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">(Target target)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.target = target;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">(Adaptee adaptee)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.adaptee = adaptee;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        adaptee.specificRequest();  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">specificRequest</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        target.request();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在实际开发中，我们很少使用双向适配器。</p>
+<h1 id="缺省适配器">缺省适配器</h1><hr>
+<p>缺省适配器模式是适配器模式的一种变体，其应用也较为广泛。缺省适配器模式的定义如下：<br><strong>缺省适配器模式(Default Adapter Pattern)：当不需要实现一个接口所提供的所有方法时，可先设计一个抽象类实现该接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以选择性地覆盖父类的某些方法来实现需求，它适用于不想使用一个接口中的所有方法的情况，又称为单接口适配器模式。</strong></p>
+<p>缺省适配器模式结构如图7所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter7.jpg" alt="图7 缺省适配器模式结构图"><br>在缺省适配器模式中，包含如下三个角色：</p>
+<ul>
+<li><strong>ServiceInterface（适配者接口）</strong>：它是一个接口，通常在该接口中声明了大量的方法。</li>
+<li><strong>AbstractServiceClass（缺省适配器类）</strong>：它是缺省适配器模式的核心类，使用空方法的形式实现了在ServiceInterface接口中声明的方法。通常将它定义为抽象类，因为对它进行实例化没有任何意义。</li>
+<li><strong>ConcreteServiceClass（具体业务类）</strong>：它是缺省适配器类的子类，在没有引入适配器之前，它需要实现适配者接口，因此需要实现在适配者接口中定义的所有方法，而对于一些无须使用的方法也不得不提供空实现。在有了缺省适配器之后，可以直接继承该适配器类，根据需要有选择性地覆盖在适配器类中定义的方法。</li>
+</ul>
+<p>在JDK类库的事件处理包java.awt.event中广泛使用了缺省适配器模式，如WindowAdapter、KeyAdapter、MouseAdapter等。下面我们以处理窗口事件为例来进行说明：在Java语言中，一般我们可以使用两种方式来实现窗口事件处理类，一种是通过实现WindowListener接口，另一种是通过继承WindowAdapter适配器类。如果是使用第一种方式，直接实现WindowListener接口，事件处理类需要实现在该接口中定义的七个方法，而对于大部分需求可能只需要实现一两个方法，其他方法都无须实现，但由于语言特性我们不得不为其他方法也提供一个简单的实现（通常是空实现），这给使用带来了麻烦。而使用缺省适配器模式就可以很好地解决这一问题，在JDK中提供了一个适配器类WindowAdapter来实现WindowListener接口，该适配器类为接口中的每一个方法都提供了一个空实现，此时事件处理类可以继承WindowAdapter类，而无须再为接口中的每个方法都提供实现。如图8所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/adapter8.jpg" alt="图8  WindowListener和WindowAdapter结构图"></p>
+<h1 id="适配器模式总结">适配器模式总结</h1><hr>
+<p>适配器模式将现有接口转化为客户类所期望的接口，实现了对现有类的复用，它是一种使用频率非常高的设计模式，在软件开发中得以广泛应用，在Spring等开源框架、驱动程序设计（如JDBC中的数据库驱动程序）中也使用了适配器模式。</p>
+<h2 id="主要优点">主要优点</h2><p>无论是对象适配器模式还是类适配器模式都具有如下优点：</p>
+<ol>
+<li><strong>将目标类和适配者类解耦</strong>，通过引入一个适配器类来重用现有的适配者类，无须修改原有结构。</li>
+<li><strong>增加了类的透明性和复用性</strong>，将具体的业务实现过程封装在适配者类中，对于客户端类而言是透明的，而且提高了适配者的复用性，同一个适配者类可以在多个不同的系统中复用。</li>
+<li><strong>灵活性和扩展性都非常好</strong>，通过使用配置文件，可以很方便地更换适配器，也可以在不修改原有代码的基础上增加新的适配器类，完全符合“开闭原则”。</li>
+</ol>
+<p>具体来说，类适配器模式还有如下优点：</p>
+<ol>
+<li>由于适配器类是适配者类的子类，因此<strong>可以在适配器类中置换一些适配者的方法</strong>，使得适配器的灵活性更强。</li>
+</ol>
+<p>对象适配器模式还有如下优点：</p>
+<ol>
+<li>一个对象适配器<strong>可以把多个不同的适配者适配到同一个目标</strong>；</li>
+<li><strong>可以适配一个适配者的子类</strong>，由于适配器和适配者之间是关联关系，根据“里氏代换原则”，适配者的子类也可通过该适配器进行适配。</li>
+</ol>
+<h2 id="主要缺点">主要缺点</h2><p>类适配器模式的缺点如下：</p>
+<ol>
+<li>对于Java、C#等不支持多重类继承的语言，一次最多只能适配一个适配者类，<strong>不能同时适配多个适配者</strong>；</li>
+<li><strong>适配者类不能为最终类</strong>，如在Java中不能为final类，C#中不能为sealed类；</li>
+<li>在Java、C#等语言中，<strong>类适配器模式中的目标抽象类只能为接口，不能为类</strong>，其使用有一定的局限性。</li>
+</ol>
+<p>对象适配器模式的缺点如下：</p>
+<ol>
+<li>与类适配器模式相比，要在适配器中置换适配者类的某些方法比较麻烦。如果一定要置换掉适配者类的一个或多个方法，可以先做一个适配者类的子类，将适配者类的方法置换掉，然后再把适配者类的子类当做真正的适配者进行适配，实现过程较为复杂。</li>
+</ol>
+<h2 id="适用场景">适用场景</h2><p>在以下情况下可以考虑使用适配器模式：</p>
+<ol>
+<li>系统需要使用一些现有的类，而这些类的接口（如方法名）不符合系统的需要，甚至没有这些类的源代码。</li>
+<li>想创建一个可以重复使用的类，用于与一些彼此之间没有太大关联的一些类，包括一些可能在将来引进的类一起工作。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/24/designPattern/不兼容结构的协调——适配器模式/" data-title="设计模式：不兼容结构的协调——适配器模式 | 李大辉" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/24/designPattern/设计模式：复杂对象的组装与创建——建造者模式/" title="设计模式：复杂对象的组装与创建——建造者模式">
+  <strong>上一篇：</strong><br/>
+  <span>
+  设计模式：复杂对象的组装与创建——建造者模式</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/24/designPattern/设计模式：对象的克隆——原型模式/"  title="设计模式：对象的克隆——原型模式">
+ <strong>下一篇：</strong><br/> 
+ <span>设计模式：对象的克隆——原型模式
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/24/designPattern/不兼容结构的协调——适配器模式/" data-title="设计模式：不兼容结构的协调——适配器模式" data-url="http://yoursite.com/2015/07/24/designPattern/不兼容结构的协调——适配器模式/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#没有源码的算法库"><span class="toc-number">1.</span> <span class="toc-text">没有源码的算法库</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式概述"><span class="toc-number">2.</span> <span class="toc-text">适配器模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#类适配器"><span class="toc-number">4.</span> <span class="toc-text">类适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#双向适配器"><span class="toc-number">5.</span> <span class="toc-text">双向适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#缺省适配器"><span class="toc-number">6.</span> <span class="toc-text">缺省适配器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式总结"><span class="toc-number">7.</span> <span class="toc-text">适配器模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">7.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">7.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">7.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/Tracylihui" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
