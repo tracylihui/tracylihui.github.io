@@ -1,0 +1,630 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>设计模式：实现对象的复用——享元模式 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="享元模式-Flyweight Pattern【学习难度：★★★★☆，使用频率：★☆☆☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式：实现对象的复用——享元模式">
+<meta property="og:url" content="http://yoursite.com/2015/07/26/designPattern/设计模式：实现对象的复用——享元模式/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="享元模式-Flyweight Pattern【学习难度：★★★★☆，使用频率：★☆☆☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight1.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight2.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight3.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight4.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight5.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight6.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight7.jpg">
+<meta property="og:updated_time" content="2015-07-26T07:18:39.285Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式：实现对象的复用——享元模式">
+<meta name="twitter:description" content="享元模式-Flyweight Pattern【学习难度：★★★★☆，使用频率：★☆☆☆☆】
+该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。Github地址：https://github.com/tracylihu">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/26/designPattern/设计模式：实现对象的复用——享元模式/" title="设计模式：实现对象的复用——享元模式" itemprop="url">设计模式：实现对象的复用——享元模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-26T07:00:03.000Z" itemprop="datePublished"> 发表于 2015-07-26</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#围棋棋子的设计"><span class="toc-number">1.</span> <span class="toc-text">围棋棋子的设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#享元模式概述"><span class="toc-number">2.</span> <span class="toc-text">享元模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#带外部状态的解决方案"><span class="toc-number">4.</span> <span class="toc-text">带外部状态的解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单纯享元模式和复合享元模式"><span class="toc-number">5.</span> <span class="toc-text">单纯享元模式和复合享元模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#单纯享元模式"><span class="toc-number">5.1.</span> <span class="toc-text">单纯享元模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复合享元模式"><span class="toc-number">5.2.</span> <span class="toc-text">复合享元模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于享元模式的几点补充"><span class="toc-number">6.</span> <span class="toc-text">关于享元模式的几点补充</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#与其他模式的联用"><span class="toc-number">6.1.</span> <span class="toc-text">与其他模式的联用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#享元模式与String类"><span class="toc-number">6.2.</span> <span class="toc-text">享元模式与String类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#享元模式总结"><span class="toc-number">7.</span> <span class="toc-text">享元模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">7.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">7.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">7.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>享元模式-Flyweight Pattern【学习难度：★★★★☆，使用频率：★☆☆☆☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern" target="_blank" rel="external">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213" target="_blank" rel="external">史上最全设计模式导学目录（完整版）</a></p>
+<p>当前咱们国家正在大力倡导构建和谐社会，其中一个很重要的组成部分就是建设资源节约型社会，“浪费可耻，节俭光荣”。在软件系统中，有时候也会存在资源浪费的情况，例如在计算机内存中存储了多个完全相同或者非常相似的对象，如果这些对象的数量太多将导致系统运行代价过高，内存属于计算机的“稀缺资源”，不应该用来“随便浪费”，那么是否存在一种技术可以用于节约内存使用空间，实现对这些相同或者相似对象的共享访问呢？答案是肯定，这种技术就是我们本章将要学习的享元模式。<br><a id="more"></a></p>
+<h1 id="围棋棋子的设计">围棋棋子的设计</h1><hr>
+<p>Sunny软件公司欲开发一个围棋软件，其界面效果如图14-1所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight1.jpg" alt="图14-1 围棋软件界面效果图"><br>Sunny软件公司开发人员通过对围棋软件进行分析，发现在围棋棋盘中包含大量的黑子和白子，它们的形状、大小都一模一样，只是出现的位置不同而已。如果将每一个棋子都作为一个独立的对象存储在内存中，将导致该围棋软件在运行时所需内存空间较大，<strong>如何降低运行代价、提高系统性能是Sunny公司开发人员需要解决的一个问题</strong>。为了解决这个问题，Sunny公司开发人员决定使用享元模式来设计该围棋软件的棋子对象，那么享元模式是如何实现节约内存进而提高系统性能的呢？别着急，下面让我们正式进入享元模式的学习。</p>
+<h1 id="享元模式概述">享元模式概述</h1><hr>
+<p>当一个软件系统在运行时产生的对象数量太多，将导致运行代价过高，带来系统性能下降等问题。例如在一个文本字符串中存在很多重复的字符，如果每一个字符都用一个单独的对象来表示，将会占用较多的内存空间，那么我们如何去避免系统中出现大量相同或相似的对象，同时又不影响客户端程序通过面向对象的方式对这些对象进行操作？享元模式正为解决这一类问题而诞生。享元模式通过共享技术实现相同或相似对象的重用，<strong>在逻辑上每一个出现的字符都有一个对象与之对应，然而在物理上它们却共享同一个享元对象</strong>，这个对象可以出现在一个字符串的不同地方，相同的字符对象都指向同一个实例，在享元模式中，存储这些共享实例对象的地方称为<strong>享元池</strong>(Flyweight Pool)。我们可以针对每一个不同的字符创建一个享元对象，将其放在享元池中，需要时再从享元池取出。如图14-2所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight2.jpg" alt="图14-2 字符享元对象示意图"></p>
+<p>享元模式以共享的方式高效地支持大量细粒度对象的重用，享元对象能做到共享的关键是区分了内部状态(Intrinsic State)和外部状态(Extrinsic State)。下面将对享元的内部状态和外部状态进行简单的介绍：</p>
+<ol>
+<li><strong>内部状态是存储在享元对象内部并且不会随环境改变而改变的状态，内部状态可以共享</strong>。如字符的内容，不会随外部环境的变化而变化，无论在任何环境下字符“a”始终是“a”，都不会变成“b”。</li>
+<li><strong>外部状态是随环境改变而改变的、不可以共享的状态</strong>。享元对象的外部状态通常由客户端保存，并在享元对象被创建之后，需要使用的时候再传入到享元对象内部。一个外部状态与另一个外部状态之间是相互独立的。如字符的颜色，可以在不同的地方有不同的颜色，例如有的“a”是红色的，有的“a”是绿色的，字符的大小也是如此，有的“a”是五号字，有的“a”是四号字。而且字符的颜色和大小是两个独立的外部状态，它们可以独立变化，相互之间没有影响，客户端可以在使用时将外部状态注入享元对象中。</li>
+</ol>
+<p>正因为区分了内部状态和外部状态，我们可以将具有相同内部状态的对象存储在享元池中，享元池中的对象是可以实现共享的，需要的时候就将对象从享元池中取出，实现对象的复用。通过向取出的对象注入不同的外部状态，可以得到一系列相似的对象，而这些对象在内存中实际上只存储一份。</p>
+<p>享元模式定义如下：<br><strong>享元模式(Flyweight Pattern)：运用共享技术有效地支持大量细粒度对象的复用。系统只使用少量的对象，而这些对象都很相似，状态变化很小，可以实现对象的多次复用。由于享元模式要求能够共享的对象必须是细粒度对象，因此它又称为轻量级模式，它是一种对象结构型模式。</strong></p>
+<p>享元模式结构较为复杂，一般结合工厂模式一起使用，在它的结构图中包含了一个享元工厂类，其结构图如图14-3所示：<br> <img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight3.jpg" alt="图14-3 享元模式结构图"><br>在享元模式结构图中包含如下几个角色：</p>
+<ul>
+<li><strong>Flyweight（抽象享元类）</strong>：通常是一个接口或抽象类，在抽象享元类中声明了具体享元类公共的方法，这些方法可以向外界提供享元对象的内部数据（内部状态），同时也可以通过这些方法来设置外部数据（外部状态）。</li>
+<li><strong>ConcreteFlyweight（具体享元类）</strong>：它实现了抽象享元类，其实例称为享元对象；在具体享元类中为内部状态提供了存储空间。通常我们可以结合单例模式来设计具体享元类，为每一个具体享元类提供唯一的享元对象。</li>
+<li><strong>UnsharedConcreteFlyweight（非共享具体享元类）</strong>：并不是所有的抽象享元类的子类都需要被共享，不能被共享的子类可设计为非共享具体享元类；当需要一个非共享具体享元类的对象时可以直接通过实例化创建。</li>
+<li><strong>FlyweightFactory（享元工厂类）</strong>：享元工厂类用于创建并管理享元对象，它针对抽象享元类编程，将各种类型的具体享元对象存储在一个享元池中，享元池一般设计为一个存储“键值对”的集合（也可以是其他类型的集合），可以结合工厂模式进行设计；当用户请求一个具体享元对象时，享元工厂提供一个存储在享元池中已创建的实例或者创建一个新的实例（如果不存在的话），返回新创建的实例并将其存储在享元池中。</li>
+</ul>
+<p>在享元模式中引入了享元工厂类，享元工厂类的作用在于提供一个用于存储享元对象的享元池，当用户需要对象时，首先从享元池中获取，如果享元池中不存在，则创建一个新的享元对象返回给用户，并在享元池中保存该新增对象。典型的享元工厂类的代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span> </span>&#123;</span><br><span class="line">    <span class="comment">//定义一个HashMap用于存储享元对象，实现享元池</span></span><br><span class="line">       <span class="keyword">private</span> HashMap flyweights = newHashMap();</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> Flyweight <span class="title">getFlyweight</span><span class="params">(String key)</span></span>&#123;</span><br><span class="line">              <span class="comment">//如果对象存在，则直接从享元池获取</span></span><br><span class="line">              <span class="keyword">if</span>(flyweights.containsKey(key))&#123;</span><br><span class="line">                     <span class="keyword">return</span>(Flyweight)flyweights.get(key);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="comment">//如果对象不存在，先创建一个新的对象添加到享元池中，然后返回</span></span><br><span class="line">              <span class="keyword">else</span> &#123;</span><br><span class="line">                     Flyweight fw = newConcreteFlyweight();</span><br><span class="line">                     flyweights.put(key,fw);</span><br><span class="line">                     <span class="keyword">return</span> fw;</span><br><span class="line">              &#125;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>享元类的设计是享元模式的要点之一，在享元类中要将内部状态和外部状态分开处理，通常将内部状态作为享元类的成员变量，而外部状态通过注入的方式添加到享元类中。典型的享元类代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Flyweight</span> </span>&#123;</span><br><span class="line">     <span class="comment">//内部状态intrinsicState作为成员变量，同一个享元对象其内部状态是一致的</span></span><br><span class="line">       <span class="keyword">private</span> String intrinsicState;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="title">Flyweight</span><span class="params">(String intrinsicState)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">this</span>.intrinsicState=intrinsicState;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//外部状态extrinsicState在使用时由外部设置，不保存在享元对象中，即使是同一个对象，在每一次调用时也可以传入不同的外部状态</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operation</span><span class="params">(String  extrinsicState)</span> </span>&#123;</span><br><span class="line">              ......</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="完整解决方案">完整解决方案</h1><hr>
+<p>为了节约存储空间，提高系统性能，Sunny公司开发人员使用享元模式来设计围棋软件中的棋子，其基本结构如图14-4所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight4.jpg" alt="图14-4 围棋棋子结构图"><br>在图14-4中，IgoChessman充当抽象享元类，BlackIgoChessman和WhiteIgoChessman充当具体享元类，IgoChessmanFactory充当享元工厂类。完整代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//围棋棋子类：抽象享元类  </span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">IgoChessman</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getColor</span><span class="params">()</span></span>;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">"棋子颜色："</span> + <span class="keyword">this</span>.getColor());</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//黑色棋子类：具体享元类  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlackIgoChessman</span> <span class="keyword">extends</span> <span class="title">IgoChessman</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getColor</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">"黑色"</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//白色棋子类：具体享元类  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WhiteIgoChessman</span> <span class="keyword">extends</span> <span class="title">IgoChessman</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getColor</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">"白色"</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//围棋棋子工厂类：享元工厂类，使用单例模式进行设计  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IgoChessmanFactory</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> IgoChessmanFactory instance = <span class="keyword">new</span> IgoChessmanFactory();  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Hashtable ht; <span class="comment">//使用Hashtable来存储享元对象，充当享元池  </span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">IgoChessmanFactory</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        ht = <span class="keyword">new</span> Hashtable();  </span><br><span class="line">        IgoChessman black,white;  </span><br><span class="line">        black = <span class="keyword">new</span> BlackIgoChessman();  </span><br><span class="line">        ht.put(<span class="string">"b"</span>,black);  </span><br><span class="line">        white = <span class="keyword">new</span> WhiteIgoChessman();  </span><br><span class="line">        ht.put(<span class="string">"w"</span>,white);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">//返回享元工厂类的唯一实例  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IgoChessmanFactory <span class="title">getInstance</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> instance;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="comment">//通过key来获取存储在Hashtable中的享元对象  </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IgoChessman <span class="title">getIgoChessman</span><span class="params">(String color)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> (IgoChessman)ht.get(color);</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编写如下客户端测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;  </span><br><span class="line">        IgoChessman black1,black2,black3,white1,white2;  </span><br><span class="line">        IgoChessmanFactory factory;  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取享元工厂对象  </span></span><br><span class="line">        factory = IgoChessmanFactory.getInstance();  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//通过享元工厂获取三颗黑子  </span></span><br><span class="line">        black1 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        black2 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        black3 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        System.out.println(<span class="string">"判断两颗黑子是否相同："</span> + (black1==black2));  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//通过享元工厂获取两颗白子  </span></span><br><span class="line">        white1 = factory.getIgoChessman(<span class="string">"w"</span>);  </span><br><span class="line">        white2 = factory.getIgoChessman(<span class="string">"w"</span>);  </span><br><span class="line">        System.out.println(<span class="string">"判断两颗白子是否相同："</span> + (white1==white2));  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//显示棋子  </span></span><br><span class="line">        black1.display();  </span><br><span class="line">        black2.display();  </span><br><span class="line">        black3.display();  </span><br><span class="line">        white1.display();  </span><br><span class="line">        white2.display();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">判断两颗黑子是否相同：<span class="literal">true</span></span><br><span class="line">判断两颗白子是否相同：<span class="literal">true</span></span><br><span class="line">棋子颜色：黑色</span><br><span class="line">棋子颜色：黑色</span><br><span class="line">棋子颜色：黑色</span><br><span class="line">棋子颜色：白色</span><br><span class="line">棋子颜色：白色</span><br></pre></td></tr></table></figure></p>
+<p>从输出结果可以看出，虽然我们获取了三个黑子对象和两个白子对象，但是它们的内存地址相同，也就是说，它们实际上是同一个对象。在实现享元工厂类时我们使用了单例模式和简单工厂模式，确保了享元工厂对象的唯一性，并提供工厂方法来向客户端返回享元对象。</p>
+<h1 id="带外部状态的解决方案">带外部状态的解决方案</h1><hr>
+<p>Sunny软件公司开发人员通过对围棋棋子进行进一步分析，发现虽然黑色棋子和白色棋子可以共享，但是它们将显示在棋盘的不同位置，如何让相同的黑子或者白子能够多次重复显示且位于一个棋盘的不同地方？解决方法就是将棋子的位置定义为棋子的一个外部状态，在需要时再进行设置。因此，我们在图14-4中增加了一个新的类Coordinates（坐标类），用于存储每一个棋子的位置，修改之后的结构图如图14-5所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight5.jpg" alt="图14-5 引入外部状态之后的围棋棋子结构图"><br>在图14-5中，除了增加一个坐标类Coordinates以外，抽象享元类IgoChessman中的display()方法也将对应增加一个Coordinates类型的参数，用于在显示棋子时指定其坐标，Coordinates类和修改之后的IgoChessman类的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//坐标类：外部状态类  </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Coordinates</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> y;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Coordinates</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.x = x;  </span><br><span class="line">        <span class="keyword">this</span>.y = y;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.x;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.x = x;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.y;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.y = y;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//围棋棋子类：抽象享元类  </span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">IgoChessman</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getColor</span><span class="params">()</span></span>;  </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">(Coordinates coord)</span></span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">"棋子颜色："</span> + <span class="keyword">this</span>.getColor() + <span class="string">"，棋子位置："</span> + coord.getX() + <span class="string">"，"</span> + coord.getY() );</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>客户端测试代码修改如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;  </span><br><span class="line">        IgoChessman black1,black2,black3,white1,white2;  </span><br><span class="line">        IgoChessmanFactory factory;  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取享元工厂对象  </span></span><br><span class="line">        factory = IgoChessmanFactory.getInstance();  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//通过享元工厂获取三颗黑子  </span></span><br><span class="line">        black1 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        black2 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        black3 = factory.getIgoChessman(<span class="string">"b"</span>);  </span><br><span class="line">        System.out.println(<span class="string">"判断两颗黑子是否相同："</span> + (black1==black2));  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//通过享元工厂获取两颗白子  </span></span><br><span class="line">        white1 = factory.getIgoChessman(<span class="string">"w"</span>);  </span><br><span class="line">        white2 = factory.getIgoChessman(<span class="string">"w"</span>);  </span><br><span class="line">        System.out.println(<span class="string">"判断两颗白子是否相同："</span> + (white1==white2));  </span><br><span class="line"></span><br><span class="line">        <span class="comment">//显示棋子，同时设置棋子的坐标位置  </span></span><br><span class="line">        black1.display(<span class="keyword">new</span> Coordinates(<span class="number">1</span>,<span class="number">2</span>));  </span><br><span class="line">        black2.display(<span class="keyword">new</span> Coordinates(<span class="number">3</span>,<span class="number">4</span>));  </span><br><span class="line">        black3.display(<span class="keyword">new</span> Coordinates(<span class="number">1</span>,<span class="number">3</span>));  </span><br><span class="line">        white1.display(<span class="keyword">new</span> Coordinates(<span class="number">2</span>,<span class="number">5</span>));  </span><br><span class="line">        white2.display(<span class="keyword">new</span> Coordinates(<span class="number">2</span>,<span class="number">4</span>));  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行程序，输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">判断两颗黑子是否相同：<span class="literal">true</span></span><br><span class="line">判断两颗白子是否相同：<span class="literal">true</span></span><br><span class="line">棋子颜色：黑色，棋子位置：<span class="number">1</span>，<span class="number">2</span></span><br><span class="line">棋子颜色：黑色，棋子位置：<span class="number">3</span>，<span class="number">4</span></span><br><span class="line">棋子颜色：黑色，棋子位置：<span class="number">1</span>，<span class="number">3</span></span><br><span class="line">棋子颜色：白色，棋子位置：<span class="number">2</span>，<span class="number">5</span></span><br><span class="line">棋子颜色：白色，棋子位置：<span class="number">2</span>，<span class="number">4</span></span><br></pre></td></tr></table></figure></p>
+<p>从输出结果可以看到，在每次调用display()方法时，都设置了不同的外部状态——坐标值，因此相同的棋子对象虽然具有相同的颜色，但是它们的坐标值不同，将显示在棋盘的不同位置。</p>
+<h1 id="单纯享元模式和复合享元模式">单纯享元模式和复合享元模式</h1><hr>
+<p>标准的享元模式结构图中既包含可以共享的具体享元类，也包含不可以共享的非共享具体享元类。但是在实际使用过程中，我们有时候会用到两种特殊的享元模式：单纯享元模式和复合享元模式，下面将对这两种特殊的享元模式进行简单的介绍：</p>
+<h2 id="单纯享元模式">单纯享元模式</h2><p>在单纯享元模式中，所有的具体享元类都是可以共享的，不存在非共享具体享元类。单纯享元模式的结构如图14-6所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight6.jpg" alt="图14-6  单纯享元模式结构图"></p>
+<h2 id="复合享元模式">复合享元模式</h2><p>将一些单纯享元对象使用组合模式加以组合，还可以形成复合享元对象，这样的复合享元对象本身不能共享，但是它们可以分解成单纯享元对象，而后者则可以共享。复合享元模式的结构如图14-7所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/flyweight7.jpg" alt="图14-7  复合享元模式结构图"></p>
+<p>通过复合享元模式，可以确保复合享元类CompositeConcreteFlyweight中所包含的每个单纯享元类ConcreteFlyweight都具有相同的外部状态，而这些单纯享元的内部状态往往可以不同。如果希望为多个内部状态不同的享元对象设置相同的外部状态，可以考虑使用复合享元模式。</p>
+<h1 id="关于享元模式的几点补充">关于享元模式的几点补充</h1><hr>
+<h2 id="与其他模式的联用">与其他模式的联用</h2><p>享元模式通常需要和其他模式一起联用，几种常见的联用方式如下：</p>
+<ol>
+<li>在享元模式的享元工厂类中通常提供一个静态的工厂方法用于返回享元对象，使用简单工厂模式来生成享元对象。</li>
+<li>在一个系统中，通常只有唯一一个享元工厂，因此可以使用单例模式进行享元工厂类的设计。</li>
+<li>享元模式可以结合组合模式形成复合享元模式，统一对多个享元对象设置外部状态。</li>
+</ol>
+<h2 id="享元模式与String类">享元模式与String类</h2><p>JDK类库中的String类使用了享元模式，我们通过如下代码来加以说明：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span>  <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">              String  str1 = <span class="string">"abcd"</span>;</span><br><span class="line">              String  str2 = <span class="string">"abcd"</span>;</span><br><span class="line">              String  str3 = <span class="string">"ab"</span> + <span class="string">"cd"</span>;</span><br><span class="line">              String  str4 = <span class="string">"ab"</span>;</span><br><span class="line">              str4  += <span class="string">"cd"</span>;</span><br><span class="line"></span><br><span class="line">              System.out.println(str1  == str2);</span><br><span class="line">              System.out.println(str1  == str3);</span><br><span class="line">              System.out.println(str1  == str4);</span><br><span class="line"></span><br><span class="line">              str2  += <span class="string">"e"</span>;</span><br><span class="line">              System.out.println(str1  == str2);</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在Java语言中，如果每次执行类似String str1=”abcd”的操作时都创建一个新的字符串对象将导致内存开销很大，因此如果第一次创建了内容为”abcd”的字符串对象str1，下一次再创建内容相同的字符串对象str2时会将它的引用指向”abcd”，不会重新分配内存空间，从而实现了”abcd”在内存中的共享。上述代码输出结果如下：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="literal">false</span></span><br><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看出，前两个输出语句均为true，说明str1、str2、str3在内存中引用了相同的对象；如果有一个字符串str4，其初值为”ab”，再对它进行操作str4 += “cd”，此时虽然str4的内容与str1相同，但是由于str4的初始值不同，在创建str4时重新分配了内存，所以第三个输出语句结果为false；最后一个输出语句结果也为false，说明当对str2进行修改时将创建一个新的对象，修改工作在新对象上完成，而原来引用的对象并没有发生任何改变，str1仍然引用原有对象，而str2引用新对象，str1与str2引用了两个完全不同的对象。</p>
+<h1 id="享元模式总结">享元模式总结</h1><hr>
+<p>当系统中存在大量相同或者相似的对象时，享元模式是一种较好的解决方案，它通过共享技术实现相同或相似的细粒度对象的复用，从而节约了内存空间，提高了系统性能。相比其他结构型设计模式，享元模式的使用频率并不算太高，但是作为一种以“节约内存，提高性能”为出发点的设计模式，它在软件开发中还是得到了一定程度的应用。</p>
+<h2 id="主要优点">主要优点</h2><p>享元模式的主要优点如下：</p>
+<ol>
+<li>可以极大减少内存中对象的数量，使得相同或相似对象在内存中只保存一份，从而可以节约系统资源，提高系统性能。</li>
+<li>享元模式的外部状态相对独立，而且不会影响其内部状态，从而使得享元对象可以在不同的环境中被共享。</li>
+</ol>
+<h2 id="主要缺点">主要缺点</h2><p>享元模式的主要缺点如下：</p>
+<ol>
+<li>享元模式使得系统变得复杂，需要分离出内部状态和外部状态，这使得程序的逻辑复杂化。</li>
+<li>为了使对象可以共享，享元模式需要将享元对象的部分状态外部化，而读取外部状态将使得运行时间变长。</li>
+</ol>
+<h2 id="适用场景">适用场景</h2><p>在以下情况下可以考虑使用享元模式：</p>
+<ol>
+<li>一个系统有大量相同或者相似的对象，造成内存的大量耗费。</li>
+<li>对象的大部分状态都可以外部化，可以将这些外部状态传入对象中。</li>
+<li>在使用享元模式时需要维护一个存储享元对象的享元池，而这需要耗费一定的系统资源，因此，应当在需要多次重复使用享元对象时才值得使用享元模式。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/26/designPattern/设计模式：实现对象的复用——享元模式/" data-title="设计模式：实现对象的复用——享元模式 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/07/26/designPattern/设计模式：深入浅出外观模式/"  title="设计模式：深入浅出外观模式">
+ <strong>下一篇：</strong><br/> 
+ <span>设计模式：深入浅出外观模式
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/26/designPattern/设计模式：实现对象的复用——享元模式/" data-title="设计模式：实现对象的复用——享元模式" data-url="http://yoursite.com/2015/07/26/designPattern/设计模式：实现对象的复用——享元模式/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#围棋棋子的设计"><span class="toc-number">1.</span> <span class="toc-text">围棋棋子的设计</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#享元模式概述"><span class="toc-number">2.</span> <span class="toc-text">享元模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#带外部状态的解决方案"><span class="toc-number">4.</span> <span class="toc-text">带外部状态的解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#单纯享元模式和复合享元模式"><span class="toc-number">5.</span> <span class="toc-text">单纯享元模式和复合享元模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#单纯享元模式"><span class="toc-number">5.1.</span> <span class="toc-text">单纯享元模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复合享元模式"><span class="toc-number">5.2.</span> <span class="toc-text">复合享元模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于享元模式的几点补充"><span class="toc-number">6.</span> <span class="toc-text">关于享元模式的几点补充</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#与其他模式的联用"><span class="toc-number">6.1.</span> <span class="toc-text">与其他模式的联用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#享元模式与String类"><span class="toc-number">6.2.</span> <span class="toc-text">享元模式与String类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#享元模式总结"><span class="toc-number">7.</span> <span class="toc-text">享元模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">7.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">7.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">7.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1901372893&verifier=cbe23457&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1901372893" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

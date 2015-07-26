@@ -25,7 +25,10 @@
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge4.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge5.gif">
 <meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge6.gif">
-<meta property="og:updated_time" content="2015-07-25T14:37:14.248Z">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge7.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge8.jpg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/bridge9.jpg">
+<meta property="og:updated_time" content="2015-07-26T04:59:40.987Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式：处理多维度变化——桥接模式">
 <meta name="twitter:description" content="桥接模式-Bridge Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】
@@ -109,7 +112,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台图像浏览系统"><span class="toc-number">1.</span> <span class="toc-text">跨平台图像浏览系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式概述"><span class="toc-number">2.</span> <span class="toc-text">桥接模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式与桥接模式的联用"><span class="toc-number">4.</span> <span class="toc-text">适配器模式与桥接模式的联用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式总结"><span class="toc-number">5.</span> <span class="toc-text">桥接模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">5.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">5.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">5.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台图像浏览系统"><span class="toc-number">1.</span> <span class="toc-text">跨平台图像浏览系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式概述"><span class="toc-number">2.</span> <span class="toc-text">桥接模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式与桥接模式的联用"><span class="toc-number">4.</span> <span class="toc-text">适配器模式与桥接模式的联用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#典型例子-JDBC"><span class="toc-number">5.</span> <span class="toc-text">典型例子-JDBC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式总结"><span class="toc-number">6.</span> <span class="toc-text">桥接模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">6.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">6.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">6.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
 		
 		</div>
 		
@@ -157,6 +160,18 @@
 <p>下面通过一个实例来说明适配器模式和桥接模式的联合使用：</p>
 <p>在某系统的报表处理模块中，需要将报表显示和数据采集分开，系统可以有多种报表显示方式也可以有多种数据采集方式，如可以从文本文件中读取数据，也可以从数据库中读取数据，还可以从Excel文件中获取数据。如果需要从Excel文件中获取数据，则需要调用与Excel相关的API，而这个API是现有系统所不具备的，该API由厂商提供。使用适配器模式和桥接模式设计该模块。</p>
 <p>在设计过程中，由于存在报表显示和数据采集两个独立变化的维度，因此可以使用桥接模式进行初步设计；为了使用Excel相关的API来进行数据采集则需要使用适配器模式。系统的完整设计中需要将两个模式联用，如图10-6所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/bridge6.gif" alt=""></p>
+<h1 id="典型例子-JDBC">典型例子-JDBC</h1><hr>
+<p>该例子并不是原文章中提供了，而是我自己加上为了更好的理解桥接模式。<br>以下内容摘抄于：<a href="http://www.oschina.net/question/1435262_140274#tags_nav" target="_blank" rel="external">研磨设计模式 之 桥接模式（Bridge）</a></p>
+<p>在Java应用中，对于桥接模式有一个非常典型的例子，就是：应用程序使用JDBC驱动程序进行开发的方式。所谓驱动程序，指的是按照预先约定好的接口来操作计算机系统或者是外围设备的程序。</p>
+<p>先简单的回忆一下使用JDBC进行开发的过程，简单的片断代码示例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">String sql = <span class="string">"具体要操作的sql语句"</span>;</span><br><span class="line"><span class="comment">// 1：装载驱动</span></span><br><span class="line">Class.forName(<span class="string">"驱动的名字"</span>);</span><br><span class="line">Connection conn = DriverManager.getConnection(<span class="string">"连接数据库服务的URL"</span>, <span class="string">"用户名"</span>,<span class="string">"密码"</span>);</span><br><span class="line"><span class="comment">// 3：创建statement或者是preparedStatement</span></span><br><span class="line">PreparedStatement pstmt = conn.prepareStatement(sql);</span><br><span class="line"><span class="comment">// 4：执行sql，如果是查询，再获取ResultSet</span></span><br><span class="line">ResultSet rs = pstmt.executeQuery(sql);</span><br><span class="line"><span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line"><span class="comment">// 取值示意，按名称取值</span></span><br><span class="line">String uuid = rs.getString(<span class="string">"uuid"</span>);</span><br><span class="line"><span class="comment">// 取值示意，按索引取值</span></span><br><span class="line"><span class="keyword">int</span> age = rs.getInt(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//6：关闭</span></span><br><span class="line">rs.close();</span><br><span class="line">pstmt.close();</span><br><span class="line">conn.close();</span><br></pre></td></tr></table></figure></p>
+<p>从上面的示例可以看出，我们写的应用程序，是面向JDBC的API在开发，这些接口就相当于桥接模式中的抽象部分的接口。那么怎样得到这些API的呢？是通过DriverManager来得到的。此时的系统结构如图7所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/bridge7.jpg" alt="图7 基于JDBC开发的应用程序结构示意图"><br>那么这些JDBC的API，谁去实现呢？光有接口，没有实现也不行啊。</p>
+<p>该驱动程序登场了，JDBC的驱动程序实现了JDBC的API，驱动程序就相当于桥接模式中的具体实现部分。而且不同的数据库，由于数据库实现不一样，可执行的Sql也不完全一样，因此对于JDBC驱动的实现也是不一样的，也就是不同的数据库会有不同的驱动实现。此时驱动程序这边的程序结构如图8所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/bridge8.jpg" alt="图8 驱动程序实现结构示意图"><br>有了抽象部分——JDBC的API，有了具体实现部分——驱动程序，那么它们如何连接起来呢？就是如何桥接呢？</p>
+<p>就是前面提到的DriverManager来把它们桥接起来，从某个侧面来看，DriverManager在这里起到了类似于简单工厂的功能，基于JDBC的应用程序需要使用JDBC的API，如何得到呢？就通过DriverManager来获取相应的对象。</p>
+<p>那么此时系统的整体结构如图9所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/bridge9.jpg" alt="图9 JDBC的结构示意图"></p>
+<p>通过上图可以看出，基于JDBC的应用程序，使用JDBC的API，相当于是对数据库操作的抽象的扩展，算作桥接模式的抽象部分；而具体的接口实现是由驱动来完成的，驱动这边自然就相当于桥接模式的实现部分了。而桥接的方式，不再是让抽象部分持有实现部分，而是采用了类似于工厂的做法，通过DriverManager来把抽象部分和实现部分对接起来，从而实现抽象部分和实现部分解耦。</p>
+<p>JDBC的这种架构，把抽象和具体分离开来，从而使得抽象和具体部分都可以独立扩展。对于应用程序而言，只要选用不同的驱动，就可以让程序操作不同的数据库，而无需更改应用程序，从而实现在不同的数据库上移植；对于驱动程序而言，为数据库实现不同的驱动程序，并不会影响应用程序。而且，JDBC的这种架构，还合理的划分了应用程序开发人员和驱动程序开发人员的边界。</p>
+<p>对于有些朋友会认为，从局部来看，体现了策略模式，比如在上面的结构中去掉“JDBC的API和基于JDBC的应用程序”这边，那么剩下的部分，看起来就是一个策略模式的体现。此时的DriverManager就相当于上下文，而各个具体驱动的实现就相当于是具体的策略实现，这个理解也不算错，但是在这里看来，这么理解是比较片面的。</p>
+<p>对于这个问题，再次强调一点：对于设计模式，要从整体结构上、从本质目标上、从思想体现上来把握，而不要从局部、从表现、从特例实现上来把握。</p>
 <h1 id="桥接模式总结">桥接模式总结</h1><hr>
 <p>桥接模式是设计Java虚拟机和实现JDBC等驱动程序的核心模式之一，应用较为广泛。在软件开发中如果一个类或一个系统有多个变化维度时，都可以尝试使用桥接模式对其进行设计。桥接模式为多维度变化的系统提供了一套完整的解决方案，并且降低了系统的复杂度。</p>
 <h2 id="主要优点">主要优点</h2><p>桥接模式的主要优点如下：</p>
@@ -243,7 +258,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台图像浏览系统"><span class="toc-number">1.</span> <span class="toc-text">跨平台图像浏览系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式概述"><span class="toc-number">2.</span> <span class="toc-text">桥接模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式与桥接模式的联用"><span class="toc-number">4.</span> <span class="toc-text">适配器模式与桥接模式的联用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式总结"><span class="toc-number">5.</span> <span class="toc-text">桥接模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">5.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">5.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">5.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台图像浏览系统"><span class="toc-number">1.</span> <span class="toc-text">跨平台图像浏览系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式概述"><span class="toc-number">2.</span> <span class="toc-text">桥接模式概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#完整解决方案"><span class="toc-number">3.</span> <span class="toc-text">完整解决方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#适配器模式与桥接模式的联用"><span class="toc-number">4.</span> <span class="toc-text">适配器模式与桥接模式的联用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#典型例子-JDBC"><span class="toc-number">5.</span> <span class="toc-text">典型例子-JDBC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#桥接模式总结"><span class="toc-number">6.</span> <span class="toc-text">桥接模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#主要优点"><span class="toc-number">6.1.</span> <span class="toc-text">主要优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要缺点"><span class="toc-number">6.2.</span> <span class="toc-text">主要缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适用场景"><span class="toc-number">6.3.</span> <span class="toc-text">适用场景</span></a></li></ol></li></ol>
  
   </div>
 
@@ -285,7 +300,7 @@
 		  
 		
 		  
-			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>9</sup></a></li>
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
 		  
 		
 		</ul>
@@ -298,15 +313,15 @@
 		<ul class="clearfix">
 		
 			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>9</sup></a></li>
 			
 		
 			
