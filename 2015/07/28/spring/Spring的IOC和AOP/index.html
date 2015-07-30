@@ -1,0 +1,640 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Spring的IOC和AOP | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="Spring的简单理解
+Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。Spring最根本的使命：简化Java开发。为了降低Java开发的复杂性，Spring采取以下4种关键策略：
+
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模版减少样板示代码
+
+很多人对Spri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring的IOC和AOP">
+<meta property="og:url" content="http://yoursite.com/2015/07/28/spring/Spring的IOC和AOP/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="Spring的简单理解
+Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。Spring最根本的使命：简化Java开发。为了降低Java开发的复杂性，Spring采取以下4种关键策略：
+
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模版减少样板示代码
+
+很多人对Spri">
+<meta property="og:updated_time" content="2015-07-28T02:59:17.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring的IOC和AOP">
+<meta name="twitter:description" content="Spring的简单理解
+Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。Spring最根本的使命：简化Java开发。为了降低Java开发的复杂性，Spring采取以下4种关键策略：
+
+基于POJO的轻量级和最小侵入性编程
+通过依赖注入和面向接口实现松耦合
+基于切面和惯例进行声明式编程
+通过切面和模版减少样板示代码
+
+很多人对Spri">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/28/spring/Spring的IOC和AOP/" title="Spring的IOC和AOP" itemprop="url">Spring的IOC和AOP</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-28T02:11:52.000Z" itemprop="datePublished"> 发表于 2015-07-28</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的简单理解"><span class="toc-number">1.</span> <span class="toc-text">Spring的简单理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的优点"><span class="toc-number">2.</span> <span class="toc-text">Spring的优点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的IOC"><span class="toc-number">3.</span> <span class="toc-text">Spring的IOC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的AOP"><span class="toc-number">4.</span> <span class="toc-text">Spring的AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring的AOP代理对象的生成"><span class="toc-number">4.1.</span> <span class="toc-text">Spring的AOP代理对象的生成</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h1 id="Spring的简单理解">Spring的简单理解</h1><hr>
+<p>Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。<br>Spring最根本的使命：<font color="#ff0000"><strong>简化Java开发。</strong></font><br>为了降低Java开发的复杂性，Spring采取以下4种关键策略：</p>
+<ol>
+<li>基于POJO的轻量级和最小侵入性编程</li>
+<li>通过依赖注入和面向接口实现松耦合</li>
+<li>基于切面和惯例进行声明式编程</li>
+<li>通过切面和模版减少样板示代码</li>
+</ol>
+<p>很多人对Spring理解其实都是停留在使用阶段（例如：声明式事务很好用等等），当今的Spring技术生态环境里可谓是蔚为壮观，Spring已经包罗万象，它的内容之多完全不亚于它的本源Java语言了，而Spring这么大的框都是建立在IOC和AOP技术之上，只有深入理解了这两个技术我们才能明白为什么Spring这个框能装的下那么多东西了。在理解IOC和AOP之前，可以先看一下Spring给我们带来了哪些好处。</p>
+<h1 id="Spring的优点">Spring的优点</h1><hr>
+<ul>
+<li><font color="#ff0000">轻量级</font>：相较于EJB容器，Spring采用的IoC容器非常的轻量级，基础版本的Spring框架大约只有2MB。Spring可以让开发者们仅仅使用POJO(Plain Old Java Object，相对于EJB)就能够开发出企业级的应用。这样做的好处是，你不需要使用臃肿庞大的 EJB容器(应用服务器)，你只需要轻量的servlet容器(如Tomcat)。尤其在一些开发当中，很稀缺内存和CPU资源时，采用Spring比EJB无论是开发还是部署应用都更节约资源。</li>
+<li><font color="#ff0000">控制反转(IOC)</font>：Spring使用控制反转技术实现了松耦合。依赖被注入到对象，而不是创建或寻找依赖对象。</li>
+<li><font color="#ff0000">面向切面编程(AOP)</font>： Spring支持面向切面编程，同时把应用的业务逻辑与系统的服务分离开来。</li>
+<li><font color="#ff0000">MVC框架</font>：Spring MVC是一个非常好的MVC框架，可以替换其他web框架诸如Struts。</li>
+<li><font color="#ff0000">集成性</font>：Spring非常容易和其他的流行框架一起集成开发，这些框架包括：ORM框架，logging框架，JEE, Quartz，以及Struts等表现层框架。</li>
+<li><font color="#ff0000">事务管理</font>：Spring强大的事务管理功能，能够处理本地事务(一个数据库)或是全局事务(多个数据，采用JTA)。</li>
+<li><font color="#ff0000">模块分离</font>：Spring框架是由模块构成的。虽然已经有太多的包和类了，但它们都按照模块分好类了，你只需要考虑你会用到的模块，而不用理其他的模块。</li>
+<li><font color="#ff0000">异常处理</font>：由于Java的JDBC，Hibernate等API中有很多方法抛出的是checked exception，而很多开发者并不能很好的处理异常。Spring提供了统一的API将这些checked exception的异常转换成Spring的unchecked exception。</li>
+<li><font color="#ff0000">单元测试</font>：Spring写出来的代码非常容易做单元测试，可以采用依赖注射(Dependency Injection)将测试的数据注射到程序中。</li>
+</ul>
+<h1 id="Spring的IOC">Spring的IOC</h1><hr>
+<p>IOC技术第一个解释叫做控制反转(IOC)，它还有个解释就是依赖注入(DI)，这两个名字很难从字面理解，但是当你理解它的原理后就会发现它们的描述是何等准确。<strong>IOC技术的本质就是构建对象的技术换句话说就是将一个类实例化成对象的技术。</strong></p>
+<p>耦合具有两面性。一方面，紧密耦合的代码难以测试，难以复用，难以理解，并且表现出“打地鼠”式的bug特性（修复一个bug，导致出现一个新的或者甚至更多的bug）。另一方面，一定程度的耦合又是必须的，完全没有耦合的代码什么也做不了。为了完成有实际意义的工作，不同的类必须以适当的方式进行交互。总而言之，耦合是必须的，但应当小心谨慎的管理它。通过控制反转或者依赖注入，对象的依赖关系将由负责协调系统中各个对象的第三方组件在创建对象时设定。对象无需自行创建或管理它们的依赖关系，依赖关系将被自动注入到需要它们的对象中去。</p>
+<p>我们通过实际生活中的一个例子来解释一下IOC：</p>
+<p>例如我们有个roo对象作用是完成打猎的操作，那么打猎这个对象内部包含两个辅助对象：人和枪，只有人和枪赋予了打猎这个对象，那么打猎对象才能完成打猎的操作，但是构建一个人和枪的对象并不是看起来那么简单，这里以枪为例，要创造一把枪我们需要金属，需要机床，需要子弹，而机床和子弹又是两个新对象，这些对象一个个相互嵌套相互关联，大伙试想下如果我们在java代码里构建一个枪的对象那是何其的复杂，假如我们要构造的不是简单的枪对象而是更加复杂的航空母舰，那么构造这个对象的成本之高是让人难以想象的，怎么来消除这种对象相互嵌套相互依赖的关系了？</p>
+<p>Spring提供了一种方式，这种方式就是Spring提供一个容器，我们在xml文件里定义各个对象的依赖关系，由容器完成对象的构建，当我们Java代码里需要使用某个实例的时候就可以从容器里获取，那么对象的构建操作就被Spring容器接管，所以它被称为控制反转。</p>
+<p><font color="#ff0000">控制反转的意思就是本来属于java程序里构建对象的功能交由容器接管，依赖注入就是当程序要使用某个对象时候，容器会把它注入到程序里。</font>在Java开发里我们想使用某个类提供的功能，有两种方式：一种就是构造一个新的类，新的类继承该类，另一种方式则是将某个类定义在新类里，那么两个类之间就建立一种关联关系，Spring的IOC容器就是实现了这种关联关系。</p>
+<p>通过上面这段内容，相信大家应该会对IOC有个比较清晰的了解了。关于Spring中IOC部分是如何实现以及使用，就不进行讨论了，本文的目的也是能从整体上把握一下。但可以稍微提一点，Spring的IOC功能其实就是依赖于Java的反射机制。直白点说，当你在xml文件中配置好了bean（bean需要提供全类名）之后，Spring通过自己的类对xml文件进行解析，然后利用反射机制将对象创建出来，然后放到自己的数据结构中，比如Map。然后键就是bean中的id属性的值，值就是创建的对象。</p>
+<h1 id="Spring的AOP">Spring的AOP</h1><hr>
+<p>在设计模式里有一种代理模式，代理模式将继承模式和关联模式结合在一起使用，代理模式就是继承模式和关联模式的综合体，不过这个综合体的作用倒不是解决对象注入的问题，而是为具体操作对象找到一个保姆或者是秘书，这就和小说里的二号首长一样，这个二号首长对外代表了具体的实例对象，实例对象的入口和出口都是通过这个二号首长，具体的实例对象是一号首长，一号首长是要干大事的，所以一些事务性，重复性的工作例如泡茶，安排车子，这样的工作是不用劳烦一号首长的大驾，而是二号首长帮忙解决的，这就是AOP的思想。<font color="#ff0000">AOP解决程序开发里事务性，和核心业务无关的问题，但这些问题对于业务场景的实现是很有必要的</font>，在实际开发里AOP也是节省代码的一种方式。</p>
+<p>AOP将应用系统分为两部分，核心业务逻辑（Core business concerns）及横向的通用逻辑，也就是所谓的方面Crosscutting enterprise concerns，例如，所有大中型应用都要涉及到的持久化管理（Persistent）、事务管理（Transaction Management）、安全管理（Security）、日志管理（Logging）和调试管理（Debugging）等。</p>
+<p>实现AOP的技术，主要分为两大类：一是采用动态代理技术，利用截取消息的方式，对该消息进行装饰，以取代原有对象行为的执行；二是采用静态织入的方式，引入特定的语法创建“方面”，从而使得编译器可以在编译期间织入有关“方面”的代码。</p>
+<h2 id="Spring的AOP代理对象的生成">Spring的AOP代理对象的生成</h2><p>Spring提供了两种方式来生成代理对象: JDKProxy和Cglib，具体使用哪种方式生成由AopProxyFactory根据AdvisedSupport对象的配置来决定。默认的策略是如果目标类是接口，则使用JDK动态代理技术，否则使用Cglib来生成代理。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Spring/">Spring</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/AOP/">AOP</a><a href="/tags/IOC/">IOC</a><a href="/tags/Spring/">Spring</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/28/spring/Spring的IOC和AOP/" data-title="Spring的IOC和AOP | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/07/28/spring/Spring声明式事务管理/"  title="Spring声明式事务管理">
+ <strong>下一篇：</strong><br/> 
+ <span>Spring声明式事务管理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/28/spring/Spring的IOC和AOP/" data-title="Spring的IOC和AOP" data-url="http://yoursite.com/2015/07/28/spring/Spring的IOC和AOP/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的简单理解"><span class="toc-number">1.</span> <span class="toc-text">Spring的简单理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的优点"><span class="toc-number">2.</span> <span class="toc-text">Spring的优点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的IOC"><span class="toc-number">3.</span> <span class="toc-text">Spring的IOC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring的AOP"><span class="toc-number">4.</span> <span class="toc-text">Spring的AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring的AOP代理对象的生成"><span class="toc-number">4.1.</span> <span class="toc-text">Spring的AOP代理对象的生成</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Spring/" title="Spring">Spring<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1901372893&verifier=cbe23457&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1901372893" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,653 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>RESTful的理解 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。
+概述
+REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RESTful的理解">
+<meta property="og:url" content="http://yoursite.com/2015/07/27/RESTful的理解/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。
+概述
+REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源">
+<meta property="og:updated_time" content="2015-07-27T14:09:10.293Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RESTful的理解">
+<meta name="twitter:description" content="REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。
+概述
+REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/27/RESTful的理解/" title="RESTful的理解" itemprop="url">RESTful的理解</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-27T13:47:52.000Z" itemprop="datePublished"> 发表于 2015-07-27</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#设计原则"><span class="toc-number">2.</span> <span class="toc-text">设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#显式地使用不同的_HTTP_请求方法"><span class="toc-number">2.1.</span> <span class="toc-text">显式地使用不同的 HTTP 请求方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#无状态"><span class="toc-number">2.2.</span> <span class="toc-text">无状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过逻辑URI定位资源"><span class="toc-number">2.3.</span> <span class="toc-text">通过逻辑URI定位资源</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于RESTful优点，知乎中的一些回答"><span class="toc-number">4.</span> <span class="toc-text">关于RESTful优点，知乎中的一些回答</span></a></li></ol>
+		
+		</div>
+		
+		<p>REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。</p>
+<h1 id="概述">概述</h1><hr>
+<p>REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源状态。REST对Web的影响非常大，由于其使用很方便，已经普遍取代了基于SOAP和WSDL的接口设计。<br><a id="more"></a></p>
+<h1 id="设计原则">设计原则</h1><hr>
+<ol>
+<li>显式地使用不同的 HTTP 请求方法</li>
+<li>无状态</li>
+<li>公开目录结构式的 URI(通过逻辑URI定位资源)。</li>
+</ol>
+<h2 id="显式地使用不同的_HTTP_请求方法">显式地使用不同的 HTTP 请求方法</h2><p>我们在 Web 应用中处理来自客户端的请求时，通常只考虑 GET 和 POST 这两种 HTTP 请求方法。实际上，HTTP 还有 HEAD、PUT、DELETE 等请求方法。而在 REST 架构中，用不同的 HTTP 请求方法来处理对资源的 CRUD（创建、读取、更新和删除）操作：</p>
+<ul>
+<li>若要在服务器上创建资源，应该使用 POST 方法。</li>
+<li>若要检索某个资源，应该使用 GET 方法。</li>
+<li>若要更改资源状态或对其进行更新，应该使用 PUT 方法。</li>
+<li>若要删除某个资源，应该使用 DELETE 方法。</li>
+</ul>
+<p>经过这样的一番扩展，我们对一个资源的 CRUD 操作就可以通过同一个 URI 完成了：</p>
+<p>（读取）[GET] <a href="http://www.example.com/photo/logo" target="_blank" rel="external">http://www.example.com/photo/logo</a><br>仍然保持为 [GET] <a href="http://www.example.com/photo/logo" target="_blank" rel="external">http://www.example.com/photo/logo</a></p>
+<p>（创建）<a href="http://www.example.com/photo/logo/create" target="_blank" rel="external">http://www.example.com/photo/logo/create</a><br>改为 [POST] <a href="http://www.example.com/photo/logo" target="_blank" rel="external">http://www.example.com/photo/logo</a></p>
+<p>（更新）<a href="http://www.example.com/photo/logo/update" target="_blank" rel="external">http://www.example.com/photo/logo/update</a><br>改为 [PUT] <a href="http://www.example.com/photo/logo" target="_blank" rel="external">http://www.example.com/photo/logo</a></p>
+<p>（删除）<a href="http://www.example.com/photo/logo/delete" target="_blank" rel="external">http://www.example.com/photo/logo/delete</a><br>改为 [DELETE]  <a href="http://www.example.com/photo/logo" target="_blank" rel="external">http://www.example.com/photo/logo</a></p>
+<p>从而进一步规范了资源标识的使用。</p>
+<p>通过 REST 架构，Web 应用程序可以用一致的接口（URI）暴露资源给外部世界，并对资源提供语义一致的操作服务。这对于以资源为中心的 Web 应用来说非常重要。</p>
+<h2 id="无状态">无状态</h2><p>应该注意区别应用的状态和连接协议的状态。REST对于连接的无状态性实际上要求每次经过无状态的连接协议传送的信息必须包含应用中所有的状态信息。</p>
+<p><strong>在 REST 的定义中，一个 Web 应用总是使用固定的 URI 向外部世界呈现一个资源。它认为Web是由一系列的抽象资源组成，这些抽象的资源具有不同的具体表现形式。</strong></p>
+<p>譬如，定义一个资源为photo，含义是照片，它的表现形式可以是一个图片，也可以是一个.xml的文件，其中包含一些描述该照片的元素，或是一个html文件。 并且这些具体的表现可以分布在不同的物理位置上。</p>
+<h2 id="通过逻辑URI定位资源">通过逻辑URI定位资源</h2><p>实现这种级别的可用性的方法之一是定义目录结构式的 URI。此类 URI 具有层次结构，其根为单个路径，从根开始分支的是公开服务的主要方面的子路径。 根据此定义，URI 并不只是斜杠分隔的字符串，而是具有在节点上连接在一起的下级和上级分支的树。例如，在一个收集photo的相册中，您可能定义类似如下的结构化 URI 集合：<br><a href="http://www.example.com/photo/topics/{topic}" target="_blank" rel="external">http://www.example.com/photo/topics/{topic}</a></p>
+<p>如：<a href="http://www.example.com/photo/topics/home" target="_blank" rel="external">http://www.example.com/photo/topics/home</a></p>
+<p>根 / photo之下有一个 /topics 节点。 该节点之下有一系列主题名称，例如生日照片，聚会照片等等，每个主题名称指向某个讨论线。 在此结构中，只需在 {topic}输入某个内容即可容易地收集讨论线程。</p>
+<p>在某些情况下，指向资源的路径尤其适合于目录式结构。 例如，以按日期进行组织的资源为例，这种资源非常适合于使用层次结构语法。<br>此示例非常直观，因为它基于规则：<br><a href="http://www.example.com/photo/2010/02/22/{topic}" target="_blank" rel="external">http://www.example.com/photo/2010/02/22/{topic}</a></p>
+<p>第一个路径片段是四个数字的年份，第二个路径片断是两个数字的月份，第三个片段是两个数字的日期。这就是我们追求的简单级别。 在语法的空隙中填入路径部分就大功告成了，因为存在用于组合 URI 的明确模式：<br><a href="http://www.example.com/photo/{year}/{day}/{month}/{topic}" target="_blank" rel="external">http://www.example.com/photo/{year}/{day}/{month}/{topic}</a></p>
+<p>从而不需要我们去这样去传递信息：<a href="http://www.example.com/photo?year=xxxx&amp;day=xxx$month=xxx&amp;topic=xxxx" target="_blank" rel="external">http://www.example.com/photo?year=xxxx&amp;day=xxx$month=xxx&amp;topic=xxxx</a></p>
+<h1 id="优点">优点</h1><hr>
+<ol>
+<li><strong>HTTP头中可见的统一接口和资源地址</strong>：通过对于HTTP Head 的解析，我们便可以了解到当前所请求的资源和请求的方式。这样做对于一些代理服务器的设置，将带来很高的处理效率。REST 系统中所有的动作和要访问的资源都可以从HTTP和URI中得到，这使得代理服务器、缓存服务器和网关很好地协调工作。而RPC模型的SOAP 要访问的资源仅从 URI无法得知，要调用的方法也无法从HTTP中得知，它们都隐藏在 SOAP 消息中。<br>同样的，在REST系统中的代理服务器还可以通过 HTTP 的动作 (GET 、 POST)来进行控制。</li>
+<li><strong>返回一般的XML格式内容</strong>：一般情况下，一个RESTful Web Service将比一个传统SOAP RPC Web Service占用更少的传输带宽。</li>
+<li><strong>安全机制</strong>：REST使用了简单有效的安全模型。REST中很容易隐藏某个资源，只需不发布它的URI；而在资源上也很容易使用一些安全策略，比如可以在每个 URI 针对 4个通用接口设置权限；再者，以资源为中心的 Web服务是防火墙友好的，因为 GET的 意思就是GET， PUT 的意思就是PUT，管理员可以通过堵塞非GET请求把资源设置为只读的，而现在的基于RPC 模型的 SOAP 一律工作在 HTTP 的 POST上。而使用 SOAP RPC模型，要访问的对象名称藏在方法的参数中，因此需要创建新的安全模型。</li>
+</ol>
+<h1 id="关于RESTful优点，知乎中的一些回答">关于RESTful优点，知乎中的一些回答</h1><hr>
+<p>知乎用户，← 我厂招聘 Web 前后端开发</p>
+<ul>
+<li>透明性，暴露资源存在。</li>
+<li>充分利用 HTTP 协议本身语义。</li>
+<li>无状态，这点非常重要。在调用一个接口（访问、操作资源）的时候，可以不用考虑上下文，不用考虑当前状态，极大的降低了复杂度。</li>
+</ul>
+<p>hebby，Yahoo！北京</p>
+<ul>
+<li>轻量，直接基于http，不在需要任何别的诸如消息协议。get/post/put/delete为CRUD操作</li>
+<li>面向资源，一目了然，具有自解释性。</li>
+<li>数据描述简单，一般以xml，json做数据交换。</li>
+</ul>
+<p>周宇刚，ThoughtWorker</p>
+<ul>
+<li>服务自解释</li>
+<li>降低服务的版本粒度</li>
+<li>降低消费者对服务内部实现细节的耦合</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/RESTful/">RESTful</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/RESTful/">RESTful</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/07/27/RESTful的理解/" data-title="RESTful的理解 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/07/28/spring/Spring声明式事务管理/" title="Spring声明式事务管理">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Spring声明式事务管理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/07/27/spring/SpringMVC原理及实例/"  title="SpringMVC原理及实例">
+ <strong>下一篇：</strong><br/> 
+ <span>SpringMVC原理及实例
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/07/27/RESTful的理解/" data-title="RESTful的理解" data-url="http://yoursite.com/2015/07/27/RESTful的理解/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#设计原则"><span class="toc-number">2.</span> <span class="toc-text">设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#显式地使用不同的_HTTP_请求方法"><span class="toc-number">2.1.</span> <span class="toc-text">显式地使用不同的 HTTP 请求方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#无状态"><span class="toc-number">2.2.</span> <span class="toc-text">无状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过逻辑URI定位资源"><span class="toc-number">2.3.</span> <span class="toc-text">通过逻辑URI定位资源</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#优点"><span class="toc-number">3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于RESTful优点，知乎中的一些回答"><span class="toc-number">4.</span> <span class="toc-text">关于RESTful优点，知乎中的一些回答</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Spring/" title="Spring">Spring<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1901372893&verifier=cbe23457&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1901372893" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
