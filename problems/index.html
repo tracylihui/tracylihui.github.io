@@ -1,25 +1,30 @@
 
-  <!DOCTYPE HTML>
+  
+    <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   
-    <title>标签 : 设计模式 | 李大辉</title>
+    <title>问题汇总 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="给自己提供一个总结的平台">
+    <meta name="description" content="Maven
+1、-Dmaven.multiModuleProjectDirectory system propery is not setEclipse中使用自己配的maven3.3的时候，运行maven的命令，例如clean，报错1-Dmaven.multiModuleProjectDirectory system propery is not set. Check $M2_HOME envir">
 <meta property="og:type" content="website">
-<meta property="og:title" content="李大辉">
-<meta property="og:url" content="http://yoursite.com/tags/设计模式/page/2/index.html">
+<meta property="og:title" content="问题汇总">
+<meta property="og:url" content="http://yoursite.com/problems/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="给自己提供一个总结的平台">
+<meta property="og:description" content="Maven
+1、-Dmaven.multiModuleProjectDirectory system propery is not setEclipse中使用自己配的maven3.3的时候，运行maven的命令，例如clean，报错1-Dmaven.multiModuleProjectDirectory system propery is not set. Check $M2_HOME envir">
+<meta property="og:updated_time" content="2015-08-06T08:42:14.875Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="李大辉">
-<meta name="twitter:description" content="给自己提供一个总结的平台">
+<meta name="twitter:title" content="问题汇总">
+<meta name="twitter:description" content="Maven
+1、-Dmaven.multiModuleProjectDirectory system propery is not setEclipse中使用自己配的maven3.3的时候，运行maven的命令，例如clean，报错1-Dmaven.multiModuleProjectDirectory system propery is not set. Check $M2_HOME envir">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -34,9 +39,9 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
-    <body>
-      <header>
-        
+      <body>
+        <header>
+          
 <div>
 		
 			<div id="imglogo">
@@ -75,53 +80,73 @@
 				</ul>
 			</nav>			
 </div>
-      </header>
-      <div id="container">
-        
-
-<div class="archive-title" >
-  <h2 class="tag-icon">设计模式</h2>
+        </header>
+        <div id="container">
+          <div id="main" class="page" itemscope itemprop="blogPost">
   
-</div>
-<div id="main" class="archive-part clearfix">
-  <div id="archive-page">
-
-  <section class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/problems/index.html" title="问题汇总" itemprop="url">问题汇总</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-06T08:32:09.000Z" itemprop="datePublished"> 发表于 2015-08-06</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<h1 id="Maven">Maven</h1><hr>
+<p>1、-Dmaven.multiModuleProjectDirectory system propery is not set<br>Eclipse中使用自己配的maven3.3的时候，运行maven的命令，例如clean，报错<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">-Dmaven</span><span class="built_in">.</span>multiModuleProjectDirectory system propery is <span class="literal">not</span> <span class="built_in">set</span><span class="built_in">. </span>Check <span class="variable">$M2_HOME</span> environment <span class="built_in">variable</span> <span class="literal">and</span> mvn script <span class="keyword">match</span><span class="built_in">.</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li>设置环境变量M2_HOME指向你的maven安装目录</li>
+<li>然后在Window-&gt;Preference-&gt;Java-&gt;Installed JREs-&gt;Edit在Default VM arguments中设置<code>-Dmaven.multiModuleProjectDirectory=$M2_HOME</code></li>
+</ol>
+<h1 id="Linux">Linux</h1><hr>
+<p>1、Error: Cannot retrieve metalink for repository: epel. Please verify its path and try again<br>Centos装了epel的扩展后，执行yum就开始报错。</p>
+<p><strong>解决方法:</strong></p>
+<ol>
+<li>编辑/etc/yum.repos.d/epel.repo</li>
+<li>将baseurl的注释去掉，将mirrorlist注释掉</li>
+</ol>
   
-    <a href="/2015/07/23/designPattern/设计模式：工厂三兄弟之工厂方法模式/" title="设计模式：工厂三兄弟之工厂方法模式" itemprop="url">
-  
-
-    <time datetime="2015-07-23T10:37:03.000Z" itemprop="datePublished">2015-07-23</time>
-
-
-    <h1 itemprop="name">设计模式：工厂三兄弟之工厂方法模式</h1>
-
-  </a>
-</section>
-
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/07/23/designPattern/设计模式：工厂三兄弟之简单工厂模式/" title="设计模式：工厂三兄弟之简单工厂模式" itemprop="url">
-  
-
-    <time datetime="2015-07-23T09:37:03.000Z" itemprop="datePublished">2015-07-23</time>
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
 
 
-    <h1 itemprop="name">设计模式：工厂三兄弟之简单工厂模式</h1>
-
-  </a>
-</section>
-
-
-  <nav id="page-nav" class="clearfix archive-nav">
-    <a class="extend prev" rel="prev" href="/tags/设计模式/"><span></span>Prev</a><a class="page-number" href="/tags/设计模式/">1</a><span class="page-number current">2</span>
-  </nav>
-
-  </div>
 </div>
 
-      </div>
-      <footer><div id="footer" >
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/problems/index.html" data-title="问题汇总 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="problems/index.html" data-title="问题汇总" data-url="http://yoursite.com/problems/index.html"></div>
+</section>
+
+
+</div>  
+        </div>
+        <footer><div id="footer" >
 	
 	<div class="line">
 		<span></span>
@@ -162,7 +187,7 @@
 		</p>
 </div>
 </footer>
-      <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery-2.0.3.min.js"></script>
 <script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
@@ -211,6 +236,35 @@ $(document).ready(function(){
 });
 </script>
 
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -287,5 +341,6 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 
 <!-- Tiny_search End -->
 
-    </body>
-   </html>
+      </body>
+     </html>
+     
