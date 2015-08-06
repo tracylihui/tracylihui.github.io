@@ -85,6 +85,138 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/" title="设计模式：处理多维度变化——桥接模式" itemprop="url">设计模式：处理多维度变化——桥接模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-25T13:00:03.000Z" itemprop="datePublished"> 发表于 2015-07-25</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>桥接模式-Bridge Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
+<p>在正式介绍桥接模式之前，我先跟大家谈谈两种常见文具的区别，它们是毛笔和蜡笔。假如我们需要大中小3种型号的画笔，能够绘制12种不同的颜色，如果使用蜡笔，需要准备3×12 = 36支，但如果使用毛笔的话，只需要提供3种型号的毛笔，外加12个颜料盒即可，涉及到的对象个数仅为 3 + 12 = 15，远小于36，却能实现与36支蜡笔同样的功能。如果增加一种新型号的画笔，并且也需要具有12种颜色，对应的蜡笔需增加12支，而毛笔只需增加一支。为什么会这样呢？通过分析我们可以得知：在蜡笔中，颜色和型号两个不同的变化维度（即两个不同的变化原因）融合在一起，无论是对颜色进行扩展还是对型号进行扩展都势必会影响另一个维度；但在毛笔中，颜色和型号实现了分离，增加新的颜色或者型号对另一方都没有任何影响。如果使用软件工程中的术语，我们可以认为在蜡笔中颜色和型号之间存在较强的耦合性，而毛笔很好地将二者解耦，使用起来非常灵活，扩展也更为方便。在软件开发中，我们也提供了一种设计模式来处理与画笔类似的具有多变化维度的情况，即本章将要介绍的桥接模式。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/" title="设计模式：不兼容结构的协调——适配器模式" itemprop="url">设计模式：不兼容结构的协调——适配器模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-24T09:31:03.000Z" itemprop="datePublished"> 发表于 2015-07-24</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
+<p>我的笔记本电脑的工作电压是20V，而我国的家庭用电是220V，如何让20V的笔记本电脑能够在220V的电压下工作？答案是引入一个电源适配器(AC Adapter)，俗称充电器或变压器，有了这个电源适配器，生活用电和笔记本电脑即可兼容，如图1所示：<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/24/designPattern/设计模式：复杂对象的组装与创建——建造者模式/" title="设计模式：复杂对象的组装与创建——建造者模式" itemprop="url">设计模式：复杂对象的组装与创建——建造者模式</a>
   </h1>
   <p class="article-author">By
@@ -605,142 +737,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/20/Hibernate：缓存机制的学习/" title="Hibernate：缓存机制的学习" itemprop="url">Hibernate：缓存机制的学习</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-20T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-07-20</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>Hibernate中会经常用到set等集合来表示1-N的关系。比如，我有Customer和Order两个对象。其中，在Customer中有一个Order的set集合，表示在一个顾客可以拥有多个Order，而在Order对象中存在了一个Customer的对象，表示这个Order是哪个顾客下的单。这个算是比较典型的双向1-N关联。</p>
-<p>这给我们带来了很大的好处，当我得到了Customer对象的时候，我们可以很方便的将与其相关联的Order集合查询出来，这也非常符合我们的实际业务，毕竟我们不可能给这个Cutomer对象别人的Order吧，这既不安全，而且对Customer的普通顾客来说，并无卵用。所以我们不得不说Hibernate的ORM做的很好，但凡事都有但是（要是没有但是，也就没有写这篇文章的必要了）。</p>
-<p>我们再对数据库进行访问的时候必须要考虑性能问题（通俗点讲，就是用少发SQL语句），当我们设定了1-N这种关系后，查询过程中就有可能出现N+1问题。</p>
-<p>关于N+1问题，并不是本文的重点。但关于N+1问题，我们需要知道的是，这个问题会导致SQL语句的增加，也就是要与数据库进行更多的交互，这无疑会给项目以及后台数据库带来影响。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/20/Hibernate：缓存机制的学习/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/缓存/">缓存</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/20/Hibernate：缓存机制的学习/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/20/Hibernate：缓存机制的学习/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/14/深入学习JVM3：JVM类加载机制/" title="深入学习JVM3：JVM类加载机制" itemprop="url">深入学习JVM3：JVM类加载机制</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-14T01:45:26.000Z" itemprop="datePublished"> 发表于 2015-07-14</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是对JVM的经典学籍《深入理解Java虚拟机》中知识学习的总结摘抄，原书内容写的很好，所特意从中摘取自己觉得比较重要的点，不求能够全部掌握所有内容，但至少保证能够在整体轮廓上有所斩获。<br>关于JVM的学习一共包含三篇文章，本文是第三篇：<br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM1%EF%BC%9A%E6%80%BB%E4%BD%93%E4%BB%8B%E7%BB%8D/">深入学习JVM1：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/13/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM2%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">深入学习JVM2：自动内存管理机制</a><br><a href="http://tracylihui.github.io/2015/07/14/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0JVM3%EF%BC%9AJVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">深入学习JVM3：虚拟机类加载机制</a></p>
-<p>本文的内容是关于JVM如何加载Class文件以及Class文件中的信息进入到虚拟机后会发生什么变化。本文内容主要包括一下这个部分：</p>
-<ul>
-<li>类加载的时机</li>
-<li>类加载的过程</li>
-<li>类加载器
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/14/深入学习JVM3：JVM类加载机制/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/JVM/">JVM</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/JVM/">JVM</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/14/深入学习JVM3：JVM类加载机制/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/14/深入学习JVM3：JVM类加载机制/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/"><span></span>Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next<span></span></a>
@@ -759,11 +755,15 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 		  
 		
 		  
 			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
 		  
 		
 		  
@@ -816,11 +816,11 @@
 			
 		
 			
-				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
 			
 		
 			
@@ -856,11 +856,11 @@
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -876,7 +876,7 @@
 			
 		
 			
-				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
 			
 		
 			

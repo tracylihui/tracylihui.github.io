@@ -1,0 +1,639 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Hibernate：悲观锁和乐观锁 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。
+Hiberna">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hibernate：悲观锁和乐观锁">
+<meta property="og:url" content="http://yoursite.com/2015/08/06/Hibernate：悲观锁与乐观锁/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。
+Hiberna">
+<meta property="og:updated_time" content="2015-08-06T08:04:54.988Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hibernate：悲观锁和乐观锁">
+<meta name="twitter:description" content="业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。
+Hiberna">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁" itemprop="url">Hibernate：悲观锁和乐观锁</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-06T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-08-06</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#悲观锁"><span class="toc-number">1.</span> <span class="toc-text">悲观锁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#乐观锁"><span class="toc-number">2.</span> <span class="toc-text">乐观锁</span></a></li></ol>
+		
+		</div>
+		
+		<p>业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。</p>
+<p>Hibernate 支持两种锁机制：即通常所说的 “悲观锁（ Pessimistic Locking ）”和 “乐观锁（ Optimistic Locking ）” 。<br><a id="more"></a></p>
+<h1 id="悲观锁">悲观锁</h1><hr>
+<p>悲观锁（ Pessimistic Locking ），正如其名，它指的是对数据被外界（包括本系统当前的其他事务，以及来自外部系统的事务处理）修改持保守态度，因此，在整个数据处理过程中，将数据处于锁定状态。悲观锁的实现，往往依靠数据库提供的锁机制（也只有数据库层提供的锁机制才能真正保证数据访问的排他性，否则，即使在本系统中实现了加锁机制，也无法保证外部系统不会修改数据）。</p>
+<p>一个典型的倚赖数据库的悲观锁调用：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> account <span class="keyword">where</span> name=”Erica” <span class="keyword">for</span> <span class="keyword">update</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这条 sql 语句锁定了 account 表中所有符合检索条件（name=”Erica”）的记录。本次事务提交之前（事务提交时会释放事务过程中的锁），外界无法修改这些记录。Hibernate 的悲观锁，也是基于数据库的锁机制实现。</p>
+<p>下面的代码实现了对查询记录的加锁：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String hqlStr =<span class="string">"from TUser as user where user.name='Erica'"</span>;</span><br><span class="line">Query query = session.createQuery(hqlStr);</span><br><span class="line">query.setLockMode(<span class="string">"user"</span>,LockMode.UPGRADE); <span class="comment">// 加锁</span></span><br><span class="line">List userList = query.list();<span class="comment">// 执行查询，获取数据</span></span><br></pre></td></tr></table></figure></p>
+<p><code>query.setLockMode</code>对查询语句中，特定别名所对应的记录进行加锁（我们为TUser 类指定了一个别名 “user” ），这里也就是对返回的所有 user 记录进行加锁。</p>
+<p>观察运行期 Hibernate 生成的 SQL 语句：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> tuser0_.id <span class="keyword">as</span> id, tuser0_.name <span class="keyword">as</span> name, tuser0_.group_id</span><br><span class="line"><span class="keyword">as</span> group_id, tuser0_.user_type <span class="keyword">as</span> user_type, tuser0_.sex <span class="keyword">as</span> sex</span><br><span class="line"><span class="keyword">from</span> t_user tuser0_ <span class="keyword">where</span> (tuser0_.name=<span class="string">'Erica'</span> ) <span class="keyword">for</span> <span class="keyword">update</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这里 Hibernate 通过使用数据库的 for update 子句实现了悲观锁机制。</p>
+<p>Hibernate 的加锁模式有：</p>
+<ul>
+<li>LockMode.NONE ： 无锁机制。</li>
+<li>LockMode.WRITE ： Hibernate 在 Insert 和 Update 记录的时候会自动获取。</li>
+<li>LockMode.READ ： Hibernate 在读取记录的时候会自动获取。</li>
+</ul>
+<p>以上这三种锁机制一般由 Hibernate 内部使用，如 Hibernate 为了保证 Update过程中对象不会被外界修改，会在 save 方法实现中自动为目标对象加上 WRITE 锁。</p>
+<ul>
+<li>LockMode.UPGRADE ：利用数据库的 for update 子句加锁。</li>
+<li>LockMode. UPGRADE_NOWAIT ： Oracle 的特定实现，利用 Oracle 的 for update nowait 子句实现加锁。</li>
+</ul>
+<p>上面这两种锁机制是我们在应用层较为常用的，加锁一般通过以下方法实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Criteria.setLockMode</span><br><span class="line">Query.setLockMode</span><br><span class="line">Session.lock</span><br></pre></td></tr></table></figure></p>
+<p><strong>注意，只有在查询开始之前（也就是 Hiberate 生成 SQL 之前）设定加锁，才会真正通过数据库的锁机制进行加锁处理</strong>，否则，数据已经通过不包含 for update 子句的 Select SQL 加载进来，所谓数据库加锁也就无从谈起。</p>
+<h1 id="乐观锁">乐观锁</h1><p>相对悲观锁而言，乐观锁（ Optimistic Locking ）机制采取了更加宽松的加锁机制。悲观锁大多数情况下依靠数据库的锁机制实现，以保证操作最大程度的独占性。但随之而来的就是数据库性能的大量开销，特别是对长事务而言，这样的开销往往无法承受。</p>
+<p>如一个金融系统，当某个操作员读取用户的数据，并在读出的用户数据的基础上进行修改时如更改用户帐户余额），如果采用悲观锁机制，也就意味着整个操作过程中（从操作员读出数、开始修改直至提交修改结果的全过程，甚至还包括操作员中途去煮咖啡的时间），数据库记录始终处于加锁状态，可以想见，如果面对几百上千个并发，这样的情况将导致怎样的后果。乐观锁机制在一定程度上解决了这个问题。乐观锁，大多是基于数据版本（ Version ）记录机制实现。何谓数据版本？<strong>即为数据增加一个版本标识，在基于数据库表的版本解决方案中，一般是通过为数据库表增加一个 “version” 字段来实现</strong>。</p>
+<p><strong>读取出数据时，将此版本号一同读出，之后更新时，对此版本号加一。此时，将提交数据的版本数据与数据库表对应记录的当前版本信息进行比对，如果提交的数据版本号大于数据库表当前版本号，则予以更新，否则认为是过期数据</strong>。</p>
+<p>对于上面修改用户帐户信息的例子而言，假设数据库中帐户信息表中有一个version 字段，当前值为 1 ；而当前帐户余额字段（balance）为 $100 。</p>
+<ol>
+<li>操作员 A 此时将其读出（version=1），并从其帐户余额中扣除 $50（$100-$50）。</li>
+<li>在操作员 A 操作的过程中，操作员 B 也读入此用户信息（version=1），并从其帐户余额中扣除 $20 （$100-$20）。</li>
+<li>操作员 A 完成了修改工作，将数据版本号加一（version=2），连同帐户扣除后余额（balance=$50），提交至数据库更新，此时由于提交数据版本大于数据库记录当前版本，数据被更新，数据库记录 version 更新为 2 。</li>
+<li>操作员 B 完成了操作，也将版本号加一（version=2）试图向数据库提交数据（balance=$80），但此时比对数据库记录版本时发现，操作员 B 提交的数据版本号为 2 ，数据库记录当前版本也为 2 ，不满足“ 提交版本必须大于记录当前版本才能执行更新“ 的乐观锁策略，因此，操作员 B 的提交被驳回。这样，就避免了操作员 B 用基于 version=1 的旧数据修改的结果覆盖操作员 A 的操作结果的可能。</li>
+</ol>
+<p>从上面的例子可以看出，<strong>乐观锁机制避免了长事务中的数据库加锁开销</strong>（操作员 A 和操作员 B 操作过程中，都没有对数据库数据加锁），大大提升了大并发量下的系统整体性能表现。需要注意的是，<strong>乐观锁机制往往基于系统中的数据存储逻辑，因此也具备一定的局限性</strong>，如在上例中，由于乐观锁机制是在我们的系统中实现，来自外部系统（就好比另一个系统）的用户余额更新操作不受我们系统的控制，因此可能会造成脏数据被更新到数据库中。在系统设计阶段，我们应该充分考虑到这些情况出现的可能性，并进行相应调整（<strong>如将乐观锁策略在数据库存储过程中实现，对外只开放基于此存储过程的数据更新途径，而不是将数据库表直接对外公开</strong>）。</p>
+<p>Hibernate 在其数据访问引擎中内置了乐观锁实现。如果不用考虑外部系统对数据库的更新操作，利用 Hibernate 提供的透明化乐观锁实现，将大大提升我们的生产力。</p>
+<p>Hibernate 中可以通过 class 描述符的 optimistic-lock 属性结合 version描述符指定。</p>
+<p>现在，我们为之前示例中的 TUser 加上乐观锁机制。<br>（1）首先为 TUser 的 class 描述符添加 optimistic-lock 属性：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">hibernate-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">class</span> <span class="attribute">name</span>=<span class="value">"org.hibernate.sample.TUser"</span> <span class="attribute">table</span>=<span class="value">"t_user"</span> <span class="attribute">dynamic-update</span>=<span class="value">"true"</span></span><br><span class="line"><span class="attribute">dynamic-insert</span>=<span class="value">"true"</span> <span class="attribute">optimistic-lock</span>=<span class="value">"version"</span>&gt;</span></span><br><span class="line">……</span><br><span class="line"><span class="tag">&lt;/<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">hibernate-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>optimistic-lock 属性有如下可选取值：</p>
+<ul>
+<li>none：无乐观锁</li>
+<li>version：通过版本机制实现乐观锁</li>
+<li>dirty：通过检查发生变动过的属性实现乐观锁</li>
+<li>all：通过检查所有属性实现乐观锁</li>
+</ul>
+<p><strong>其中通过 version 实现的乐观锁机制是 Hibernate 官方推荐的乐观锁实现</strong>，同时也是 Hibernate 中，目前唯一在数据对象脱离 Session 发生修改的情况下依然有效的锁机制。因此，一般情况下，我们都选择 version 方式作为 Hibernate 乐观锁实现机制。</p>
+<p>（2）添加一个 Version 属性描述符<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">hibernate-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">class</span> <span class="attribute">name</span>=<span class="value">"org.hibernate.sample.TUser"</span> <span class="attribute">table</span>=<span class="value">"t_user"</span> <span class="attribute">dynamic-update</span>=<span class="value">"true"</span> <span class="attribute">dynamic-insert</span>=<span class="value">"true"</span></span><br><span class="line"><span class="attribute">optimistic-lock</span>=<span class="value">"version"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">id</span> <span class="attribute">name</span>=<span class="value">"id"</span> <span class="attribute">column</span>=<span class="value">"id"</span> <span class="attribute">type</span>=<span class="value">"java.lang.Integer"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">generator</span> <span class="attribute">class</span>=<span class="value">"native"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">generator</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">id</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">version</span> <span class="attribute">column</span>=<span class="value">"version"</span> <span class="attribute">name</span>=<span class="value">"version"</span> <span class="attribute">type</span>=<span class="value">"java.lang.Integer"</span>/&gt;</span></span><br><span class="line">……</span><br><span class="line"><span class="tag">&lt;/<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">hibernate-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意 version 节点必须出现在 ID 节点之后。这里我们声明了一个 version 属性，用于存放用户的版本信息，保存在 TUser 表的version 字段中。</p>
+<p>此时如果我们尝试编写一段代码，更新 TUser 表中记录数据，如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Criteria criteria = session.createCriteria(TUser.class);</span><br><span class="line">criteria.add(Expression.eq(<span class="string">"name"</span>,<span class="string">"Erica"</span>));</span><br><span class="line">List userList = criteria.list();</span><br><span class="line">TUser user =(TUser)userList.get(<span class="number">0</span>);</span><br><span class="line">Transaction tx = session.beginTransaction();</span><br><span class="line">user.setUserType(<span class="number">1</span>); <span class="comment">// 更新 UserType 字段</span></span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure></p>
+<p>每次对 TUser 进行更新的时候，我们可以发现，数据库中的 version 都在递增。而如果我们尝试在 tx.commit 之前，启动另外一个 Session ，对名为 Erica 的用户进行操作，以模拟并发更新时的情形：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Session session= getSession();</span><br><span class="line">Criteria criteria = session.createCriteria(TUser.class);</span><br><span class="line">criteria.add(Expression.eq(<span class="string">"name"</span>,<span class="string">"Erica"</span>));</span><br><span class="line">Session session2 = getSession();</span><br><span class="line">Criteria criteria2 = session2.createCriteria(TUser.class);</span><br><span class="line">criteria2.add(Expression.eq(<span class="string">"name"</span>,<span class="string">"Erica"</span>));</span><br><span class="line">List userList = criteria.list();</span><br><span class="line">List userList2 = criteria2.list();TUser user =(TUser)userList.get(<span class="number">0</span>);</span><br><span class="line">TUser user2 =(TUser)userList2.get(<span class="number">0</span>);</span><br><span class="line">Transaction tx = session.beginTransaction();</span><br><span class="line">Transaction tx2 = session2.beginTransaction();</span><br><span class="line">user2.setUserType(<span class="number">99</span>);</span><br><span class="line">tx2.commit();</span><br><span class="line">user.setUserType(<span class="number">1</span>);</span><br><span class="line">tx.commit();</span><br></pre></td></tr></table></figure></p>
+<p>执行以上代码，代码将在 tx.commit() 处抛出 StaleObjectStateException 异常，并指出版本检查失败，当前事务正在试图提交一个过期数据。通过捕捉这个异常，我们就可以在乐观锁校验失败时进行相应处理。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/08/06/Hibernate：悲观锁与乐观锁/" data-title="Hibernate：悲观锁和乐观锁 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/08/04/java/Java对象的Clone/"  title="Java对象的Clone">
+ <strong>下一篇：</strong><br/> 
+ <span>Java对象的Clone
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/08/06/Hibernate：悲观锁与乐观锁/" data-title="Hibernate：悲观锁和乐观锁" data-url="http://yoursite.com/2015/08/06/Hibernate：悲观锁与乐观锁/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#悲观锁"><span class="toc-number">1.</span> <span class="toc-text">悲观锁</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#乐观锁"><span class="toc-number">2.</span> <span class="toc-text">乐观锁</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Spring/" title="Spring">Spring<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1901372893&verifier=cbe23457&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1901372893" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

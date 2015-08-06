@@ -85,6 +85,140 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" title="Java集合学习4：LinkedHashMap的实现原理" itemprop="url">Java集合学习4：LinkedHashMap的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T04:26:28.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="LinkedHashMap概述">LinkedHashMap概述</h1><hr>
+<p>HashMap是无序的，HashMap在put的时候是根据key的hashcode进行hash然后放入对应的地方。所以在按照一定顺序put进HashMap中，然后遍历出HashMap的顺序跟put的顺序不同（除非在put的时候key已经按照hashcode排序号了，这种几率非常小）</p>
+<p>JAVA在JDK1.4以后提供了LinkedHashMap来帮助我们实现了有序的HashMap！</p>
+<p>LinkedHashMap是HashMap的一个子类，它保留插入的顺序，<font color="#ff0000"> 如果需要输出的顺序和输入时的相同，那么就选用LinkedHashMap。</font></p>
+<p>LinkedHashMap是Map接口的哈希表和链接列表实现，具有可预知的迭代顺序。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/01/Java集合学习3：Hashtable的实现原理/" title="Java集合学习3：Hashtable的实现原理" itemprop="url">Java集合学习3：Hashtable的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-01T14:36:57.000Z" itemprop="datePublished"> 发表于 2015-07-01</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="概述">概述</h1><hr>
+<p>和HashMap一样，Hashtable也是一个散列表，它存储的内容是键值对。<br>Hashtable在Java中的定义为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hashtable</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;  </span><br><span class="line">    <span class="keyword">extends</span> <span class="title">Dictionary</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;  </span><br><span class="line">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从源码中，我们可以看出，Hashtable继承于Dictionary类，实现了Map, Cloneable, java.io.Serializable接口。其中Dictionary类是任何可将键映射到相应值的类（如 Hashtable）的抽象父类，每个键和值都是对象（源码注释为：The <code>Dictionary</code> class is the abstract parent of any class, such as <code>Hashtable</code>, which maps keys to values. Every key and every value is an object.）。但在这一点我开始有点怀疑，因为我查看了HashMap以及TreeMap的源码，都没有继承于这个类。不过当我看到注释中的解释也就明白了，其Dictionary源码注释是这样的：NOTE: This class is obsolete.  New implementations should implement the Map interface, rather than extending this class. 该话指出Dictionary这个类过时了，新的实现类应该实现Map接口。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/01/Java集合学习3：Hashtable的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/01/Java集合学习3：Hashtable的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/01/Java集合学习3：Hashtable的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/01/Java集合学习2：HashSet的实现原理/" title="Java集合学习2：HashSet的实现原理" itemprop="url">Java集合学习2：HashSet的实现原理</a>
   </h1>
   <p class="article-author">By
@@ -231,11 +365,15 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 		  
 		
 		  
 			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
 		  
 		
 		  
@@ -288,11 +426,11 @@
 			
 		
 			
-				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
 			
 		
 			
@@ -328,11 +466,11 @@
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -348,7 +486,7 @@
 			
 		
 			
-				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
 			
 		
 			

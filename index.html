@@ -85,6 +85,160 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁" itemprop="url">Hibernate：悲观锁和乐观锁</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-06T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-08-06</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。</p>
+<p>Hibernate 支持两种锁机制：即通常所说的 “悲观锁（ Pessimistic Locking ）”和 “乐观锁（ Optimistic Locking ）” 。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/06/Hibernate：悲观锁与乐观锁/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/04/java/Java对象的Clone/" title="Java对象的Clone" itemprop="url">Java对象的Clone</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-04T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-04</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>本文包含的内容：</p>
+<ul>
+<li>Java对象的创建</li>
+<li>复制对象or复制引用</li>
+<li>深拷贝和浅拷贝</li>
+<li>使用序列化实现对象的深拷贝</li>
+</ul>
+<h1 id="Java对象的创建">Java对象的创建</h1><hr>
+<p>clone顾名思义就是复制， 在Java语言中， clone方法被对象调用，所以会复制对象。所谓的复制对象，首先要分配一个和源对象同样大小的空间，在这个空间中创建一个新的对象。那么在java语言中，有几种方式可以创建对象呢？<br>1 使用new操作符创建一个对象。<br>2 使用clone方法复制一个对象。<br>那么这两种方式有什么相同和不同呢？ new操作符的本意是分配内存。程序执行到new操作符时，</p>
+<p>首先去看new操作符后面的类型，因为知道了类型，才能知道要分配多大的内存空间。分配完内存之后，再调用构造函数，填充对象的各个域，这一步叫做对象的初始化，构造方法返回后，一个对象创建完毕，可以把他的引用（地址）发布到外部，在外部就可以使用这个引用操纵这个对象。而clone在第一步是和new相似的， 都是分配内存，调用clone方法时，分配的内存和源对象（即调用clone方法的对象）相同，然后再使用原对象中对应的各个域，填充新对象的域， 填充完成之后，clone方法返回，一个新的相同的对象被创建，同样可以把这个新对象的引用发布到外部。</p>
+<h1 id="复制对象or复制引用">复制对象or复制引用</h1><hr>
+<p>在Java中，以下类似的代码非常常见：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Person p = <span class="keyword">new</span> Person(<span class="number">23</span>, <span class="string">"zhang"</span>);</span><br><span class="line">Person p1 = p;</span><br><span class="line">System.out.println(p);</span><br><span class="line">System.out.println(p1);</span><br></pre></td></tr></table></figure></p>
+<p>当Person p1 = p;执行之后， 是创建了一个新的对象吗？ 首先看打印结果：<br><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.pansoft.zhangjg.testclone.<span class="keyword">Person</span>@2f9ee1ac</span><br><span class="line">com.pansoft.zhangjg.testclone.<span class="keyword">Person</span>@2f9ee1ac</span><br></pre></td></tr></table></figure></p>
+<p>可以看出，打印的地址值是相同的，既然地址都是相同的，那么肯定是同一个对象。p和p1只是引用而已，他们都指向了一个相同的对象Person(23, “zhang”) 。 可以把这种现象叫做引用的复制。 上面代码执行完成之后， 内存中的情景如下图所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/Java对象的Clone1.png" alt="图1"><br>而下面的代码是真真正正的克隆了一个对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Person p = <span class="keyword">new</span> Person(<span class="number">23</span>, <span class="string">"zhang"</span>);  </span><br><span class="line">Person p1 = (Person) p.clone();</span><br><span class="line"></span><br><span class="line">System.out.println(p);</span><br><span class="line">System.out.println(p1);</span><br></pre></td></tr></table></figure></p>
+<p>从打印结果可以看出，两个对象的地址是不同的，也就是说创建了新的对象， 而不是把原对象的地址赋给了一个新的引用变量：<br><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.pansoft.zhangjg.testclone.<span class="keyword">Person</span>@2f9ee1ac</span><br><span class="line">com.pansoft.zhangjg.testclone.<span class="keyword">Person</span>@67f1fba0</span><br></pre></td></tr></table></figure></p>
+<p>以上代码执行完成后， 内存中的情景如下图所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/Java对象的Clone2.png" alt="图2"></p>
+<h1 id="深拷贝和浅拷贝">深拷贝和浅拷贝</h1><hr>
+<p>上面的示例代码中，Person中有两个成员变量，分别是name和age， name是String类型， age是int类型。代码非常简单，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age ;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(<span class="keyword">int</span> age, String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> (Person)<span class="keyword">super</span>.clone();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于age是基本数据类型， 那么对它的拷贝没有什么疑议，直接将一个4字节的整数值拷贝过来就行。但是name是String类型的， 它只是一个引用， 指向一个真正的String对象，那么对它的拷贝有两种方式： 直接将源对象中的name的引用值拷贝给新对象的name字段， 或者是根据原Person对象中的name指向的字符串对象创建一个新的相同的字符串对象，将这个新字符串对象的引用赋给新拷贝的Person对象的name字段。这两种拷贝方式分别叫做浅拷贝和深拷贝。深拷贝和浅拷贝的原理如下图所示：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/Java对象的Clone3.png" alt="图3"></p>
+<p>下面通过代码进行验证。如果两个Person对象的name的地址值相同， 说明两个对象的name都指向同一个String对象， 也就是浅拷贝， 而如果两个对象的name的地址值不同， 那么就说明指向不同的String对象， 也就是在拷贝Person对象的时候， 同时拷贝了name引用的String对象， 也就是深拷贝。验证代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Person p = <span class="keyword">new</span> Person(<span class="number">23</span>, <span class="string">"zhang"</span>);</span><br><span class="line">Person p1 = (Person) p.clone();</span><br><span class="line"></span><br><span class="line">String result = p.getName() == p1.getName()</span><br><span class="line">        ? <span class="string">"clone是浅拷贝的"</span> : <span class="string">"clone是深拷贝的"</span>;</span><br><span class="line"></span><br><span class="line">System.out.println(result);</span><br></pre></td></tr></table></figure></p>
+<p>打印结果为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">clone</span>是浅拷贝的</span><br></pre></td></tr></table></figure></p>
+<p>所以，clone方法执行的是浅拷贝， 在编写程序时要注意这个细节。</p>
+<h1 id="使用序列化实现对象的深拷贝">使用序列化实现对象的深拷贝</h1><hr>
+<p>如何利用序列化来完成对象的拷贝呢？在内存中通过字节流的拷贝是比较容易实现的。把母对象写入到一个字节流中，再从字节流中将其读出来，这样就可以创建一个新的对象了，并且该新对象与母对象之间并不存在引用共享的问题，真正实现对象的深拷贝。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloneUtils</span> </span>&#123;</span><br><span class="line">        <span class="annotation">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> &lt;T extends Serializable&gt; <span class="function">T <span class="title">clone</span><span class="params">(T   obj)</span></span>&#123;</span><br><span class="line">            T cloneObj = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//写入字节流</span></span><br><span class="line">                ByteArrayOutputStream out = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">                ObjectOutputStream obs = <span class="keyword">new</span>   ObjectOutputStream(out);</span><br><span class="line">                obs.writeObject(obj);</span><br><span class="line">                obs.close();</span><br><span class="line"></span><br><span class="line">                <span class="comment">//分配内存，写入原始对象，生成新对象</span></span><br><span class="line">                ByteArrayInputStream ios = <span class="keyword">new</span>  ByteArrayInputStream(out.toByteArray());</span><br><span class="line">                ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(ios);</span><br><span class="line">                <span class="comment">//返回生成的新对象</span></span><br><span class="line">                cloneObj = (T) ois.readObject();</span><br><span class="line">                ois.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> cloneObj;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用该工具类的对象必须要实现 Serializable 接口，否则是没有办法实现克隆的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">2631590509760908280L</span>;</span><br><span class="line"></span><br><span class="line">       ..................</span><br><span class="line">       <span class="comment">//去除clone()方法</span></span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Email</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line">       <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1267293988171991494L</span>;</span><br><span class="line"></span><br><span class="line">       ....................</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以使用该工具类的对象只要实现 Serializable 接口就可实现对象的克隆，无须继承 Cloneable 接口实现 clone() 方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">           <span class="comment">//写封邮件</span></span><br><span class="line">           Email email = <span class="keyword">new</span> Email(<span class="string">"请参加会议"</span>,<span class="string">"请与今天12:30到二会议室参加会议..."</span>);</span><br><span class="line"></span><br><span class="line">           Person person1 =  <span class="keyword">new</span> Person(<span class="string">"张三"</span>,email);</span><br><span class="line"></span><br><span class="line">           Person person2 =  CloneUtils.clone(person1);</span><br><span class="line">           person2.setName(<span class="string">"李四"</span>);</span><br><span class="line">           Person person3 =  CloneUtils.clone(person1);</span><br><span class="line">           person3.setName(<span class="string">"王五"</span>);</span><br><span class="line">           person1.getEmail().setContent(<span class="string">"请与今天12:00到二会议室参加会议..."</span>);</span><br><span class="line"></span><br><span class="line">           System.out.println(person1.getName() + <span class="string">"的邮件内容是："</span> + person1.getEmail().getContent());</span><br><span class="line">           System.out.println(person2.getName() + <span class="string">"的邮件内容是："</span> + person2.getEmail().getContent());</span><br><span class="line">           System.out.println(person3.getName() + <span class="string">"的邮件内容是："</span> + person3.getEmail().getContent());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出为：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">张三的邮件内容是：请与今天12<span class="pseudo">:00</span>到二会议室参加会议...</span><br><span class="line">李四的邮件内容是：请与今天12<span class="pseudo">:30</span>到二会议室参加会议...</span><br><span class="line">王五的邮件内容是：请与今天12<span class="pseudo">:30</span>到二会议室参加会议...</span><br></pre></td></tr></table></figure></p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java/">Java</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Clone/">Clone</a><a href="/tags/Java/">Java</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/08/04/java/Java对象的Clone/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/04/java/Java对象的Clone/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/28/spring/Spring的IOC和AOP/" title="Spring的IOC和AOP" itemprop="url">Spring的IOC和AOP</a>
   </h1>
   <p class="article-author">By
@@ -613,138 +767,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/" title="设计模式：处理多维度变化——桥接模式" itemprop="url">设计模式：处理多维度变化——桥接模式</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-25T13:00:03.000Z" itemprop="datePublished"> 发表于 2015-07-25</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>桥接模式-Bridge Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】</p>
-<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
-<p>在正式介绍桥接模式之前，我先跟大家谈谈两种常见文具的区别，它们是毛笔和蜡笔。假如我们需要大中小3种型号的画笔，能够绘制12种不同的颜色，如果使用蜡笔，需要准备3×12 = 36支，但如果使用毛笔的话，只需要提供3种型号的毛笔，外加12个颜料盒即可，涉及到的对象个数仅为 3 + 12 = 15，远小于36，却能实现与36支蜡笔同样的功能。如果增加一种新型号的画笔，并且也需要具有12种颜色，对应的蜡笔需增加12支，而毛笔只需增加一支。为什么会这样呢？通过分析我们可以得知：在蜡笔中，颜色和型号两个不同的变化维度（即两个不同的变化原因）融合在一起，无论是对颜色进行扩展还是对型号进行扩展都势必会影响另一个维度；但在毛笔中，颜色和型号实现了分离，增加新的颜色或者型号对另一方都没有任何影响。如果使用软件工程中的术语，我们可以认为在蜡笔中颜色和型号之间存在较强的耦合性，而毛笔很好地将二者解耦，使用起来非常灵活，扩展也更为方便。在软件开发中，我们也提供了一种设计模式来处理与画笔类似的具有多变化维度的情况，即本章将要介绍的桥接模式。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/设计模式/">设计模式</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/25/designPattern/设计模式：处理多维度变化——桥接模式/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/" title="设计模式：不兼容结构的协调——适配器模式" itemprop="url">设计模式：不兼容结构的协调——适配器模式</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-24T09:31:03.000Z" itemprop="datePublished"> 发表于 2015-07-24</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>适配器模式-Adapter Pattern【学习难度：★★☆☆☆，使用频率：★★★★☆】</p>
-<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
-<p>我的笔记本电脑的工作电压是20V，而我国的家庭用电是220V，如何让20V的笔记本电脑能够在220V的电压下工作？答案是引入一个电源适配器(AC Adapter)，俗称充电器或变压器，有了这个电源适配器，生活用电和笔记本电脑即可兼容，如图1所示：<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/设计模式/">设计模式</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/24/designPattern/设计模式：不兼容结构的协调——适配器模式/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
@@ -763,11 +785,15 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 		  
 		
 		  
 			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
 		  
 		
 		  
@@ -820,11 +846,11 @@
 			
 		
 			
-				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>9</sup></a></li>
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
 			
 		
 			
@@ -860,11 +886,11 @@
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -880,7 +906,7 @@
 			
 		
 			
-				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
 			
 		
 			
