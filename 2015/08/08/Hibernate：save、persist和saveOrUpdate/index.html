@@ -4,29 +4,29 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Maven学习 | 李大辉</title>
+    <title>Hibernate：save、persist和saveOrUpdate | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
+    <meta name="description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
+save和saverOrUpdate的区别
+最主要的区别是save()方法生成一个">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Maven学习">
-<meta property="og:url" content="http://yoursite.com/2015/07/09/Maven学习/index.html">
+<meta property="og:title" content="Hibernate：save、persist和saveOrUpdate">
+<meta property="og:url" content="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
-<meta property="og:updated_time" content="2015-07-09T15:04:55.592Z">
+<meta property="og:description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
+save和saverOrUpdate的区别
+最主要的区别是save()方法生成一个">
+<meta property="og:updated_time" content="2015-08-08T04:31:12.680Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Maven学习">
-<meta name="twitter:description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
+<meta name="twitter:title" content="Hibernate：save、persist和saveOrUpdate">
+<meta name="twitter:description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
+save和saverOrUpdate的区别
+最主要的区别是save()方法生成一个">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -90,14 +90,14 @@ Maven是跨平台的。">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/09/Maven学习/" title="Maven学习" itemprop="url">Maven学习</a>
+      <a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/" title="Hibernate：save、persist和saveOrUpdate" itemprop="url">Hibernate：save、persist和saveOrUpdate</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-09T14:24:06.000Z" itemprop="datePublished"> 发表于 2015-07-09</time>
+    <time datetime="2015-08-08T03:22:14.000Z" itemprop="datePublished"> 发表于 2015-08-08</time>
     
   </p>
 </header>
@@ -106,34 +106,35 @@ Maven是跨平台的。">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven导读"><span class="toc-number">1.</span> <span class="toc-text">Maven导读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构建项目"><span class="toc-number">1.1.</span> <span class="toc-text">构建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven不仅仅是构建工具"><span class="toc-number">1.2.</span> <span class="toc-text">Maven不仅仅是构建工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven基础知识"><span class="toc-number">2.</span> <span class="toc-text">Maven基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用构建命令"><span class="toc-number">2.1.</span> <span class="toc-text">常用构建命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动创建目录骨架"><span class="toc-number">2.2.</span> <span class="toc-text">自动创建目录骨架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven的生命周期和插件"><span class="toc-number">2.3.</span> <span class="toc-text">Maven的生命周期和插件</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#save和saverOrUpdate的区别"><span class="toc-number">1.</span> <span class="toc-text">save和saverOrUpdate的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#save和persist的区别"><span class="toc-number">2.</span> <span class="toc-text">save和persist的区别</span></a></li></ol>
 		
 		</div>
 		
-		<h1 id="Maven导读">Maven导读</h1><hr>
-<h2 id="构建项目">构建项目</h2><p>Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。</p>
-<p>Maven是跨平台的。<br><a id="more"></a><br>Maven最大化的消除了构建的重复，抽象了构建生命周期，并且为绝大部分的构建任务提供了已实现的插件。比如说测试，我们只需要遵循Maven的约定编写好测试用例，当我们运行构建的时候，这些测试便会自动运行。</p>
-<p>除此之外，Maven能帮助我们标准化构建过程。在Maven之前，十个项目可能有十种构建方式，但通过Maven，所有项目的构建命令都是简单一致的。有利于促进项目团队的标准化。</p>
-<h2 id="Maven不仅仅是构建工具">Maven不仅仅是构建工具</h2><p>Maven通过坐标系统准确的定位每一个构建（artifact），也就是通过一组坐标Maven能够找到任何一个Java类库（如Jar文件）。所以通过Maven可以解决版本不一致、版本冲突、依赖臃肿等问题。</p>
-<p>Maven还能帮助我们管理原本分散在项目中各个角落的项目信息，例如项目描述、开发者、许可证等。通过Maven自动生成的站点，以及一些插件，可以轻松获得项目文档、测试报告、静态分析报告、源码版本日志报告等信息。</p>
-<h1 id="Maven基础知识">Maven基础知识</h1><hr>
-<h2 id="常用构建命令">常用构建命令</h2><p>mvn -v 查看maven版本<br>mvn compile 编译<br>mvn test 测试<br>mvn package 打包<br>mvn clean 删除target<br>mvn install 安装jar包到本地仓库中</p>
-<h2 id="自动创建目录骨架">自动创建目录骨架</h2><p>Maven提供archetype插件，该插件用于创建符合maven规定的目录骨架。<br>下面是Maven规定的目录骨架。其中target目录会在执行compile、package等命令的时候生成，里面存放编译后的文件、日志、jar包等文件。<br><figure class="highlight puppet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">src</span><br><span class="line">    <span class="keyword">main</span></span><br><span class="line">        java</span><br><span class="line">            程序代码</span><br><span class="line">    test</span><br><span class="line">        java</span><br><span class="line">            测试代码</span><br><span class="line">    <span class="literal">target</span></span><br><span class="line">pom.xml</span><br></pre></td></tr></table></figure></p>
-<p>在CMD窗口，输入<code>mvn archetype:generate</code>（第一次使用的时候，Maven会自动下载相关的jar包等文件）<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Choose org.apache.maven.<span class="string">archetypes:</span>maven-archetype-quickstart <span class="string">version:</span></span><br><span class="line"><span class="number">1</span>: <span class="number">1.0</span>-alpha-<span class="number">1</span></span><br><span class="line"><span class="number">2</span>: <span class="number">1.0</span>-alpha-<span class="number">2</span></span><br><span class="line"><span class="number">3</span>: <span class="number">1.0</span>-alpha-<span class="number">3</span></span><br><span class="line"><span class="number">4</span>: <span class="number">1.0</span>-alpha-<span class="number">4</span></span><br><span class="line"><span class="number">5</span>: <span class="number">1.0</span></span><br><span class="line"><span class="number">6</span>: <span class="number">1.1</span></span><br><span class="line">Choose a <span class="string">number:</span> <span class="number">6</span>: (在这一步直接回车)</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'groupId'</span>: : org.lihui.mavenDemo （可通常我们填写组织机构名称倒写+项目名）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'artifactId'</span>: : mavenDemo （项目名称，后边也可以加上对应的模块名称）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'version'</span>:  <span class="number">1.0</span>.0-<span class="string">SNAPSHOT:</span> : （版本号，直接回车，默认<span class="number">1.0</span>-SNAPSHOT）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'package'</span>:  <span class="string">mavenDemo:</span> : （打包后的jar文件名，相当于.net中项目最后生成的程序集dll名称）</span><br><span class="line">Confirm properties <span class="string">configuration:</span></span><br><span class="line"><span class="string">groupId:</span> org.lihui.mavenDemo</span><br><span class="line"><span class="string">artifactId:</span> mavenDemo</span><br><span class="line"><span class="string">version:</span> <span class="number">1.0</span>.0-SNAPSHOT</span><br><span class="line"><span class="string">package:</span> mavenDemo</span><br><span class="line"><span class="label"> Y:</span> :  (直接回车确认)</span><br><span class="line">[INFO] ----------------------------------------------------------------------------</span><br><span class="line">[INFO] Using following parameters <span class="keyword">for</span> creating project from Old (<span class="number">1.</span>x) <span class="string">Archetype:</span> maven-archetype-<span class="string">quickstart:</span><span class="number">1.1</span></span><br><span class="line">[INFO] ----------------------------------------------------------------------------</span><br><span class="line">[INFO] <span class="string">Parameter:</span> groupId, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> packageName, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> <span class="keyword">package</span>, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> artifactId, <span class="string">Value:</span> maven-hello-world</span><br><span class="line">...</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS (看到这个，表示项目创建成功！)</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br></pre></td></tr></table></figure></p>
-<h2 id="Maven的生命周期和插件">Maven的生命周期和插件</h2>  
+		<p>Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。</p>
+<h1 id="save和saverOrUpdate的区别">save和saverOrUpdate的区别</h1><hr>
+<p>最主要的区别是save()方法生成一个新的标识符（identifier），然后在数据库中插入一条记录，并且返回一个Serializable对象；而saverOrUpdate()是根据是否在数据中存在来选择插入(INSERT)或者是更新(UPDATE)。如果持久化的对象已经在数据库中，则执行UPDATE SQL。</p>
+<p>saverOrUpdate()方法使用更灵活，但却涉及到一个额外的流程去查找该对象在数据库中是否存在。</p>
+<h1 id="save和persist的区别">save和persist的区别</h1><hr>
+<ul>
+<li>返回类型不同。两个方法都会将对象插入到数据，但save返回的是Serializable对象，而persist返回的是void。</li>
+<li>ID赋值时机不同。二者同样用于将transient实例持久化，但persist不保证ID值立即赋给持久化实例，可能会在flush的时候给ID赋值。</li>
+<li>transaction外的行为不同。如果在transaction之外调用，persist保证会立即执行INSERT语句；而save则不保证（save返回一个identifier，如果必须执行INSERT来获取该identifier，则就会立即执行INSERT，而不论是在transaction之内或之外）</li>
+<li>使用场景。persist方法适用于被扩展的Session上下文的长期运行的会话中，而save则不适用。(Because of its above behavior of persist method outside transaction boundary, its useful in long-running conversations with an extended Session context. On the other hand save method is not good in a long-running conversation with an extended Session context.)</li>
+</ul>
+  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/Maven/">Maven</a>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Maven/">Maven</a>
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
   </div>
 
 </div>
@@ -142,7 +143,7 @@ Maven是跨平台的。">
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/09/Maven学习/" data-title="Maven学习 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-title="Hibernate：save、persist和saveOrUpdate | 李大辉" data-tsina="1901372893" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -155,19 +156,11 @@ Maven是跨平台的。">
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/07/10/Hibernate：检索策略的学习1/" title="Hibernate：检索策略的学习1">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Hibernate：检索策略的学习1</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/08/Hibernate：深入HQL学习/"  title="Hibernate：深入HQL学习">
+<a href="/2015/08/06/Hibernate：悲观锁与乐观锁/"  title="Hibernate：悲观锁和乐观锁">
  <strong>下一篇：</strong><br/> 
- <span>Hibernate：深入HQL学习
+ <span>Hibernate：悲观锁和乐观锁
 </span>
 </a>
 </div>
@@ -176,7 +169,7 @@ Maven是跨平台的。">
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/09/Maven学习/" data-title="Maven学习" data-url="http://yoursite.com/2015/07/09/Maven学习/"></div>
+	<div class="ds-thread" data-thread-key="2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-title="Hibernate：save、persist和saveOrUpdate" data-url="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/"></div>
 </section>
 
 
@@ -186,7 +179,7 @@ Maven是跨平台的。">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven导读"><span class="toc-number">1.</span> <span class="toc-text">Maven导读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构建项目"><span class="toc-number">1.1.</span> <span class="toc-text">构建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven不仅仅是构建工具"><span class="toc-number">1.2.</span> <span class="toc-text">Maven不仅仅是构建工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven基础知识"><span class="toc-number">2.</span> <span class="toc-text">Maven基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用构建命令"><span class="toc-number">2.1.</span> <span class="toc-text">常用构建命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动创建目录骨架"><span class="toc-number">2.2.</span> <span class="toc-text">自动创建目录骨架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven的生命周期和插件"><span class="toc-number">2.3.</span> <span class="toc-text">Maven的生命周期和插件</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#save和saverOrUpdate的区别"><span class="toc-number">1.</span> <span class="toc-text">save和saverOrUpdate的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#save和persist的区别"><span class="toc-number">2.</span> <span class="toc-text">save和persist的区别</span></a></li></ol>
  
   </div>
 

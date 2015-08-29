@@ -85,6 +85,74 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/" title="Java集合学习5：LinkedHashSet的实现原理" itemprop="url">Java集合学习5：LinkedHashSet的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T04:41:54.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="LinkedHashSet概述">LinkedHashSet概述</h1><hr>
+<p>思考了好久，到底要不要总结LinkedHashSet的内容= = 我在之前的博文中，分别写了HashMap和HashSet，然后我们可以看到HashSet的方法基本上都是基于HashMap来实现的，说白了，HashSet内部的数据结构就是一个HashMap，其方法的内部几乎就是在调用HashMap的方法。</p>
+<p>LinkedHashSet首先我们需要知道的是它是一个Set的实现，所以它其中存的肯定不是键值对，而是值。此实现与HashSet的不同之处在于，LinkedHashSet维护着一个运行于所有条目的双重链接列表。此链接列表定义了迭代顺序，该迭代顺序可为插入顺序或是访问顺序。</p>
+<p>看到上面的介绍，是不是感觉其与HashMap和LinkedHashMap的关系很像？</p>
+<p>注意，此实现不是同步的。如果多个线程同时访问链接的哈希Set，而其中至少一个线程修改了该Set，则它必须保持外部同步。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习5：LinkedHashSet的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习5：LinkedHashSet的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/02/Java集合学习4：LinkedHashMap的实现原理/" title="Java集合学习4：LinkedHashMap的实现原理" itemprop="url">Java集合学习4：LinkedHashMap的实现原理</a>
   </h1>
   <p class="article-author">By
@@ -365,7 +433,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 		  
 		
 		  
@@ -426,7 +494,7 @@
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 			
 		
 			
@@ -454,6 +522,38 @@
 			
 		
 			
+				<li><a href="/tags/IOC/" title="IOC">IOC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
@@ -467,38 +567,6 @@
 		
 			
 				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
 			
 		
 		</ul>

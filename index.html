@@ -85,6 +85,79 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/" title="Hibernate：save、persist和saveOrUpdate" itemprop="url">Hibernate：save、persist和saveOrUpdate</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-08T03:22:14.000Z" itemprop="datePublished"> 发表于 2015-08-08</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。</p>
+<h1 id="save和saverOrUpdate的区别">save和saverOrUpdate的区别</h1><hr>
+<p>最主要的区别是save()方法生成一个新的标识符（identifier），然后在数据库中插入一条记录，并且返回一个Serializable对象；而saverOrUpdate()是根据是否在数据中存在来选择插入(INSERT)或者是更新(UPDATE)。如果持久化的对象已经在数据库中，则执行UPDATE SQL。</p>
+<p>saverOrUpdate()方法使用更灵活，但却涉及到一个额外的流程去查找该对象在数据库中是否存在。</p>
+<h1 id="save和persist的区别">save和persist的区别</h1><hr>
+<ul>
+<li>返回类型不同。两个方法都会将对象插入到数据，但save返回的是Serializable对象，而persist返回的是void。</li>
+<li>ID赋值时机不同。二者同样用于将transient实例持久化，但persist不保证ID值立即赋给持久化实例，可能会在flush的时候给ID赋值。</li>
+<li>transaction外的行为不同。如果在transaction之外调用，persist保证会立即执行INSERT语句；而save则不保证（save返回一个identifier，如果必须执行INSERT来获取该identifier，则就会立即执行INSERT，而不论是在transaction之内或之外）</li>
+<li>使用场景。persist方法适用于被扩展的Session上下文的长期运行的会话中，而save则不适用。(Because of its above behavior of persist method outside transaction boundary, its useful in long-running conversations with an extended Session context. On the other hand save method is not good in a long-running conversation with an extended Session context.)</li>
+</ul>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁" itemprop="url">Hibernate：悲观锁和乐观锁</a>
   </h1>
   <p class="article-author">By
@@ -682,72 +755,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/25/designPattern/设计模式：树形结构的处理——组合模式/" title="设计模式：树形结构的处理——组合模式" itemprop="url">设计模式：树形结构的处理——组合模式</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-25T13:18:03.000Z" itemprop="datePublished"> 发表于 2015-07-25</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>组合模式-Composite Pattern【学习难度：★★★☆☆，使用频率：★★★★☆】</p>
-<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
-<p>树形结构在软件中随处可见，例如操作系统中的目录结构、应用软件中的菜单、办公系统中的公司组织结构等等，如何运用面向对象的方式来处理这种树形结构是组合模式需要解决的问题，组合模式通过一种巧妙的设计方案使得用户可以一致性地处理整个树形结构或者树形结构的一部分，也可以一致性地处理树形结构中的叶子节点（不包含子节点的节点）和容器节点（包含子节点的节点）。下面将学习这种用于处理树形结构的组合模式。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/25/designPattern/设计模式：树形结构的处理——组合模式/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/设计模式/">设计模式</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/25/designPattern/设计模式：树形结构的处理——组合模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/25/designPattern/设计模式：树形结构的处理——组合模式/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
@@ -766,7 +773,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 		  
 		
 		  
@@ -827,7 +834,7 @@
 			
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>10</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 			
 		
 			
@@ -855,6 +862,38 @@
 			
 		
 			
+				<li><a href="/tags/IOC/" title="IOC">IOC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
 			
 		
@@ -868,38 +907,6 @@
 		
 			
 				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/缓存/" title="缓存">缓存<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/HQL/" title="HQL">HQL<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/Clone/" title="Clone">Clone<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
 			
 		
 		</ul>
