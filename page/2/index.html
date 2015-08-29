@@ -85,6 +85,72 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/26/designPattern/设计模式：扩展系统功能——装饰模式/" title="设计模式：扩展系统功能——装饰模式" itemprop="url">设计模式：扩展系统功能——装饰模式</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-26T04:00:03.000Z" itemprop="datePublished"> 发表于 2015-07-26</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>装饰模式-Decorator Pattern【学习难度：★★★☆☆，使用频率：★★★☆☆】</p>
+<p>该博文是转载LoveLion的博客，在其基础上，将HTML改写为Markdown。在原博文中，作者已经给每个模式都设计了一个实现代码，我已经将代码全部实现，做了一定修改放到了Github中，大家可以clone看一下实现效果，加强印象。<br>Github地址：<a href="https://github.com/tracylihui/design_pattern">https://github.com/tracylihui/design_pattern</a><br>原文链接：<a href="http://blog.csdn.net/lovelion/article/details/17517213">史上最全设计模式导学目录（完整版）</a></p>
+<p>尽管目前房价依旧很高，但还是阻止不了大家对新房的渴望和买房的热情。如果大家买的是毛坯房，无疑还有一项艰巨的任务要面对，那就是装修。对新房进行装修并没有改变房屋用于居住的本质，但它可以让房子变得更漂亮、更温馨、更实用、更能满足居家的需求。在软件设计中，我们也有一种类似新房装修的技术可以对已有对象（新房）的功能进行扩展（装修），以获得更加符合用户需求的对象，使得对象具有更加强大的功能。这种技术对应于一种被称之为装饰模式的设计模式，本章将介绍用于扩展系统功能的装饰模式。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/26/designPattern/设计模式：扩展系统功能——装饰模式/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/设计模式/">设计模式</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/设计模式/">设计模式</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/26/designPattern/设计模式：扩展系统功能——装饰模式/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/26/designPattern/设计模式：扩展系统功能——装饰模式/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/25/designPattern/设计模式：树形结构的处理——组合模式/" title="设计模式：树形结构的处理——组合模式" itemprop="url">设计模式：树形结构的处理——组合模式</a>
   </h1>
   <p class="article-author">By
@@ -671,72 +737,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/21/加密与加盐/" title="加密与加盐" itemprop="url">加密与加盐</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-21T14:48:18.000Z" itemprop="datePublished"> 发表于 2015-07-21</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<h2 id="加密">加密</h2><p>我们在用户模块，对于用户密码的保护，通常都会进行加密。从最简单来说，小明盗取了你的数据库信息（小明躺枪），但由于你对你数据库中的用户信息的密码是加密的（我们假设加密之后的密文是无法破解的），那小明即使得到信息也没法进行登录。这是最最基本的一点防范措施。</p>
-<p>我们通常的做法是，用户在提交注册信息时，在后台的业务逻辑中将密码进行加密（例如采用MD5或者BCrypt加密算法），所以存放在数据库中的信息为加密之后的密文。例如，如果小红在你的系统中注册了自己的账号，她提交的注册信息中的密码为”admin”，那么实际存到数据库中的密码为“21232F297A57A5A743894A0E4A801FC3”（假设采用MD5加密，并且不会被破解）。这样我们至少保证了只有小红本人能够通过其账号进行登录，因为密码只有她自己知道。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/21/加密与加盐/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/密码加密/">密码加密</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/加密/">加密</a><a href="/tags/加盐/">加盐</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/21/加密与加盐/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/21/加密与加盐/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/"><span></span>Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next<span></span></a>
@@ -763,7 +763,7 @@
 		  
 		
 		  
-			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
+			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
 		  
 		
 		  
@@ -836,15 +836,15 @@
 			
 		
 			
+				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/IOC/" title="IOC">IOC<sup>1</sup></a></li>
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
 			
 		
 			
@@ -856,7 +856,7 @@
 			
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -864,7 +864,7 @@
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/内存泄漏/" title="内存泄漏">内存泄漏<sup>1</sup></a></li>
 			
 		
 			
@@ -872,7 +872,7 @@
 			
 		
 			
-				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
 			
 		
 			

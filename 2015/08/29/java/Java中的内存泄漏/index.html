@@ -1,0 +1,614 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Java中的内存泄漏 | 李大辉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Ｔracylihui">
+    
+
+    
+    <meta name="description" content="Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的内存泄漏">
+<meta property="og:url" content="http://yoursite.com/2015/08/29/java/Java中的内存泄漏/index.html">
+<meta property="og:site_name" content="李大辉">
+<meta property="og:description" content="Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露1.jpeg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露2.jpeg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露3.jpeg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露4.jpeg">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露5.jpeg">
+<meta property="og:updated_time" content="2015-08-29T06:18:44.774Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的内存泄漏">
+<meta name="twitter:description" content="Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="李大辉" title="李大辉"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="李大辉">李大辉</a></h1>
+				<h2 class="blog-motto">给自己提供一个总结的平台</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/summary">知识点总结</a></li>
+					
+						<li><a href="/problems">Bug汇总</a></li>
+					
+						<li><a href="/archives">文章</a></li>
+					
+						<li><a href="/about">简历</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/29/java/Java中的内存泄漏/" title="Java中的内存泄漏" itemprop="url">Java中的内存泄漏</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-08-29T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-29</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是内存泄漏"><span class="toc-number">1.</span> <span class="toc-text">什么是内存泄漏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为什么会发生内存泄漏？"><span class="toc-number">2.</span> <span class="toc-text">为什么会发生内存泄漏？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何防止内存泄漏的发生？"><span class="toc-number">3.</span> <span class="toc-text">如何防止内存泄漏的发生？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为什么JDK6中的substirng()方法容易导致内存泄漏？"><span class="toc-number">4.</span> <span class="toc-text">为什么JDK6中的substirng()方法容易导致内存泄漏？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#substring()是做什么的？"><span class="toc-number">4.1.</span> <span class="toc-text">substring()是做什么的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#当substring()被调用的时候，内部发生什么事？"><span class="toc-number">4.2.</span> <span class="toc-text">当substring()被调用的时候，内部发生什么事？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK6中的substring()"><span class="toc-number">4.3.</span> <span class="toc-text">JDK6中的substring()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jdk6中substring()将会导致的问题"><span class="toc-number">4.4.</span> <span class="toc-text">jdk6中substring()将会导致的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK7中的substring()"><span class="toc-number">4.5.</span> <span class="toc-text">JDK7中的substring()</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。</p>
+<a id="more"></a>
+<h1 id="什么是内存泄漏">什么是内存泄漏</h1><hr>
+<p>内存泄漏的定义：对象已经没有被应用程序使用，但是垃圾回收器没办法移除它们，因为还在被引用着。</p>
+<p>要想理解这个定义，我们需要先了解一下对象在内存中的状态。下面的这张图就解释了什么是无用对象以及什么是未被引用对象。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露1.jpeg" alt="图1"><br>上面图中可以看出，里面有被引用对象和未被引用对象。未被引用对象会被垃圾回收器回收，而被引用的对象却不会。未被引用的对象当然是不再被使用的对象，因为没有对象再引用它。然而无用对象却不全是未被引用对象。其中还有被引用的。就是这种情况导致了内存泄漏</p>
+<h1 id="为什么会发生内存泄漏？">为什么会发生内存泄漏？</h1><hr>
+<p>来先看看下面的例子，为什么会发生内存泄漏。下面这个例子中，A对象引用B对象，A对象的生命周期（t1-t4）比B对象的生命周期（t2-t3）长的多。当B对象没有被应用程序使用之后，A对象仍然在引用着B对象。这样，垃圾回收器就没办法将B对象从内存中移除，从而导致内存问题，因为如果A引用更多这样的对象，那将有更多的未被引用对象存在，并消耗内存空间。</p>
+<p>B对象也可能会持有许多其他的对象，那这些对象同样也不会被垃圾回收器回收。所有这些没在使用的对象将持续的消耗之前分配的内存空间。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露2.jpeg" alt="图2"></p>
+<h1 id="如何防止内存泄漏的发生？">如何防止内存泄漏的发生？</h1><p>下面是几条容易上手的建议，来帮助你防止内存泄漏的发生。</p>
+<ul>
+<li>特别注意一些像HashMap、ArrayList的集合对象，它们经常会引发内存泄漏。当它们被声明为static时，它们的生命周期就会和应用程序一样长。</li>
+<li>特别注意事件监听和回调函数。当一个监听器在使用的时候被注册，但不再使用之后却未被反注册。</li>
+<li>“如果一个类自己管理内存，那开发人员就得小心内存泄漏问题了。” 通常一些成员变量引用其他对象，初始化的时候需要置空。</li>
+</ul>
+<h1 id="为什么JDK6中的substirng()方法容易导致内存泄漏？">为什么JDK6中的substirng()方法容易导致内存泄漏？</h1><hr>
+<h2 id="substring()是做什么的？">substring()是做什么的？</h2><p>substring(int beginIndex ,int endIndex)方法返回一个子字符串，返回的是从原字符串的beginIndex到endIndex-1之间的内容。例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String x = <span class="string">"abcdef"</span>;</span><br><span class="line">x = x.substring(<span class="number">1</span>,<span class="number">3</span>);</span><br><span class="line">System.out.println(x);</span><br></pre></td></tr></table></figure></p>
+<p>输出<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bc</span><br></pre></td></tr></table></figure></p>
+<h2 id="当substring()被调用的时候，内部发生什么事？">当substring()被调用的时候，内部发生什么事？</h2><p>你或许会认为由于x是不可变的对象，当x被x.substring(1,3)返回的结果赋值后，它将指向一个全新的字符串如下图：<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露3.jpeg" alt="图3"><br>然而，这个图并不完全正确，或者说并没有完全表示出java 堆中真正发生的事情。那么当调用substring()的时候到底发生的了什么事呢？JDK 6与JDK7的substring方法实现有什么不一样呢？</p>
+<h2 id="JDK6中的substring()">JDK6中的substring()</h2><p>java中字符串是通过字符数组来支持实现的，在JDK6中，String类包含3个域，char[] value、int offset、int count。分别用于存储真实的字符数组、数组的偏移量，以及String所包含的字符的个数。</p>
+<p>当substring()方法被调用的时候，它会创建一个新的字符串对象，但是这个字符串的值在java 堆中仍然指向的是同一个数组，这两个字符串的不同在于他们的count和offset的值。<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露4.jpeg" alt="图4"></p>
+<p>下面是jdk6中的原代码，是简化后只包含用来说明这个问题的关键代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//JDK 6</span></span><br><span class="line">String(<span class="keyword">int</span> offset, <span class="keyword">int</span> count, <span class="keyword">char</span> value[]) &#123;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">    <span class="keyword">this</span>.offset = offset;</span><br><span class="line">    <span class="keyword">this</span>.count = count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">substring</span><span class="params">(<span class="keyword">int</span> beginIndex, <span class="keyword">int</span> endIndex)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//check boundary</span></span><br><span class="line">    <span class="keyword">return</span>  <span class="keyword">new</span> String(offset + beginIndex, endIndex - beginIndex, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="jdk6中substring()将会导致的问题">jdk6中substring()将会导致的问题</h2><p>如果你有一个非常长的字符串，但是你仅仅只需要这个字符串的一小部分，这就会导致性能问题(译注:可能会造成内存泄露,这个bug很早以前就有提及)，因为你需要的只是很小的部分，而这个子字符串却要包含整个字符数组，在jdk6中解决办法就是使用下面的方法，它会指向一个真正的子字符串。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = x.substring(x, y) + <span class="string">""</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="JDK7中的substring()">JDK7中的substring()</h2><p>在JDK7中有所改进，substring()方法在堆中真正的创建了一个新的数组,当原字符数组没有被引用后就被GC回收了.因此避免了上述问题.<br><img src="http://7xk5ao.com1.z0.glb.clouddn.com/java内存泄露5.jpeg" alt="图5"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//JDK 7</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(<span class="keyword">char</span> value[], <span class="keyword">int</span> offset, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//check boundary</span></span><br><span class="line">    <span class="keyword">this</span>.value = Arrays.copyOfRange(value, offset, offset + count);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">substring</span><span class="params">(<span class="keyword">int</span> beginIndex, <span class="keyword">int</span> endIndex)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//check boundary</span></span><br><span class="line">    <span class="keyword">int</span> subLen = endIndex - beginIndex;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> String(value, beginIndex, subLen);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java/">Java</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/内存泄漏/">内存泄漏</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/08/29/java/Java中的内存泄漏/" data-title="Java中的内存泄漏 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/"  title="Hibernate：save、persist和saveOrUpdate">
+ <strong>下一篇：</strong><br/> 
+ <span>Hibernate：save、persist和saveOrUpdate
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/08/29/java/Java中的内存泄漏/" data-title="Java中的内存泄漏" data-url="http://yoursite.com/2015/08/29/java/Java中的内存泄漏/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是内存泄漏"><span class="toc-number">1.</span> <span class="toc-text">什么是内存泄漏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为什么会发生内存泄漏？"><span class="toc-number">2.</span> <span class="toc-text">为什么会发生内存泄漏？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何防止内存泄漏的发生？"><span class="toc-number">3.</span> <span class="toc-text">如何防止内存泄漏的发生？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为什么JDK6中的substirng()方法容易导致内存泄漏？"><span class="toc-number">4.</span> <span class="toc-text">为什么JDK6中的substirng()方法容易导致内存泄漏？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#substring()是做什么的？"><span class="toc-number">4.1.</span> <span class="toc-text">substring()是做什么的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#当substring()被调用的时候，内部发生什么事？"><span class="toc-number">4.2.</span> <span class="toc-text">当substring()被调用的时候，内部发生什么事？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK6中的substring()"><span class="toc-number">4.3.</span> <span class="toc-text">JDK6中的substring()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jdk6中substring()将会导致的问题"><span class="toc-number">4.4.</span> <span class="toc-text">jdk6中substring()将会导致的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK7中的substring()"><span class="toc-number">4.5.</span> <span class="toc-text">JDK7中的substring()</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Maven/" title="Maven">Maven<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Spring/" title="Spring">Spring<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/密码加密/" title="密码加密">密码加密<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java集合/" title="Java集合">Java集合<sup>10</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/关系映射/" title="关系映射">关系映射<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/JVM/" title="JVM">JVM<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spring/" title="Spring">Spring<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/事务/" title="事务">事务<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SpringMVC/" title="SpringMVC">SpringMVC<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/加盐/" title="加盐">加盐<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内存泄漏/" title="内存泄漏">内存泄漏<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/RESTful/" title="RESTful">RESTful<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mysql/" title="Mysql">Mysql<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Junit/" title="Junit">Junit<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Mocks/" title="Mocks">Mocks<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Stubs/" title="Stubs">Stubs<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/tracyhuixingfu一个面向程序员交流分享的新一代社区" target="_blank" title="李辉的CSDN博客">李辉的CSDN博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://github.com/tracylihui" target="_blank" title="Github">Github</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tmaczhao.cn/" target="_blank" title="Drm.for PMonkey">Drm.for PMonkey</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1901372893&verifier=cbe23457&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m a little programmer. <br/>
+			But I believe I can change the world.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1901372893" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/tracylihui" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="Ｔracylihui">Ｔracylihui</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"lihui"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F03a3d7014b8737cea96d5197e4ac5fd0' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

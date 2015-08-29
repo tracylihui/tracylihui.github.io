@@ -85,6 +85,82 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/08/Hibernate：深入HQL学习/" title="Hibernate：深入HQL学习" itemprop="url">Hibernate：深入HQL学习</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-08T13:07:35.000Z" itemprop="datePublished"> 发表于 2015-07-08</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="导读">导读</h1><hr>
+<p>HQL(Hibernate Query Language) 是面向对象的查询语言, 它和 SQL 查询语言有些相似. 在 Hibernate 提供的各种检索方式中, HQL 是使用最广的一种检索方式. 它有如下功能:</p>
+<ol>
+<li>在查询语句中设定各种查询条件；</li>
+<li>支持投影查询, 即仅检索出对象的部分属性；</li>
+<li>支持分页查询；</li>
+<li>支持连接查询；</li>
+<li>支持分组查询, 允许使用 HAVING 和 GROUP BY 关键字；</li>
+<li>提供内置聚集函数, 如 sum(), min() 和 max()；</li>
+<li>支持子查询；</li>
+<li>支持动态绑定参数；</li>
+<li>能够调用 用户定义的 SQL 函数或标准的 SQL 函数。</li>
+</ol>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/08/Hibernate：深入HQL学习/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/HQL/">HQL</a><a href="/tags/Hibernate/">Hibernate</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/08/Hibernate：深入HQL学习/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/08/Hibernate：深入HQL学习/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/08/Hibernate关系映射4：N-N关联/" title="Hibernate关系映射4：N-N关联" itemprop="url">Hibernate关系映射4：N-N关联</a>
   </h1>
   <p class="article-author">By
@@ -675,74 +751,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/02/Java集合学习6：ArrayList的实现原理/" title="Java集合学习6：ArrayList的实现原理" itemprop="url">Java集合学习6：ArrayList的实现原理</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-02T04:42:09.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="ArrayList概述">ArrayList概述</h1><hr>
-<p>ArrayList可以理解为动态数组，用MSDN中的说法，就是Array的复杂版本。与Java中的数组相比，它的容量能动态增长。ArrayList是List接口的可变数组的实现。实现了所有可选列表操作，并允许包括 null 在内的所有元素。除了实现 List 接口外，此类还提供一些方法来操作内部用来存储列表的数组的大小。（此类大致上等同于 Vector 类，除了此类是不同步的。）</p>
-<p>每个ArrayList实例都有一个容量，该容量是指用来存储列表元素的数组的大小。它总是至少等于列表的大小。随着向ArrayList中不断添加元素，其容量也自动增长。自动增长会带来数据向新数组的重新拷贝，因此，如果可预知数据量的多少，可在构造ArrayList时指定其容量。在添加大量元素前，应用程序也可以使用ensureCapacity操作来增加ArrayList实例的容量，这可以减少递增式再分配的数量。</p>
-<p>注意，此实现不是同步的。如果多个线程同时访问一个ArrayList实例，而其中至少一个线程从结构上修改了列表，那么它必须保持外部同步。（结构上的修改是指任何添加或删除一个或多个元素的操作，或者显式调整底层数组的大小；仅仅设置元素的值不是结构上的修改。）</p>
-<p>我们先学习了解其内部的实现原理，才能更好的理解其应用。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/02/Java集合学习6：ArrayList的实现原理/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java集合/">Java集合</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/02/Java集合学习6：ArrayList的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习6：ArrayList的实现原理/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/page/3/"><span></span>Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next<span></span></a>
@@ -769,7 +777,7 @@
 		  
 		
 		  
-			<li><a href="/categories/Java/" title="Java">Java<sup>1</sup></a></li>
+			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
 		  
 		
 		  
@@ -842,15 +850,15 @@
 			
 		
 			
+				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/IOC/" title="IOC">IOC<sup>1</sup></a></li>
+				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
 			
 		
 			
@@ -862,7 +870,7 @@
 			
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
 			
 		
 			
@@ -870,7 +878,7 @@
 			
 		
 			
-				<li><a href="/tags/加密/" title="加密">加密<sup>1</sup></a></li>
+				<li><a href="/tags/内存泄漏/" title="内存泄漏">内存泄漏<sup>1</sup></a></li>
 			
 		
 			
@@ -878,7 +886,7 @@
 			
 		
 			
-				<li><a href="/tags/AOP/" title="AOP">AOP<sup>1</sup></a></li>
+				<li><a href="/tags/数据库/" title="数据库">数据库<sup>1</sup></a></li>
 			
 		
 			
