@@ -4,29 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Maven学习 | 李大辉</title>
+    <title>Java集合学习9：对集合中transient的理解 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
+    <meta name="description" content="本文是对Java常用的集合的学习。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Maven学习">
-<meta property="og:url" content="http://yoursite.com/2015/07/09/Maven学习/index.html">
+<meta property="og:title" content="Java集合学习9：对集合中transient的理解">
+<meta property="og:url" content="http://yoursite.com/2015/09/01/Java集合学习9：对集合中transient的理解/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
-<meta property="og:updated_time" content="2015-07-09T15:04:55.592Z">
+<meta property="og:description" content="本文是对Java常用的集合的学习。">
+<meta property="og:updated_time" content="2015-09-01T13:24:52.336Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Maven学习">
-<meta name="twitter:description" content="Maven导读
-构建项目Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。
-Maven是跨平台的。">
+<meta name="twitter:title" content="Java集合学习9：对集合中transient的理解">
+<meta name="twitter:description" content="本文是对Java常用的集合的学习。">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -90,14 +84,14 @@ Maven是跨平台的。">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/09/Maven学习/" title="Maven学习" itemprop="url">Maven学习</a>
+      <a href="/2015/09/01/Java集合学习9：对集合中transient的理解/" title="Java集合学习9：对集合中transient的理解" itemprop="url">Java集合学习9：对集合中transient的理解</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-07-09T14:24:06.000Z" itemprop="datePublished"> 发表于 2015-07-09</time>
+    <time datetime="2015-09-01T12:40:09.000Z" itemprop="datePublished"> 发表于 2015-09-01</time>
     
   </p>
 </header>
@@ -106,34 +100,38 @@ Maven是跨平台的。">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven导读"><span class="toc-number">1.</span> <span class="toc-text">Maven导读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构建项目"><span class="toc-number">1.1.</span> <span class="toc-text">构建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven不仅仅是构建工具"><span class="toc-number">1.2.</span> <span class="toc-text">Maven不仅仅是构建工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven基础知识"><span class="toc-number">2.</span> <span class="toc-text">Maven基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用构建命令"><span class="toc-number">2.1.</span> <span class="toc-text">常用构建命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动创建目录骨架"><span class="toc-number">2.2.</span> <span class="toc-text">自动创建目录骨架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven的生命周期和插件"><span class="toc-number">2.3.</span> <span class="toc-text">Maven的生命周期和插件</span></a></li></ol></li></ol>
+			
 		
 		</div>
 		
-		<h1 id="Maven导读">Maven导读</h1><hr>
-<h2 id="构建项目">构建项目</h2><p>Maven是一个异常强大的构建工具，能够帮我们自动化构建过程，从清理、编译、测试到生成报告，再到打包和部署。通过Maven，我们只需要输入简单的命令（如mvn clean install），就会帮我们处理繁琐的任务。</p>
-<p>Maven是跨平台的。<br><a id="more"></a><br>Maven最大化的消除了构建的重复，抽象了构建生命周期，并且为绝大部分的构建任务提供了已实现的插件。比如说测试，我们只需要遵循Maven的约定编写好测试用例，当我们运行构建的时候，这些测试便会自动运行。</p>
-<p>除此之外，Maven能帮助我们标准化构建过程。在Maven之前，十个项目可能有十种构建方式，但通过Maven，所有项目的构建命令都是简单一致的。有利于促进项目团队的标准化。</p>
-<h2 id="Maven不仅仅是构建工具">Maven不仅仅是构建工具</h2><p>Maven通过坐标系统准确的定位每一个构建（artifact），也就是通过一组坐标Maven能够找到任何一个Java类库（如Jar文件）。所以通过Maven可以解决版本不一致、版本冲突、依赖臃肿等问题。</p>
-<p>Maven还能帮助我们管理原本分散在项目中各个角落的项目信息，例如项目描述、开发者、许可证等。通过Maven自动生成的站点，以及一些插件，可以轻松获得项目文档、测试报告、静态分析报告、源码版本日志报告等信息。</p>
-<h1 id="Maven基础知识">Maven基础知识</h1><hr>
-<h2 id="常用构建命令">常用构建命令</h2><p>mvn -v 查看maven版本<br>mvn compile 编译<br>mvn test 测试<br>mvn package 打包<br>mvn clean 删除target<br>mvn install 安装jar包到本地仓库中</p>
-<h2 id="自动创建目录骨架">自动创建目录骨架</h2><p>Maven提供archetype插件，该插件用于创建符合maven规定的目录骨架。<br>下面是Maven规定的目录骨架。其中target目录会在执行compile、package等命令的时候生成，里面存放编译后的文件、日志、jar包等文件。<br><figure class="highlight puppet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">src</span><br><span class="line">    <span class="keyword">main</span></span><br><span class="line">        java</span><br><span class="line">            程序代码</span><br><span class="line">    test</span><br><span class="line">        java</span><br><span class="line">            测试代码</span><br><span class="line">    <span class="literal">target</span></span><br><span class="line">pom.xml</span><br></pre></td></tr></table></figure></p>
-<p>在CMD窗口，输入<code>mvn archetype:generate</code>（第一次使用的时候，Maven会自动下载相关的jar包等文件）<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Choose org.apache.maven.<span class="string">archetypes:</span>maven-archetype-quickstart <span class="string">version:</span></span><br><span class="line"><span class="number">1</span>: <span class="number">1.0</span>-alpha-<span class="number">1</span></span><br><span class="line"><span class="number">2</span>: <span class="number">1.0</span>-alpha-<span class="number">2</span></span><br><span class="line"><span class="number">3</span>: <span class="number">1.0</span>-alpha-<span class="number">3</span></span><br><span class="line"><span class="number">4</span>: <span class="number">1.0</span>-alpha-<span class="number">4</span></span><br><span class="line"><span class="number">5</span>: <span class="number">1.0</span></span><br><span class="line"><span class="number">6</span>: <span class="number">1.1</span></span><br><span class="line">Choose a <span class="string">number:</span> <span class="number">6</span>: (在这一步直接回车)</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'groupId'</span>: : org.lihui.mavenDemo （可通常我们填写组织机构名称倒写+项目名）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'artifactId'</span>: : mavenDemo （项目名称，后边也可以加上对应的模块名称）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'version'</span>:  <span class="number">1.0</span>.0-<span class="string">SNAPSHOT:</span> : （版本号，直接回车，默认<span class="number">1.0</span>-SNAPSHOT）</span><br><span class="line">Define value <span class="keyword">for</span> property <span class="string">'package'</span>:  <span class="string">mavenDemo:</span> : （打包后的jar文件名，相当于.net中项目最后生成的程序集dll名称）</span><br><span class="line">Confirm properties <span class="string">configuration:</span></span><br><span class="line"><span class="string">groupId:</span> org.lihui.mavenDemo</span><br><span class="line"><span class="string">artifactId:</span> mavenDemo</span><br><span class="line"><span class="string">version:</span> <span class="number">1.0</span>.0-SNAPSHOT</span><br><span class="line"><span class="string">package:</span> mavenDemo</span><br><span class="line"><span class="label"> Y:</span> :  (直接回车确认)</span><br><span class="line">[INFO] ----------------------------------------------------------------------------</span><br><span class="line">[INFO] Using following parameters <span class="keyword">for</span> creating project from Old (<span class="number">1.</span>x) <span class="string">Archetype:</span> maven-archetype-<span class="string">quickstart:</span><span class="number">1.1</span></span><br><span class="line">[INFO] ----------------------------------------------------------------------------</span><br><span class="line">[INFO] <span class="string">Parameter:</span> groupId, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> packageName, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> <span class="keyword">package</span>, <span class="string">Value:</span> cnblogs</span><br><span class="line">[INFO] <span class="string">Parameter:</span> artifactId, <span class="string">Value:</span> maven-hello-world</span><br><span class="line">...</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS (看到这个，表示项目创建成功！)</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br></pre></td></tr></table></figure></p>
-<h2 id="Maven的生命周期和插件">Maven的生命周期和插件</h2>  
+		<p>之前在阅读Java集合源码的过程中，发现在多种集合的背后，其基本上都是一个数组，而该数组也都会用transient关键字进行标识。例如，在HashMap中，<code>transient Entry&lt;K,V&gt;[] table;</code>，又例如在ArrayList中，<code>private transient Object[] elementData;</code>。</p>
+<a id="more"></a>
+<p>自己之前对transient关键字有过了解，transient用来表示一个域不是该对象串行化的一部分。当一个对象被串行化的时候，transient型变量的值不包括在串行化的表示中，然而非transient型的变量是被包括进去的。所以一直以为存入集合中的数据在进行序列号和反序列化之后数据就不存在了，虽然有所怀疑，但没有深究。</p>
+<p>今天又突然想到了这个问题，就自己做了个小测试，结果发现并不是自己之前理解的那样：存入集合中的数据在序列号和反序列化之后并不会丢失。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> FileNotFoundException,</span><br><span class="line">			IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">		List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">		list.add(<span class="number">1</span>);</span><br><span class="line">		list.add(<span class="number">2</span>);</span><br><span class="line">		list.add(<span class="number">3</span>);</span><br><span class="line">		list.add(<span class="number">4</span>);</span><br><span class="line">		System.out.println(list.size());</span><br><span class="line"></span><br><span class="line">		ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(<span class="keyword">new</span> FileOutputStream(</span><br><span class="line">				<span class="keyword">new</span> File(<span class="string">"d:/d.dat"</span>)));</span><br><span class="line">		oos.writeObject(list);</span><br><span class="line">		oos.flush();</span><br><span class="line">		oos.close();</span><br><span class="line"></span><br><span class="line">		ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(<span class="keyword">new</span> FileInputStream(</span><br><span class="line">				<span class="keyword">new</span> File(<span class="string">"d:/d.dat"</span>)));</span><br><span class="line">		List listtmp = (List) ois.readObject();</span><br><span class="line">		System.out.println(listtmp.size());</span><br><span class="line">		ois.close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果为<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">4</span><br><span class="line">4</span><br></pre></td></tr></table></figure></p>
+<p>再去看源码，才发现在集合中，实现了writeObject(ObjectOutputStream)和readObject(ObjectInputStream)这两个方法。</p>
+<p>在继续学习下去之前，我们先得补充一点关于序列化的知识点。</p>
+<p>序列化可以通过两种方式，其一是实现Serializable接口，调用java.io.ObjectOutputStream的defaultWriteObject方法，将对象序列化。此时transient修饰的字段，不会被序列化。另一种是实现Serializable接口，但同时实现writeObject方法，在序列化时，会调用该类的writeObject方法。此时transient修饰的字段，是否会被序列化，取决于writeObject方法的实现。</p>
+<p>了解了这些，我学习到在HashMap中，自己实现了writeObject方法，在该方法中将数据进行了序列化。这虽然解释通了我之前的测试，但让我联想到另一个问题，为什么要这么做？这不是多此一举么？</p>
+<p>通过查阅stackoverflow还有segmentfault中的一些回答，得到了想要的答案。</p>
+<p>一、HashMap 中的存储数据的数组数据成员中，数组还有很多的空间没有被使用，没有被使用到的空间被序列化没有意义。所以需要手动使用 writeObject() 方法，只序列化实际存储元素的数组。</p>
+<p>二、<strong>由于不同的虚拟机对于相同 hashCode 产生的 Code 值可能是不一样的，如果你使用默认的序列化，那么反序列化后，元素的位置和之前的是保持一致的，可是由于 hashCode 的值不一样了，那么定位函数 indexOf（）返回的元素下标就会不同，这样不是我们所想要的结果</strong>。</p>
+<p>打个比方说, 向HashMap存一个entry, key为 字符串”STRING”, 在第一个java程序里, “STRING”的hashcode()为1, 存入第1号bucket; 在第二个java程序里, “STRING”的hashcode()有可能就是2, 存入第2号bucket。如果用默认的串行化(Entry[] table不用transient), 那么这个HashMap从第一个java程序里通过串行化导入第二个java程序后, 其内存分布是一样的. 这就不对了. HashMap现在的readObject和writeObject是把内容 输出/输入, 把HashMap重新生成出来。</p>
+<p>附上在Effective Java 2nd的一段话：For example, consider the case of a hash table. The physical representation is a sequence of hash buckets containing key-value entries. The bucket that an entry resides in is a function of the hash code of its key, which is not, in general, guaranteed to be the same from JVM implementation to JVM implementation. In fact, it isn’t even guaranteed to be the same from run to run. Therefore, <strong>accepting the default serialized form for a hash table would constitute a serious bug</strong>. Serializing and deserializing the hash table could yield an object whose invariants were seriously corrupt.</p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/Maven/">Maven</a>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Maven/">Maven</a>
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
   </div>
 
 </div>
@@ -142,7 +140,7 @@ Maven是跨平台的。">
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2015/07/09/Maven学习/" data-title="Maven学习 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  <div data-url="http://yoursite.com/2015/09/01/Java集合学习9：对集合中transient的理解/" data-title="Java集合学习9：对集合中transient的理解 | 李大辉" data-tsina="1901372893" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -155,19 +153,11 @@ Maven是跨平台的。">
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/07/10/Hibernate：检索策略的学习1/" title="Hibernate：检索策略的学习1">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Hibernate：检索策略的学习1</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/07/08/Hibernate：深入HQL学习/"  title="Hibernate：深入HQL学习">
+<a href="/2015/08/29/java/Java中的内存泄漏/"  title="Java中的内存泄漏">
  <strong>下一篇：</strong><br/> 
- <span>Hibernate：深入HQL学习
+ <span>Java中的内存泄漏
 </span>
 </a>
 </div>
@@ -176,7 +166,7 @@ Maven是跨平台的。">
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/07/09/Maven学习/" data-title="Maven学习" data-url="http://yoursite.com/2015/07/09/Maven学习/"></div>
+	<div class="ds-thread" data-thread-key="2015/09/01/Java集合学习9：对集合中transient的理解/" data-title="Java集合学习9：对集合中transient的理解" data-url="http://yoursite.com/2015/09/01/Java集合学习9：对集合中transient的理解/"></div>
 </section>
 
 
@@ -186,7 +176,7 @@ Maven是跨平台的。">
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven导读"><span class="toc-number">1.</span> <span class="toc-text">Maven导读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#构建项目"><span class="toc-number">1.1.</span> <span class="toc-text">构建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven不仅仅是构建工具"><span class="toc-number">1.2.</span> <span class="toc-text">Maven不仅仅是构建工具</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Maven基础知识"><span class="toc-number">2.</span> <span class="toc-text">Maven基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常用构建命令"><span class="toc-number">2.1.</span> <span class="toc-text">常用构建命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动创建目录骨架"><span class="toc-number">2.2.</span> <span class="toc-text">自动创建目录骨架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven的生命周期和插件"><span class="toc-number">2.3.</span> <span class="toc-text">Maven的生命周期和插件</span></a></li></ol></li></ol>
+ 
  
   </div>
 
