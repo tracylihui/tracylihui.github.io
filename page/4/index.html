@@ -85,6 +85,78 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/10/Hibernate：检索策略的学习1/" title="Hibernate：检索策略的学习1" itemprop="url">Hibernate：检索策略的学习1</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-10T05:01:54.000Z" itemprop="datePublished"> 发表于 2015-07-10</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="概述">概述</h1><hr>
+<p>检索数据，也就是查询数据是在一个系统中必不可少的一个功能。检索数据时的2个问题：</p>
+<ol>
+<li>不浪费内存：例如，Customer和Order是双向1-N的关系。当 Hibernate 从数据库中加载 Customer 对象时， 如果同时加载所有关联的 Order 对象， 而程序实际上仅仅需要访问 Customer 对象， 那么这些关联的 Order 对象就白白浪费了许多内存。</li>
+<li>更高的查询效率：发送尽可能少的 SQL 语句。</li>
+</ol>
+<p>由于篇幅原因，将内容分为了两部分：</p>
+<p><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A01">Hibernate：检索策略的学习1</a><br><a href="http://tracylihui.github.io/2015/07/10/Hibernate%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5%E7%9A%84%E5%AD%A6%E4%B9%A02/">Hibernate：检索策略的学习2</a></p>
+<p>第一部分讲解了类级别的检索策略以及1-N和N-N的检索策略，在第二部分中将学习N-1和1-1的检索策略，并对检索策略进行总结。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/10/Hibernate：检索策略的学习1/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Hibernate/">Hibernate</a><a href="/tags/检索策略/">检索策略</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/10/Hibernate：检索策略的学习1/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/10/Hibernate：检索策略的学习1/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/09/Maven学习/" title="Maven学习" itemprop="url">Maven学习</a>
   </h1>
   <p class="article-author">By
@@ -685,73 +757,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" title="Java集合学习8：ConcurrentHashMap的实现原理" itemprop="url">Java集合学习8：ConcurrentHashMap的实现原理</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-02T06:42:09.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<p>我们在之前的博文中了解到关于HashMap和Hashtable这两种集合。其中HashMap是非线程安全的，当我们只有一个线程在使用HashMap的时候，自然不会有问题，但如果涉及到多个线程，并且有读有写的过程中，HashMap就不能满足我们的需要了(fail-fast)。在不考虑性能问题的时候，我们的解决方案有Hashtable或者Collections.synchronizedMap(hashMap)，这两种方式基本都是对整个hash表结构做锁定操作的，这样在锁表的期间，别的线程就需要等待了，无疑性能不高。</p>
-<p>所以我们在本文中学习一个util.concurrent包的重要成员，ConcurrentHashMap。</p>
-<p>ConcurrentHashMap的实现是依赖于Java内存模型，所以我们在了解ConcurrentHashMap的前提是必须了解Java内存模型。但Java内存模型并不是本文的重点，所以我假设读者已经对Java内存模型有所了解。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java集合/">Java集合</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <a class="extend prev" rel="prev" href="/page/3/"><span></span>Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next<span></span></a>
@@ -778,7 +783,7 @@
 		  
 		
 		  
-			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
 		  
 		
 		  
@@ -851,11 +856,11 @@
 			
 		
 			
-				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+				<li><a href="/tags/Java/" title="Java">Java<sup>3</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
 			
 		
 			

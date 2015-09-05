@@ -85,6 +85,73 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" title="Java集合学习8：ConcurrentHashMap的实现原理" itemprop="url">Java集合学习8：ConcurrentHashMap的实现原理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-02T06:42:09.000Z" itemprop="datePublished"> 发表于 2015-07-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="概述">概述</h1><hr>
+<p>我们在之前的博文中了解到关于HashMap和Hashtable这两种集合。其中HashMap是非线程安全的，当我们只有一个线程在使用HashMap的时候，自然不会有问题，但如果涉及到多个线程，并且有读有写的过程中，HashMap就不能满足我们的需要了(fail-fast)。在不考虑性能问题的时候，我们的解决方案有Hashtable或者Collections.synchronizedMap(hashMap)，这两种方式基本都是对整个hash表结构做锁定操作的，这样在锁表的期间，别的线程就需要等待了，无疑性能不高。</p>
+<p>所以我们在本文中学习一个util.concurrent包的重要成员，ConcurrentHashMap。</p>
+<p>ConcurrentHashMap的实现是依赖于Java内存模型，所以我们在了解ConcurrentHashMap的前提是必须了解Java内存模型。但Java内存模型并不是本文的重点，所以我假设读者已经对Java内存模型有所了解。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/02/Java集合学习8：ConcurrentHashMap的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/07/02/Java集合学习7：LinkedList的实现原理/" title="Java集合学习7：LinkedList的实现原理" itemprop="url">Java集合学习7：LinkedList的实现原理</a>
   </h1>
   <p class="article-author">By
@@ -574,7 +641,7 @@
 		  
 		
 		  
-			<li><a href="/categories/Java/" title="Java">Java<sup>2</sup></a></li>
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
 		  
 		
 		  
@@ -647,11 +714,11 @@
 			
 		
 			
-				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
+				<li><a href="/tags/Java/" title="Java">Java<sup>3</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+				<li><a href="/tags/检索策略/" title="检索策略">检索策略<sup>2</sup></a></li>
 			
 		
 			
