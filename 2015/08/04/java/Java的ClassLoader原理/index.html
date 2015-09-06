@@ -4,22 +4,31 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>李大辉</title>
+    <title>Java的ClassLoader原理 | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="给自己提供一个总结的平台">
-<meta property="og:type" content="website">
-<meta property="og:title" content="李大辉">
-<meta property="og:url" content="http://yoursite.com/index.html">
+    <meta name="description" content="关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。原文链接：深入分析Java ClassLoader原理
+什么是ClassLoader?
+大家都知道，当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java的ClassLoader原理">
+<meta property="og:url" content="http://yoursite.com/2015/08/04/java/Java的ClassLoader原理/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="给自己提供一个总结的平台">
+<meta property="og:description" content="关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。原文链接：深入分析Java ClassLoader原理
+什么是ClassLoader?
+大家都知道，当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Java的ClassLoader原理1.png">
+<meta property="og:image" content="http://7xk5ao.com1.z0.glb.clouddn.com/Java的ClassLoader原理2.png">
+<meta property="og:updated_time" content="2015-09-06T13:21:21.240Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="李大辉">
-<meta name="twitter:description" content="给自己提供一个总结的平台">
+<meta name="twitter:title" content="Java的ClassLoader原理">
+<meta name="twitter:description" content="关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。原文链接：深入分析Java ClassLoader原理
+什么是ClassLoader?
+大家都知道，当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -77,342 +86,10 @@
 </div>
     </header>
     <div id="container">
-      <div id="main">
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/09/05/java/Java中的弱引用/" title="Java中的弱引用" itemprop="url">Java中的弱引用</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-05T01:00:52.000Z" itemprop="datePublished"> 发表于 2015-09-05</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是在阅读《深入理解JAVA虚拟机：JVM的高级特性与最佳实践》中的关于对“对象已死吗”的章节介绍，继而在importnew中找到了一篇关于Java中的弱引用介绍的文章。<br><a href="https://weblogs.java.net/blog/enicholas/archive/2006/05/understanding_w.html">原文链接</a><br><a href="http://www.importnew.com/14115.html">译文链接</a><br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/09/05/java/Java中的弱引用/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
+      <div id="main" class="post" itemscope itemprop="blogPost">
   
-  <span></span> <a href="/tags/Java/">Java</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/05/java/Java中的弱引用/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/05/java/Java中的弱引用/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/09/01/Java集合学习9：对集合中transient的理解/" title="Java集合学习9：对集合中transient的理解" itemprop="url">Java集合学习9：对集合中transient的理解</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-01T12:40:09.000Z" itemprop="datePublished"> 发表于 2015-09-01</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>之前在阅读Java集合源码的过程中，发现在多种集合的背后，其基本上都是一个数组，而该数组也都会用transient关键字进行标识。例如，在HashMap中，<code>transient Entry&lt;K,V&gt;[] table;</code>，又例如在ArrayList中，<code>private transient Object[] elementData;</code>。</p>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/09/01/Java集合学习9：对集合中transient的理解/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java集合/">Java集合</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/01/Java集合学习9：对集合中transient的理解/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/01/Java集合学习9：对集合中transient的理解/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/29/java/Java中的内存泄漏/" title="Java中的内存泄漏" itemprop="url">Java中的内存泄漏</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-29T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-29</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。</p>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/29/java/Java中的内存泄漏/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/内存泄漏/">内存泄漏</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/29/java/Java中的内存泄漏/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/29/java/Java中的内存泄漏/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/" title="Hibernate：save、persist和saveOrUpdate" itemprop="url">Hibernate：save、persist和saveOrUpdate</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-08T03:22:14.000Z" itemprop="datePublished"> 发表于 2015-08-08</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。</p>
-<h1 id="save和saverOrUpdate的区别">save和saverOrUpdate的区别</h1><hr>
-<p>最主要的区别是save()方法生成一个新的标识符（identifier），然后在数据库中插入一条记录，并且返回一个Serializable对象；而saverOrUpdate()是根据是否在数据中存在来选择插入(INSERT)或者是更新(UPDATE)。如果持久化的对象已经在数据库中，则执行UPDATE SQL。</p>
-<p>saverOrUpdate()方法使用更灵活，但却涉及到一个额外的流程去查找该对象在数据库中是否存在。</p>
-<h1 id="save和persist的区别">save和persist的区别</h1><hr>
-<ul>
-<li>返回类型不同。两个方法都会将对象插入到数据，但save返回的是Serializable对象，而persist返回的是void。</li>
-<li>ID赋值时机不同。二者同样用于将transient实例持久化，但persist不保证ID值立即赋给持久化实例，可能会在flush的时候给ID赋值。</li>
-<li>transaction外的行为不同。如果在transaction之外调用，persist保证会立即执行INSERT语句；而save则不保证（save返回一个identifier，如果必须执行INSERT来获取该identifier，则就会立即执行INSERT，而不论是在transaction之内或之外）</li>
-<li>使用场景。persist方法适用于被扩展的Session上下文的长期运行的会话中，而save则不适用。(Because of its above behavior of persist method outside transaction boundary, its useful in long-running conversations with an extended Session context. On the other hand save method is not good in a long-running conversation with an extended Session context.)</li>
-</ul>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁" itemprop="url">Hibernate：悲观锁和乐观锁</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-06T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-08-06</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。</p>
-<p>Hibernate 支持两种锁机制：即通常所说的 “悲观锁（ Pessimistic Locking ）”和 “乐观锁（ Optimistic Locking ）” 。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/06/Hibernate：悲观锁与乐观锁/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
   <h1 itemprop="name">
     
       <a href="/2015/08/04/java/Java的ClassLoader原理/" title="Java的ClassLoader原理" itemprop="url">Java的ClassLoader原理</a>
@@ -426,9 +103,16 @@
     
   </p>
 </header>
-    <div class="article-content">
-        
-        <p>关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。<br>原文链接：<a href="http://blog.csdn.net/xyang81/article/details/7292380" target="_blank" rel="external">深入分析Java ClassLoader原理</a></p>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是ClassLoader?"><span class="toc-number">1.</span> <span class="toc-text">什么是ClassLoader?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java默认提供的三个ClassLoader"><span class="toc-number">2.</span> <span class="toc-text">Java默认提供的三个ClassLoader</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BootStrap_ClassLoader"><span class="toc-number">2.1.</span> <span class="toc-text">BootStrap ClassLoader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Extension_ClassLoader"><span class="toc-number">2.2.</span> <span class="toc-text">Extension ClassLoader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#App_ClassLoader"><span class="toc-number">2.3.</span> <span class="toc-text">App ClassLoader</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ClassLoader加载类的原理"><span class="toc-number">3.</span> <span class="toc-text">ClassLoader加载类的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#原理介绍"><span class="toc-number">3.1.</span> <span class="toc-text">原理介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用双亲委托这种模型呢？"><span class="toc-number">3.2.</span> <span class="toc-text">为什么要使用双亲委托这种模型呢？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#但是JVM在搜索类的时候，又是如何判定两个class是相同的呢？"><span class="toc-number">3.3.</span> <span class="toc-text">但是JVM在搜索类的时候，又是如何判定两个class是相同的呢？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ClassLoader的体系架构"><span class="toc-number">4.</span> <span class="toc-text">ClassLoader的体系架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#验证ClassLoader加载类的原理"><span class="toc-number">5.</span> <span class="toc-text">验证ClassLoader加载类的原理</span></a></li></ol>
+		
+		</div>
+		
+		<p>关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。<br>原文链接：<a href="http://blog.csdn.net/xyang81/article/details/7292380" target="_blank" rel="external">深入分析Java ClassLoader原理</a></p>
 <h1 id="什么是ClassLoader?">什么是ClassLoader?</h1><hr>
 <p>大家都知道，当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
 <h1 id="Java默认提供的三个ClassLoader">Java默认提供的三个ClassLoader</h1><hr>
@@ -456,14 +140,9 @@
 <p>为什么第一行的结果是ExtClassLoader呢？</p>
 <p>因为ClassLoader的委托模型机制，当我们要用ClassLoaderTest.class这个类的时候，AppClassLoader在试图加载之前，先委托给Bootstrcp ClassLoader，Bootstracp ClassLoader发现自己没找到，它就告诉ExtClassLoader，兄弟，我这里没有这个类，你去加载看看，然后Extension ClassLoader拿着这个类去它指定的类路径（JAVA_HOME/jre/lib/ext）试图加载，唉，它发现在ClassLoaderTest.jar这样一个文件中包含ClassLoaderTest.class这样的一个文件，然后它把找到的这个类加载到内存当中，并生成这个类的Class实例对象，最后把这个实例返回。所以ClassLoaderTest.class的类加载器是ExtClassLoader。</p>
 <p>第二行的结果为null，是因为ExtClassLoader的父类加载器是Bootstrap ClassLoader。</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
+  
+	</div>
+		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
@@ -481,305 +160,55 @@
 
 
 
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/08/04/java/Java的ClassLoader原理/" data-title="Java的ClassLoader原理 | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
 
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/04/java/Java的ClassLoader原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/04/java/Java的ClassLoader原理/" data-count-type="comments">&nbsp;</a>
-	
-</div>
 
 </footer>
 
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/04/java/Java对象的Clone/" title="Java对象的Clone" itemprop="url">Java对象的Clone</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-04T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-04</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文包含的内容：</p>
-<ul>
-<li>Java对象的创建</li>
-<li>复制对象or复制引用</li>
-<li>深拷贝和浅拷贝</li>
-<li>使用序列化实现对象的深拷贝</li>
-</ul>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/04/java/Java对象的Clone/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Clone/">Clone</a><a href="/tags/Java/">Java</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
+   	       
+	</article>
 	
-	  	<span></span>
-		<a href="/2015/08/04/java/Java对象的Clone/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/04/java/Java对象的Clone/" data-count-type="comments">&nbsp;</a>
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Hibernate：悲观锁和乐观锁</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/08/04/java/Java对象的Clone/"  title="Java对象的Clone">
+ <strong>下一篇：</strong><br/> 
+ <span>Java对象的Clone
+</span>
+</a>
+</div>
+
+</nav>
+
 	
-</div>
-
-</footer>
-
-
-    </article>
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/08/04/java/Java的ClassLoader原理/" data-title="Java的ClassLoader原理" data-url="http://yoursite.com/2015/08/04/java/Java的ClassLoader原理/"></div>
+</section>
 
 
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/28/spring/Spring的IOC和AOP/" title="Spring的IOC和AOP" itemprop="url">Spring的IOC和AOP</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-28T02:11:52.000Z" itemprop="datePublished"> 发表于 2015-07-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="Spring的简单理解">Spring的简单理解</h1><hr>
-<p>Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。<br>Spring最根本的使命：<font color="#ff0000"><strong>简化Java开发。</strong></font><br>为了降低Java开发的复杂性，Spring采取以下4种关键策略：</p>
-<ol>
-<li>基于POJO的轻量级和最小侵入性编程</li>
-<li>通过依赖注入和面向接口实现松耦合</li>
-<li>基于切面和惯例进行声明式编程</li>
-<li>通过切面和模版减少样板示代码</li>
-</ol>
-<p>很多人对Spring理解其实都是停留在使用阶段（例如：声明式事务很好用等等），当今的Spring技术生态环境里可谓是蔚为壮观，Spring已经包罗万象，它的内容之多完全不亚于它的本源Java语言了，而Spring这么大的框都是建立在IOC和AOP技术之上，只有深入理解了这两个技术我们才能明白为什么Spring这个框能装的下那么多东西了。在理解IOC和AOP之前，可以先看一下Spring给我们带来了哪些好处。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/28/spring/Spring的IOC和AOP/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Spring/">Spring</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/AOP/">AOP</a><a href="/tags/IOC/">IOC</a><a href="/tags/Spring/">Spring</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/28/spring/Spring的IOC和AOP/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/28/spring/Spring的IOC和AOP/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/28/spring/Spring声明式事务管理/" title="Spring声明式事务管理" itemprop="url">Spring声明式事务管理</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-28T01:26:52.000Z" itemprop="datePublished"> 发表于 2015-07-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<p>Spring 的声明式事务管理在底层是建立在 AOP 的基础之上的。其本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。</p>
-<p>声明式事务最大的优点就是不需要通过编程的方式管理事务，这样就不需要在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明（或通过等价的基于标注的方式），便可以将事务规则应用到业务逻辑中。因为事务管理本身就是一个典型的横切逻辑，正是 AOP 的用武之地。Spring 开发团队也意识到了这一点，为声明式事务提供了简单而强大的支持。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/28/spring/Spring声明式事务管理/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Spring/">Spring</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Spring/">Spring</a><a href="/tags/事务/">事务</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/28/spring/Spring声明式事务管理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/28/spring/Spring声明式事务管理/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/27/RESTful的理解/" title="RESTful的理解" itemprop="url">RESTful的理解</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-27T13:47:52.000Z" itemprop="datePublished"> 发表于 2015-07-27</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。</p>
-<h1 id="概述">概述</h1><hr>
-<p>REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源状态。REST对Web的影响非常大，由于其使用很方便，已经普遍取代了基于SOAP和WSDL的接口设计。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/27/RESTful的理解/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/RESTful/">RESTful</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/RESTful/">RESTful</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/27/RESTful的理解/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/27/RESTful的理解/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-
-  <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
-  </nav>
-
-</div>
+</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是ClassLoader?"><span class="toc-number">1.</span> <span class="toc-text">什么是ClassLoader?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java默认提供的三个ClassLoader"><span class="toc-number">2.</span> <span class="toc-text">Java默认提供的三个ClassLoader</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BootStrap_ClassLoader"><span class="toc-number">2.1.</span> <span class="toc-text">BootStrap ClassLoader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Extension_ClassLoader"><span class="toc-number">2.2.</span> <span class="toc-text">Extension ClassLoader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#App_ClassLoader"><span class="toc-number">2.3.</span> <span class="toc-text">App ClassLoader</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ClassLoader加载类的原理"><span class="toc-number">3.</span> <span class="toc-text">ClassLoader加载类的原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#原理介绍"><span class="toc-number">3.1.</span> <span class="toc-text">原理介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用双亲委托这种模型呢？"><span class="toc-number">3.2.</span> <span class="toc-text">为什么要使用双亲委托这种模型呢？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#但是JVM在搜索类的时候，又是如何判定两个class是相同的呢？"><span class="toc-number">3.3.</span> <span class="toc-text">但是JVM在搜索类的时候，又是如何判定两个class是相同的呢？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ClassLoader的体系架构"><span class="toc-number">4.</span> <span class="toc-text">ClassLoader的体系架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#验证ClassLoader加载类的原理"><span class="toc-number">5.</span> <span class="toc-text">验证ClassLoader加载类的原理</span></a></li></ol>
+ 
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -1045,6 +474,11 @@ $(document).ready(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
   
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
   $(window).resize(function(){
     getSize(); 
     if (myWidth >= 1024) {
@@ -1053,12 +487,69 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -1136,4 +627,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- Tiny_search End -->
 
   </body>
- </html>
+</html>
