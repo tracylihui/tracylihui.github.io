@@ -85,518 +85,6 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" title="Openstack_Havana_Install_Guide_MutilNode" itemprop="url">Openstack_Havana_Install_Guide_MutilNode</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-28T02:01:14.000Z" itemprop="datePublished"> 发表于 2015-09-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>==========================================================</p>
-<h1 id="OpenStack_Havana_安装指南">  OpenStack Havana 安装指南</h1><p>:Version: 1.0<br>:Source: <a href="https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode" target="_blank" rel="external">https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode</a><br>:Keywords: 多点OpenStack安装, Havana, Neutron, Nova, Keystone, Glance, Horizon, Cinder, OpenVSwitch, KVM, Ubuntu Server 12.04 (64 bits).</p>
-<h1 id="作者">作者</h1><p><code>crAzyli0n &lt;http://xidianpanpei.github.com&gt;</code>_ <a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#x3a;&#112;&#x61;&#110;&#110;&#x70;&#x65;&#105;&#64;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;">&#112;&#x61;&#110;&#110;&#x70;&#x65;&#105;&#64;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;</a></p>
-<p>本指南fork自<br><code>Shi Dongliang &lt;https://github.com/ist0ne/OpenStack-Grizzly-Install-Guide-CN&gt;</code><em><br>的git仓库。<br>同时，本指南同时参考<br><code>Bilel Msekni &lt;https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide&gt;</code></em><br>的git仓库。</p>
-<h1 id="内容列表">内容列表</h1><p>::</p>
-<ol>
-<li>简介</li>
-<li>环境搭建</li>
-<li>控制节点</li>
-<li>网络节点</li>
-<li>计算节点</li>
-<li>OpenStack使用</li>
-<li>参考文档</li>
-</ol>
-<h1 id="0-_简介">0. 简介</h1><p>OpenStack Havana安装指南旨在让你轻松创建自己的OpenStack云平台。</p>
-<p>状态: Stable</p>
-<h1 id="1-_环境搭建">1. 环境搭建</h1><p>:节点角色: NICs<br>:控制节点: eth0 (10.10.10.51), eth1 (192.168.100.51)<br>:网络节点: eth0 (10.10.10.52), eth1 (192.168.100.52)<br>:计算节点: eth0 (10.10.10.53), eth1 (192.168.100.53)</p>
-<p><strong>注意1:</strong> 你总是可以使用dpkg -s <packagename>确认你使用的是havana软件包(版本: 2013.10)</packagename></p>
-<p><strong>注意2:</strong> 这个是当前网络架构</p>
-<p>.. image:: <a href="https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/neutron.jpg" target="_blank" rel="external">https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/neutron.jpg</a></p>
-<h1 id="2-_控制节点">2. 控制节点</h1><h2 id="2-1-_准备Ubuntu">2.1. 准备Ubuntu</h2><ul>
-<li><p>安装好Ubuntu 12.04 Server 64bits后, 进入sudo模式直到完成本指南::</p>
-<p> sudo su -</p>
-</li>
-<li><p>添加Havana仓库::</p>
-<p> apt-get install ubuntu-cloud-keyring python-software-properties software-properties-common python-keyring<br> echo deb <a href="http://ubuntu-cloud.archive.canonical.com/ubuntu" target="_blank" rel="external">http://ubuntu-cloud.archive.canonical.com/ubuntu</a> precise-proposed/havana main &gt;&gt; /etc/apt/sources.list.d/havana.list</p>
-</li>
-<li><p>升级系统::</p>
-<p> apt-get update<br> apt-get upgrade<br> apt-get dist-upgrade</p>
-</li>
-</ul>
-<h2 id="2-2-设置网络">2.2.设置网络</h2><ul>
-<li><p>如下编辑网卡配置文件/etc/network/interfaces::</p>
-<h1 id="Not_internet_connected(used_for_OpenStack_management)">Not internet connected(used for OpenStack management)</h1><p> auto eth0<br> iface eth0 inet static<br> address 10.10.10.51<br> netmask 255.255.255.0<br> gateway 10.10.10.1</p>
-<h1 id="For_Exposing_OpenStack_API_over_the_internet">For Exposing OpenStack API over the internet</h1><p> auto eth1<br> iface eth1 inet static<br> address 192.168.100.51<br> netmask 255.255.255.0<br> gateway 192.168.100.1<br> dns-nameservers 8.8.8.8</p>
-</li>
-<li><p>重启网络服务::</p>
-<p> service networking restart</p>
-</li>
-<li><p>开启路由转发::</p>
-<p> sed -i ‘s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/‘ /etc/sysctl.conf<br> sysctl -p</p>
-</li>
-</ul>
-<h2 id="2-3-_安装MySQL">2.3. 安装MySQL</h2><ul>
-<li><p>安装MySQL并为root用户设置密码::</p>
-<p> apt-get install -y mysql-server python-mysqldb</p>
-</li>
-<li><p>配置mysql监听所有网络接口请求::</p>
-<p> sed -i ‘s/127.0.0.1/0.0.0.0/g’ /etc/mysql/my.cnf<br> service mysql restart</p>
-</li>
-</ul>
-<h2 id="2-4-_安装RabbitMQ和NTP">2.4. 安装RabbitMQ和NTP</h2><ul>
-<li><p>安装RabbitMQ::</p>
-<p> apt-get install -y rabbitmq-server</p>
-</li>
-<li><p>安装NTP服务::</p>
-<p> apt-get install -y ntp</p>
-</li>
-</ul>
-<h2 id="2-5-_创建数据库">2.5. 创建数据库</h2><ul>
-<li><p>创建数据库::</p>
-<p> mysql -u root -p</p>
-<h1 id="Keystone">Keystone</h1><p> CREATE DATABASE keystone;<br> GRANT ALL ON keystone.* TO ‘keystoneUser’@’%’ IDENTIFIED BY ‘keystonePass’;</p>
-<h1 id="Glance">Glance</h1><p> CREATE DATABASE glance;<br> GRANT ALL ON glance.* TO ‘glanceUser’@’%’ IDENTIFIED BY ‘glancePass’;</p>
-<h1 id="Neutron">Neutron</h1><p> CREATE DATABASE neutron;<br> GRANT ALL ON neutron.* TO ‘neutronUser’@’%’ IDENTIFIED BY ‘neutronPass’;</p>
-<h1 id="Nova">Nova</h1><p> CREATE DATABASE nova;<br> GRANT ALL ON nova.* TO ‘novaUser’@’%’ IDENTIFIED BY ‘novaPass’;</p>
-<h1 id="Cinder">Cinder</h1><p> CREATE DATABASE cinder;<br> GRANT ALL ON cinder.* TO ‘cinderUser’@’%’ IDENTIFIED BY ‘cinderPass’;</p>
-<p> quit;</p>
-</li>
-</ul>
-<h2 id="2-6-_配置Keystone">2.6. 配置Keystone</h2><ul>
-<li><p>安装keystone软件包::</p>
-<p> apt-get install -y keystone</p>
-</li>
-<li><p>在/etc/keystone/keystone.conf中设置连接到新创建的数据库::</p>
-<p> connection = mysql://keystoneUser:keystonePass@10.10.10.51/keystone</p>
-</li>
-<li><p>重启身份认证服务并同步数据库::</p>
-<p> service keystone restart<br> keystone-manage db_sync</p>
-</li>
-<li><p>使用git仓库中脚本填充keystone数据库： <code>脚本文件夹 &lt;https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/tree/master/KeystoneScripts&gt;</code>_ ::</p>
-<h1 id="注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT">注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT</h1><p> wget <a href="https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/keystone_basic.sh" target="_blank" rel="external">https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/keystone_basic.sh</a><br> wget <a href="https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/keystone_endpoints_basic.sh" target="_blank" rel="external">https://raw.github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode/master/KeystoneScripts/keystone_endpoints_basic.sh</a></p>
-<p> chmod +x keystone_basic.sh<br> chmod +x keystone_endpoints_basic.sh</p>
-<p> ./keystone_basic.sh<br> ./keystone_endpoints_basic.sh</p>
-</li>
-<li><p>创建一个简单的凭据文件，这样稍后就不会因为输入过多的环境变量而感到厌烦::</p>
-<p> vi creds-admin</p>
-<h1 id="Paste_the_following:">Paste the following:</h1><p> export OS_TENANT_NAME=admin<br> export OS_USERNAME=admin<br> export OS_PASSWORD=admin_pass<br> export OS_AUTH_URL=”<a href="http://192.168.100.51:5000/v2.0/" target="_blank" rel="external">http://192.168.100.51:5000/v2.0/</a>“</p>
-<h1 id="Load_it:">Load it:</h1><p> source creds-admin</p>
-</li>
-<li><p>通过命令行列出Keystone中添加的用户::</p>
-<p> keystone user-list</p>
-</li>
-</ul>
-<h2 id="2-7-_设置Glance">2.7. 设置Glance</h2><ul>
-<li><p>安装Glance::</p>
-<p> apt-get install -y glance</p>
-</li>
-<li><p>按下面更新/etc/glance/glance-api-paste.ini::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> delay_auth_decision = true<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = glance<br> admin_password = service_pass</p>
-</li>
-<li><p>按下面更新/etc/glance/glance-registry-paste.ini::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = glance<br> admin_password = service_pass</p>
-</li>
-<li><p>按下面更新/etc/glance/glance-api.conf::</p>
-<p> sql_connection = mysql://glanceUser:glancePass@10.10.10.51/glance</p>
-</li>
-<li><p>和::</p>
-<p> [paste_deploy]<br> flavor = keystone</p>
-</li>
-<li><p>按下面更新/etc/glance/glance-registry.conf::</p>
-<p> sql_connection = mysql://glanceUser:glancePass@10.10.10.51/glance</p>
-</li>
-<li><p>和::</p>
-<p> [paste_deploy]<br> flavor = keystone</p>
-</li>
-<li><p>重启glance-api和glance-registry服务::</p>
-<p> service glance-api restart; service glance-registry restart</p>
-</li>
-<li><p>同步glance数据库::</p>
-<p> glance-manage db_sync</p>
-</li>
-<li><p>重启服务使配置生效::</p>
-<p> service glance-registry restart; service glance-api restart</p>
-</li>
-<li><p>测试Glance, 从网络上传cirros云镜像::</p>
-<p> glance image-create —name cirros —is-public true —container-format bare —disk-format qcow2 —location <a href="https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img" target="_blank" rel="external">https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img</a></p>
-<p> 注意：通过此镜像创建的虚拟机可通过用户名/密码登陆， 用户名：cirros 密码：cubswin:)</p>
-</li>
-<li><p>本地创建Ubuntu云镜像::</p>
-<p> wget <a href="http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img" target="_blank" rel="external">http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img</a><br> glance add name=”Ubuntu 12.04 cloudimg amd64” is_public=true container_format=ovf disk_format=qcow2 &lt; ./precise-server-cloudimg-amd64-disk1.img</p>
-</li>
-<li><p>列出镜像检查是否上传成功::</p>
-<p> glance image-list</p>
-</li>
-</ul>
-<h2 id="2-8-_设置Neutron">2.8. 设置Neutron</h2><ul>
-<li><p>安装Neutron组件::</p>
-<p> apt-get install -y neutron-server</p>
-</li>
-<li><p>编辑/etc/neutron/api-paste.ini ::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass</p>
-</li>
-<li><p>编辑OVS配置文件/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini::</p>
-<h1 id="Under_the_database_section">Under the database section</h1><p> [DATABASE]<br> connection = mysql://neutronUser:neutronPass@10.10.10.51/neutron</p>
-<h1 id="Under_the_OVS_section">Under the OVS section</h1><p> [OVS]<br> tenant_network_type = gre<br> tunnel_id_ranges = 1:1000<br> enable_tunneling = True</p>
-<h1 id="Firewall_driver_for_realizing_neutron_security_group_function">Firewall driver for realizing neutron security group function</h1><p> [SECURITYGROUP]<br> firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver</p>
-</li>
-<li><p>编辑/etc/neutron/neutron.conf::</p>
-<p> [keystone_authtoken]<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass<br> signing_dir = /var/lib/neutron/keystone-signing</p>
-</li>
-<li><p>重启neutron所有服务::</p>
-<p> cd /etc/init.d/; for i in $( ls neutron-* ); do sudo service $i restart; done</p>
-</li>
-</ul>
-<h2 id="2-9-_设置Nova">2.9. 设置Nova</h2><ul>
-<li><p>安装nova组件::</p>
-<p> apt-get install -y nova-api nova-cert novnc nova-consoleauth nova-scheduler nova-novncproxy nova-doc nova-conductor</p>
-</li>
-<li><p>在/etc/nova/api-paste.ini配置文件中修改认证信息::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = nova<br> admin_password = service_pass<br> signing_dirname = /tmp/keystone-signing-nova</p>
-<h1 id="Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809">Workaround for <a href="https://bugs.launchpad.net/nova/+bug/1154809" target="_blank" rel="external">https://bugs.launchpad.net/nova/+bug/1154809</a></h1><p> auth_version = v2.0</p>
-</li>
-<li><p>如下修改/etc/nova/nova.conf::</p>
-<p> [DEFAULT]<br> logdir=/var/log/nova<br> state_path=/var/lib/nova<br> lock_path=/run/lock/nova<br> verbose=True<br> api_paste_config=/etc/nova/api-paste.ini<br> compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler<br> rabbit_host=10.10.10.51<br> nova_url=<a href="http://10.10.10.51:8774/v1.1/" target="_blank" rel="external">http://10.10.10.51:8774/v1.1/</a><br> sql_connection=mysql://novaUser:novaPass@10.10.10.51/nova<br> root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf</p>
-<h1 id="Auth">Auth</h1><p> use_deprecated_auth=false<br> auth_strategy=keystone</p>
-<h1 id="Imaging_service">Imaging service</h1><p> glance_api_servers=10.10.10.51:9292<br> image_service=nova.image.glance.GlanceImageService</p>
-<h1 id="Vnc_configuration">Vnc configuration</h1><p> novnc_enabled=true<br> novncproxy_base_url=<a href="http://192.168.100.51:6080/vnc_auto.html" target="_blank" rel="external">http://192.168.100.51:6080/vnc_auto.html</a><br> novncproxy_port=6080<br> vncserver_proxyclient_address=10.10.10.51<br> vncserver_listen=0.0.0.0</p>
-<h1 id="Network_settings">Network settings</h1><p> network_api_class=nova.network.neutronv2.api.API<br> neutron_url=<a href="http://10.10.10.51:9696" target="_blank" rel="external">http://10.10.10.51:9696</a><br> neutron_auth_strategy=keystone<br> neutron_admin_tenant_name=service<br> neutron_admin_username=neutron<br> neutron_admin_password=service_pass<br> neutron_admin_auth_url=<a href="http://10.10.10.51:35357/v2.0" target="_blank" rel="external">http://10.10.10.51:35357/v2.0</a><br> libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver<br> linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver</p>
-<h1 id="If_you_want_Neutron_+_Nova_Security_groups">If you want Neutron + Nova Security groups</h1><h1 id="firewall_driver=nova-virt-firewall-NoopFirewallDriver">firewall_driver=nova.virt.firewall.NoopFirewallDriver</h1><h1 id="security_group_api=neutron">security_group_api=neutron</h1><h1 id="If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1-">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</h1><p> firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver</p>
-<h1 id="Metadata">Metadata</h1><p> service_neutron_metadata_proxy = True<br> neutron_metadata_proxy_shared_secret = helloOpenStack</p>
-<h1 id="Compute">Compute</h1><p> compute_driver=libvirt.LibvirtDriver</p>
-<h1 id="Cinder-1">Cinder</h1><p> volume_api_class=nova.volume.cinder.API<br> osapi_volume_listen_port=5900</p>
-</li>
-<li><p>同步数据库::</p>
-<p> nova-manage db sync</p>
-</li>
-<li><p>重启所有nova服务::</p>
-<p> cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done</p>
-</li>
-<li><p>检查所有nova服务是否启动正常::</p>
-<p> nova-manage service list</p>
-</li>
-</ul>
-<h2 id="2-10-_设置Cinder">2.10. 设置Cinder</h2><ul>
-<li><p>安装软件包::</p>
-<p> apt-get install -y cinder-api cinder-scheduler cinder-volume iscsitarget open-iscsi iscsitarget-dkms</p>
-</li>
-<li><p>配置iscsi服务::</p>
-<p> sed -i ‘s/false/true/g’ /etc/default/iscsitarget</p>
-</li>
-<li><p>重启服务::</p>
-<p> service iscsitarget start<br> service open-iscsi start</p>
-</li>
-<li><p>如下配置/etc/cinder/api-paste.ini::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> service_protocol = http<br> service_host = 192.168.100.51<br> service_port = 5000<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = cinder<br> admin_password = service_pass</p>
-</li>
-<li><p>编辑/etc/cinder/cinder.conf::</p>
-<p> [DEFAULT]<br> rootwrap_config=/etc/cinder/rootwrap.conf<br> sql_connection = mysql://cinderUser:cinderPass@10.10.10.51/cinder<br> api_paste_config = /etc/cinder/api-paste.ini<br> iscsi_helper=ietadm<br> volume_name_template = volume-%s<br> volume_group = cinder-volumes<br> verbose = True<br> auth_strategy = keystone</p>
-<h1 id="osapi_volume_listen_port=5900">osapi_volume_listen_port=5900</h1></li>
-<li><p>接下来同步数据库::</p>
-<p> cinder-manage db sync</p>
-</li>
-<li><p>最后别忘了创建一个卷组命名为cinder-volumes::</p>
-<p> dd if=/dev/zero of=cinder-volumes bs=1 count=0 seek=2G<br> losetup /dev/loop2 cinder-volumes<br> fdisk /dev/loop2</p>
-<h1 id="Type_in_the_followings:">Type in the followings:</h1><p> n<br> p<br> 1<br> ENTER<br> ENTER<br> t<br> 8e<br> w</p>
-</li>
-<li><p>创建物理卷和卷组::</p>
-<p> pvcreate /dev/loop2<br> vgcreate cinder-volumes /dev/loop2</p>
-</li>
-</ul>
-<p><strong>注意:</strong> 重启后卷组不会自动挂载 (点击<code>这个 &lt;https://github.com/mseknibilel/OpenStack-Folsom-Install-guide/blob/master/Tricks%26Ideas/load_volume_group_after_system_reboot.rst&gt;</code>_ 设置在重启后自动挂载)</p>
-<ul>
-<li><p>重启cinder服务::</p>
-<p> cd /etc/init.d/; for i in $( ls cinder-* ); do sudo service $i restart; done</p>
-</li>
-<li><p>确认cinder服务在运行::</p>
-<p> cd /etc/init.d/; for i in $( ls cinder-* ); do sudo service $i status; done</p>
-</li>
-</ul>
-<h2 id="2-11-_设置Horizon">2.11. 设置Horizon</h2><ul>
-<li><p>如下安装horizon ::</p>
-<p> apt-get install -y openstack-dashboard memcached</p>
-</li>
-<li><p>如果你不喜欢OpenStack ubuntu主题, 你可以停用它::</p>
-<p> dpkg —purge openstack-dashboard-ubuntu-theme</p>
-</li>
-<li><p>重启Apache和memcached服务::</p>
-<p> service apache2 restart; service memcached restart</p>
-</li>
-</ul>
-<h1 id="3-_网络节点">3. 网络节点</h1><h2 id="3-1-_准备节点">3.1. 准备节点</h2><ul>
-<li><p>安装好Ubuntu 12.04 Server 64bits后, 进入sudo模式直到完成本指南::</p>
-<p> sudo su -</p>
-</li>
-<li><p>添加Havana仓库::</p>
-<p> apt-get install ubuntu-cloud-keyring python-software-properties software-properties-common python-keyring<br> echo deb <a href="http://ubuntu-cloud.archive.canonical.com/ubuntu" target="_blank" rel="external">http://ubuntu-cloud.archive.canonical.com/ubuntu</a> precise-proposed/havana main &gt;&gt; /etc/apt/sources.list.d/havana.list</p>
-</li>
-<li><p>升级系统::</p>
-<p> apt-get update<br> apt-get upgrade<br> apt-get dist-upgrade</p>
-</li>
-<li><p>安装ntp服务::</p>
-<p> apt-get install -y ntp</p>
-</li>
-<li><p>配置ntp服务从控制节点同步时间::</p>
-<h1 id="Comment_the_ubuntu_NTP_servers">Comment the ubuntu NTP servers</h1><p> sed -i ‘s/server 0.ubuntu.pool.ntp.org/#server 0.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 1.ubuntu.pool.ntp.org/#server 1.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 2.ubuntu.pool.ntp.org/#server 2.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 3.ubuntu.pool.ntp.org/#server 3.ubuntu.pool.ntp.org/g’ /etc/ntp.conf</p>
-<h1 id="Set_the_network_node_to_follow_up_your_conroller_node">Set the network node to follow up your conroller node</h1><p> sed -i ‘s/server ntp.ubuntu.com/server 10.10.10.51/g’ /etc/ntp.conf</p>
-<p> service ntp restart</p>
-</li>
-</ul>
-<h2 id="3-2-_配置网络">3.2. 配置网络</h2><ul>
-<li><p>3块网卡如下设置::</p>
-<h1 id="OpenStack_management">OpenStack management</h1><p> auto eth0<br> iface eth0 inet static<br> address 10.10.10.52<br> netmask 255.255.255.0</p>
-<h1 id="VM_internet_Access">VM internet Access</h1><p> auto eth1<br> iface eth1 inet static<br> address 192.168.100.52<br> netmask 255.255.255.0</p>
-</li>
-<li><p>开启路由转发::</p>
-<p> sed -i ‘s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/‘ /etc/sysctl.conf<br> sysctl -p</p>
-</li>
-</ul>
-<h2 id="3-3-_OpenVSwitch">3.3. OpenVSwitch</h2><ul>
-<li><p>安装OpenVSwitch软件包::</p>
-<p> apt-get install -y openvswitch-controller openvswitch-switch openvswitch-datapath-dkms</p>
-</li>
-<li><p>重新启动openvswitch-switch::</p>
-<p> /etc/init.d/openvswitch-switch restart</p>
-</li>
-<li><p>添加网桥 br-ex 并把网卡 eth1 加入 br-ex::</p>
-<p> ovs-vsctl  add-br br-ex<br> ovs-vsctl add-port br-ex eth1</p>
-</li>
-<li><p>如下编辑/etc/network/interfaces::</p>
-<h1 id="This_file_describes_the_network_interfaces_available_on_your_system">This file describes the network interfaces available on your system</h1><h1 id="and_how_to_activate_them-_For_more_information,_see_interfaces(5)-">and how to activate them. For more information, see interfaces(5).</h1><h1 id="The_loopback_network_interface">The loopback network interface</h1><p> auto lo<br> iface lo inet loopback</p>
-<h1 id="Not_internet_connected(used_for_OpenStack_management)-1">Not internet connected(used for OpenStack management)</h1><h1 id="The_primary_network_interface">The primary network interface</h1><p> auto eth0<br> iface eth0 inet static</p>
-<h1 id="This_is_an_autoconfigured_IPv6_interface">This is an autoconfigured IPv6 interface</h1><h1 id="iface_eth0_inet6_auto">iface eth0 inet6 auto</h1><p> address 10.10.10.52<br> netmask 255.255.255.0</p>
-<h1 id="For_Exposing_OpenStack_API_over_the_internet-1">For Exposing OpenStack API over the internet</h1><p> auto eth1<br> iface eth1 inet manual<br> up ifconfig $IFACE 0.0.0.0 up<br> up ip link set $IFACE promisc on<br> down ip link set $IFACE promisc off<br> down ifconfig $IFACE down</p>
-<p> auto br-ex<br> iface br-ex inet static<br> address 192.168.100.52<br> netmask 255.255.255.0<br> gateway 192.168.100.1<br> dns-nameservers 8.8.8.8</p>
-</li>
-<li><p>重启网络服务::</p>
-<p> /etc/init.d/networking restart</p>
-</li>
-<li><p>创建内网网桥br-int::</p>
-<p> ovs-vsctl add-br br-int</p>
-</li>
-<li><p>查看网桥配置::</p>
-<p> root@openstack-network:~# ovs-vsctl list-br<br> br-ex<br> br-int</p>
-<p> root@openstack-network:~# ovs-vsctl show<br> ebea0b50-e450-41ea-babb-a094ca8d69fa</p>
-<pre><code>Bridge <span class="keyword">br</span>-int
-    Port <span class="keyword">br</span>-int
-        Interface <span class="keyword">br</span>-int
-            <span class="keyword">type</span>: internal
-Bridge <span class="keyword">br</span>-<span class="keyword">ex</span>
-    Port <span class="string">"eth1"</span>
-        Interface <span class="string">"eth1"</span>
-    Port <span class="keyword">br</span>-<span class="keyword">ex</span>
-        Interface <span class="keyword">br</span>-<span class="keyword">ex</span>
-            <span class="keyword">type</span>: internal
-ovs_version: <span class="string">"1.4.0+build0"</span>
-</code></pre></li>
-</ul>
-<h2 id="3-4-_Neutron-*">3.4. Neutron-*</h2><ul>
-<li><p>安装Neutron组件::</p>
-<p> apt-get -y install neutron-plugin-openvswitch-agent neutron-dhcp-agent neutron-l3-agent neutron-metadata-agent</p>
-</li>
-<li><p>编辑/etc/neutron/api-paste.ini ::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass</p>
-</li>
-<li><p>编辑OVS配置文件/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini::</p>
-<h1 id="Under_the_database_section-1">Under the database section</h1><p> [DATABASE]<br> connection = mysql://neutronUser:neutronPass@10.10.10.51/neutron</p>
-<h1 id="Under_the_OVS_section-1">Under the OVS section</h1><p> [OVS]<br> tenant_network_type = gre<br> enable_tunneling = True<br> tunnel_id_ranges = 1:1000<br> integration_bridge = br-int<br> tunnel_bridge = br-tun<br> local_ip = 10.10.10.52</p>
-<h1 id="Firewall_driver_for_realizing_neutron_security_group_function-1">Firewall driver for realizing neutron security group function</h1><p> [SECURITYGROUP]<br> firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver</p>
-</li>
-<li><p>更新/etc/neutron/metadata_agent.ini::</p>
-<h1 id="The_Neutron_user_information_for_accessing_the_Neutron_API-">The Neutron user information for accessing the Neutron API.</h1><p> auth_url = <a href="http://10.10.10.51:35357/v2.0" target="_blank" rel="external">http://10.10.10.51:35357/v2.0</a><br> auth_region = RegionOne<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass</p>
-<h1 id="IP_address_used_by_Nova_metadata_server">IP address used by Nova metadata server</h1><p> nova_metadata_ip = 10.10.10.51</p>
-<h1 id="TCP_Port_used_by_Nova_metadata_server">TCP Port used by Nova metadata server</h1><p> nova_metadata_port = 8775</p>
-<p> metadata_proxy_shared_secret = helloOpenStack</p>
-</li>
-<li><p>编辑/etc/neutron/neutron.conf::</p>
-<h1 id="确保RabbitMQ_IP指向了控制节点">确保RabbitMQ IP指向了控制节点</h1><p> rabbit_host = 10.10.10.51</p>
-<p> [keystone_authtoken]<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass<br> signing_dir = /var/lib/neutron/keystone-signing</p>
-<p> [DATABASE]<br> connection = mysql://neutronUser:neutronPass@10.10.10.51/neutron</p>
-</li>
-<li><p>编辑/etc/neutron/l3_agent.ini::</p>
-<p> [DEFAULT]<br> interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver<br> use_namespaces = True<br> external_network_bridge = br-ex<br> signing_dir = /var/cache/neutron<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass<br> auth_url = <a href="http://10.10.10.51:35357/v2.0" target="_blank" rel="external">http://10.10.10.51:35357/v2.0</a><br> l3_agent_manager = neutron.agent.l3_agent.L3NATAgentWithStateReport<br> root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf<br> interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver</p>
-</li>
-<li><p>编辑/etc/neutron/dhcp_agent.ini::</p>
-<p> [DEFAULT]<br> interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver<br> dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq<br> use_namespaces = True<br> signing_dir = /var/cache/neutron<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass<br> auth_url = <a href="http://10.10.10.51:35357/v2.0" target="_blank" rel="external">http://10.10.10.51:35357/v2.0</a><br> dhcp_agent_manager = neutron.agent.dhcp_agent.DhcpAgentWithStateReport<br> root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf<br> state_path = /var/lib/neutron</p>
-</li>
-<li><p>重启neutron所有服务::</p>
-<p> cd /etc/init.d/; for i in $( ls neutron-* ); do sudo service $i restart; done</p>
-</li>
-</ul>
-<h1 id="4-_计算节点">4. 计算节点</h1><h2 id="4-1-_准备节点">4.1. 准备节点</h2><ul>
-<li><p>安装好Ubuntu 12.04 Server 64bits后,升级系统并重启之后,进入sudo模式直到完成本指南::</p>
-<p> sudo su -</p>
-</li>
-<li><p>添加Havana仓库::</p>
-<p> apt-get install ubuntu-cloud-keyring python-software-properties software-properties-common python-keyring<br> echo deb <a href="http://ubuntu-cloud.archive.canonical.com/ubuntu" target="_blank" rel="external">http://ubuntu-cloud.archive.canonical.com/ubuntu</a> precise-proposed/havana main &gt;&gt; /etc/apt/sources.list.d/havana.list</p>
-</li>
-<li><p>升级系统::</p>
-<p> apt-get update<br> apt-get upgrade<br> apt-get dist-upgrade</p>
-</li>
-<li><p>安装ntp服务::</p>
-<p> apt-get install -y ntp</p>
-</li>
-<li><p>配置ntp服务从控制节点同步时间::</p>
-<h1 id="Comment_the_ubuntu_NTP_servers-1">Comment the ubuntu NTP servers</h1><p> sed -i ‘s/server 0.ubuntu.pool.ntp.org/#server 0.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 1.ubuntu.pool.ntp.org/#server 1.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 2.ubuntu.pool.ntp.org/#server 2.ubuntu.pool.ntp.org/g’ /etc/ntp.conf<br> sed -i ‘s/server 3.ubuntu.pool.ntp.org/#server 3.ubuntu.pool.ntp.org/g’ /etc/ntp.conf</p>
-<h1 id="Set_the_network_node_to_follow_up_your_conroller_node-1">Set the network node to follow up your conroller node</h1><p> sed -i ‘s/server ntp.ubuntu.com/server 10.10.10.51/g’ /etc/ntp.conf</p>
-<p> service ntp restart</p>
-</li>
-</ul>
-<h2 id="4-2-_配置网络">4.2. 配置网络</h2><ul>
-<li><p>如下配置网络::</p>
-<h1 id="This_file_describes_the_network_interfaces_available_on_your_system-1">This file describes the network interfaces available on your system</h1><h1 id="and_how_to_activate_them-_For_more_information,_see_interfaces(5)--1">and how to activate them. For more information, see interfaces(5).</h1><h1 id="The_loopback_network_interface-1">The loopback network interface</h1><p> auto lo<br> iface lo inet loopback</p>
-<h1 id="Not_internet_connected(used_for_OpenStack_management)-2">Not internet connected(used for OpenStack management)</h1><h1 id="The_primary_network_interface-1">The primary network interface</h1><p> auto eth0<br> iface eth0 inet static<br> address 10.10.10.53<br> netmask 255.255.255.0<br> gateway 10.10.10.1</p>
-<h1 id="VM_Configuration">VM Configuration</h1><p> auto eth1<br> iface eth1 inet static<br> address 192.168.100.53<br> netmask 255.255.255.0<br> gateway 192.168.100.1</p>
-</li>
-<li><p>开启路由转发::</p>
-<p> sed -i ‘s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/‘ /etc/sysctl.conf<br> sysctl -p</p>
-</li>
-</ul>
-<h2 id="4-3-_KVM">4.3. KVM</h2><ul>
-<li><p>确保你的硬件启用virtualization::</p>
-<p> apt-get install cpu-checker<br> kvm-ok</p>
-</li>
-<li><p>现在安装kvm并配置它::</p>
-<p> apt-get install -y kvm libvirt-bin pm-utils</p>
-</li>
-<li><p>在/etc/libvirt/qemu.conf配置文件中启用cgroup_device_acl数组::</p>
-<p> cgroup_device_acl = [<br> “/dev/null”, “/dev/full”, “/dev/zero”,<br> “/dev/random”, “/dev/urandom”,<br> “/dev/ptmx”, “/dev/kvm”, “/dev/kqemu”,<br> “/dev/rtc”, “/dev/hpet”,”/dev/net/tun”<br> ]</p>
-</li>
-<li><p>删除默认的虚拟网桥::</p>
-<p> virsh net-destroy default<br> virsh net-undefine default</p>
-</li>
-<li><p>更新/etc/libvirt/libvirtd.conf配置文件::</p>
-<p> listen_tls = 0<br> listen_tcp = 1<br> auth_tcp = “none”</p>
-</li>
-<li><p>E编辑libvirtd_opts变量在/etc/init/libvirt-bin.conf配置文件中::</p>
-<p> env libvirtd_opts=”-d -l”</p>
-</li>
-<li><p>编辑/etc/default/libvirt-bin文件 ::</p>
-<p> libvirtd_opts=”-d -l”</p>
-</li>
-<li><p>重启libvirt服务使配置生效::</p>
-<p> service libvirt-bin restart</p>
-</li>
-</ul>
-<h2 id="4-4-_OpenVSwitch">4.4. OpenVSwitch</h2><ul>
-<li><p>安装OpenVSwitch软件包::</p>
-<p> apt-get install -y openvswitch-controller openvswitch-switch openvswitch-datapath-dkms</p>
-</li>
-<li><p>重启openvswitch-switch::</p>
-<p> /etc/init.d/openvswitch-switch restart</p>
-</li>
-<li><p>创建网桥::</p>
-<h1 id="br-int_will_be_used_for_VM_integration">br-int will be used for VM integration</h1><p> ovs-vsctl add-br br-int</p>
-</li>
-</ul>
-<h2 id="4-5-_Neutron">4.5. Neutron</h2><ul>
-<li><p>安装Neutron openvswitch代理::</p>
-<p> apt-get -y install neutron-plugin-openvswitch-agent</p>
-</li>
-<li><p>编辑OVS配置文件/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini::</p>
-<h1 id="Under_the_database_section-2">Under the database section</h1><p> [DATABASE]<br> connection = mysql://neutronUser:neutronPass@10.10.10.51/neutron</p>
-<h1 id="Under_the_OVS_section-2">Under the OVS section</h1><p> [OVS]<br> tenant_network_type = gre<br> tunnel_id_ranges = 1:1000<br> integration_bridge = br-int<br> tunnel_bridge = br-tun<br> local_ip = 10.10.10.53<br> enable_tunneling = True</p>
-<h1 id="Firewall_driver_for_realizing_neutron_security_group_function-2">Firewall driver for realizing neutron security group function</h1><p> [SECURITYGROUP]<br> firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver</p>
-</li>
-<li><p>编辑/etc/neutron/neutron.conf::</p>
-<h1 id="确保RabbitMQ_IP指向了控制节点-1">确保RabbitMQ IP指向了控制节点</h1><p> rabbit_host = 10.10.10.51</p>
-<p> [keystone_authtoken]<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = neutron<br> admin_password = service_pass<br> signing_dir = /var/lib/neutron/keystone-signing</p>
-<p> [DATABASE]<br> connection = mysql://neutronUser:neutronPass@10.10.10.51/neutron</p>
-</li>
-<li><p>重启neutron openvswitch代理服务::</p>
-<p> service neutron-plugin-openvswitch-agent restart</p>
-</li>
-</ul>
-<h2 id="4-6-_Nova">4.6. Nova</h2><ul>
-<li><p>安装nova组件::</p>
-<p> apt-get install -y nova-compute-kvm</p>
-<p> 注意：如果你的宿主机不支持kvm虚拟化，可把nova-compute-kvm换成nova-compute-qemu<br> 同时/etc/nova/nova-compute.conf配置文件中的libvirt_type=qemu</p>
-</li>
-<li><p>在/etc/nova/api-paste.ini配置文件中修改认证信息::</p>
-<p> [filter:authtoken]<br> paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory<br> auth_host = 10.10.10.51<br> auth_port = 35357<br> auth_protocol = http<br> admin_tenant_name = service<br> admin_user = nova<br> admin_password = service_pass<br> signing_dirname = /tmp/keystone-signing-nova</p>
-<h1 id="Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809-1">Workaround for <a href="https://bugs.launchpad.net/nova/+bug/1154809" target="_blank" rel="external">https://bugs.launchpad.net/nova/+bug/1154809</a></h1><p> auth_version = v2.0</p>
-</li>
-<li><p>如下修改/etc/nova/nova.conf::</p>
-<p> [DEFAULT]<br> logdir=/var/log/nova<br> state_path=/var/lib/nova<br> lock_path=/run/lock/nova<br> verbose=True<br> api_paste_config=/etc/nova/api-paste.ini<br> compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler<br> rabbit_host=10.10.10.51<br> nova_url=<a href="http://10.10.10.51:8774/v1.1/" target="_blank" rel="external">http://10.10.10.51:8774/v1.1/</a><br> sql_connection=mysql://novaUser:novaPass@10.10.10.51/nova<br> root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf</p>
-<h1 id="Auth-1">Auth</h1><p> use_deprecated_auth=false<br> auth_strategy=keystone</p>
-<h1 id="Imaging_service-1">Imaging service</h1><p> glance_api_servers=10.10.10.51:9292<br> image_service=nova.image.glance.GlanceImageService</p>
-<h1 id="Vnc_configuration-1">Vnc configuration</h1><p> novnc_enabled=true<br> novncproxy_base_url=<a href="http://192.168.100.51:6080/vnc_auto.html" target="_blank" rel="external">http://192.168.100.51:6080/vnc_auto.html</a><br> novncproxy_port=6080<br> vncserver_proxyclient_address=10.10.10.53<br> vncserver_listen=0.0.0.0</p>
-<h1 id="Network_settings-1">Network settings</h1><p> network_api_class=nova.network.neutronv2.api.API<br> neutron_url=<a href="http://10.10.10.51:9696" target="_blank" rel="external">http://10.10.10.51:9696</a><br> neutron_auth_strategy=keystone<br> neutron_admin_tenant_name=service<br> neutron_admin_username=neutron<br> neutron_admin_password=service_pass<br> neutron_admin_auth_url=<a href="http://10.10.10.51:35357/v2.0" target="_blank" rel="external">http://10.10.10.51:35357/v2.0</a><br> libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver<br> linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver</p>
-<h1 id="If_you_want_Neutron_+_Nova_Security_groups-1">If you want Neutron + Nova Security groups</h1><h1 id="firewall_driver=nova-virt-firewall-NoopFirewallDriver-1">firewall_driver=nova.virt.firewall.NoopFirewallDriver</h1><h1 id="security_group_api=neutron-1">security_group_api=neutron</h1><h1 id="If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1--1">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</h1><p> firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver</p>
-<h1 id="Metadata-1">Metadata</h1><p> service_neutron_metadata_proxy = True<br> neutron_metadata_proxy_shared_secret = helloOpenStack</p>
-<h1 id="Compute-1">Compute</h1><p> compute_driver=libvirt.LibvirtDriver</p>
-<h1 id="Cinder-2">Cinder</h1><p> volume_api_class=nova.volume.cinder.API<br> osapi_volume_listen_port=5900<br> cinder_catalog_info=volume:cinder:internalURL</p>
-</li>
-<li><p>修改/etc/nova/nova-compute.conf::</p>
-<p> [DEFAULT]<br> libvirt_type=kvm<br> compute_driver=libvirt.LibvirtDriver<br> libvirt_ovs_bridge=br-int<br> libvirt_vif_type=ethernet<br> libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver<br> libvirt_use_virtio_for_bridges=True</p>
-</li>
-<li><p>重启所有nova服务::</p>
-<p> cd /etc/init.d/; for i in $( ls nova-* ); do sudo service $i restart; done</p>
-</li>
-<li><p>检查所有nova服务是否启动正常::</p>
-<p> nova-manage service list</p>
-</li>
-</ul>
-<h1 id="5-_结束语">5. 结束语</h1><p>由于项目组需求要求，该搭建教程中没有搭建Havana版本中新添加的Ceilmeter和Heat组件。</p>
-<p>通过对Havana版本的搭建可以看到，Havana版本的整个搭建过程相比于Grizzly版本来说，并没有发生很明显的变化，主要是有些参数配置所在文件有所变更。同时，针对使用OpenvSwitch插件，其中原来中文版中的openvswitch-brcompat已经无法匹配Havana版本，因此此部分教程参照了英文版教程更改而来。</p>
-<p>ps:在搭建过程中细心真的是非常重要的，否则，经常会因为某个配置错误，导致花费大量时间查错。</p>
-<h1 id="6-_参考文档">6. 参考文档</h1><p><code>Boostrapping Open vSwitch and Neutron &lt;https://a248.e.akamai.net/cdn.hpcloudsvc.com/h9f25be84b35c201beea6b13c85876258/prodaw2/Bootstrapping_OVS_neutron--final_20130319.html&gt;</code>_</p>
-<p><code>Cisco OpenStack Edition: Folsom Manual Install &lt;http://docwiki.cisco.com/wiki/Cisco_OpenStack_Edition:_Folsom_Manual_Install&gt;</code>_</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
       <a href="/2015/09/09/java/Java的ClassLoader原理/" title="Java的ClassLoader原理" itemprop="url">Java的ClassLoader原理</a>
   </h1>
   <p class="article-author">By
@@ -1195,6 +683,72 @@ ovs_version: <span class="string">"1.4.0+build0"</span>
 
 
 
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/07/27/RESTful的理解/" title="RESTful的理解" itemprop="url">RESTful的理解</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
+		
+  <p class="article-time">
+    <time datetime="2015-07-27T13:47:52.000Z" itemprop="datePublished"> 发表于 2015-07-27</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>REST（Representational State Transfer）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。</p>
+<h1 id="概述">概述</h1><hr>
+<p>REST从资源的角度来观察整个网络，分布在各处的资源由URI确定，而客户端的应用通过URI来获取资源。获得资源致使应用程序转变了状态。REST定义了一组体系架构原则，可根据这些，包括使用不同语言编写的客户端如何通过HTTP处理和传输资源状态。REST对Web的影响非常大，由于其使用很方便，已经普遍取代了基于SOAP和WSDL的接口设计。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/27/RESTful的理解/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/RESTful/">RESTful</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/RESTful/">RESTful</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/27/RESTful的理解/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/27/RESTful的理解/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
@@ -1213,7 +767,7 @@ ovs_version: <span class="string">"1.4.0+build0"</span>
 		<ul>
 		
 		  
-			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>12</sup></a></li>
+			<li><a href="/categories/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 		  
 		
 		  
@@ -1270,11 +824,11 @@ ovs_version: <span class="string">"1.4.0+build0"</span>
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>12</sup></a></li>
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>12</sup></a></li>
+				<li><a href="/tags/Hibernate/" title="Hibernate">Hibernate<sup>11</sup></a></li>
 			
 		
 			
