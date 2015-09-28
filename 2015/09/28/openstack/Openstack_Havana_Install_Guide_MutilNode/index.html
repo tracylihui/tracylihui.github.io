@@ -4,22 +4,26 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>李大辉</title>
+    <title>Openstack_Havana_Install_Guide_MutilNode | 李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="给自己提供一个总结的平台">
-<meta property="og:type" content="website">
-<meta property="og:title" content="李大辉">
-<meta property="og:url" content="http://yoursite.com/index.html">
+    <meta name="description" content="==========================================================
+  OpenStack Havana 安装指南:Version: 1.0:Source: https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode:Keywords: 多点Open">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Openstack_Havana_Install_Guide_MutilNode">
+<meta property="og:url" content="http://yoursite.com/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="给自己提供一个总结的平台">
+<meta property="og:description" content="==========================================================
+  OpenStack Havana 安装指南:Version: 1.0:Source: https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode:Keywords: 多点Open">
+<meta property="og:updated_time" content="2015-09-28T02:04:48.807Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="李大辉">
-<meta name="twitter:description" content="给自己提供一个总结的平台">
+<meta name="twitter:title" content="Openstack_Havana_Install_Guide_MutilNode">
+<meta name="twitter:description" content="==========================================================
+  OpenStack Havana 安装指南:Version: 1.0:Source: https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode:Keywords: 多点Open">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -77,12 +81,10 @@
 </div>
     </header>
     <div id="container">
-      <div id="main">
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
   <h1 itemprop="name">
     
       <a href="/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" title="Openstack_Havana_Install_Guide_MutilNode" itemprop="url">Openstack_Havana_Install_Guide_MutilNode</a>
@@ -96,9 +98,16 @@
     
   </p>
 </header>
-    <div class="article-content">
-        
-        <p>==========================================================</p>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenStack_Havana_安装指南"><span class="toc-number">1.</span> <span class="toc-text">  OpenStack Havana 安装指南</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#作者"><span class="toc-number">2.</span> <span class="toc-text">作者</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内容列表"><span class="toc-number">3.</span> <span class="toc-text">内容列表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0-_简介"><span class="toc-number">4.</span> <span class="toc-text">0. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-_环境搭建"><span class="toc-number">5.</span> <span class="toc-text">1. 环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-_控制节点"><span class="toc-number">6.</span> <span class="toc-text">2. 控制节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-_准备Ubuntu"><span class="toc-number">6.1.</span> <span class="toc-text">2.1. 准备Ubuntu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-设置网络"><span class="toc-number">6.2.</span> <span class="toc-text">2.2.设置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)"><span class="toc-number">7.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#For_Exposing_OpenStack_API_over_the_internet"><span class="toc-number">8.</span> <span class="toc-text">For Exposing OpenStack API over the internet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-_安装MySQL"><span class="toc-number">8.1.</span> <span class="toc-text">2.3. 安装MySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-_安装RabbitMQ和NTP"><span class="toc-number">8.2.</span> <span class="toc-text">2.4. 安装RabbitMQ和NTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-_创建数据库"><span class="toc-number">8.3.</span> <span class="toc-text">2.5. 创建数据库</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Keystone"><span class="toc-number">9.</span> <span class="toc-text">Keystone</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Glance"><span class="toc-number">10.</span> <span class="toc-text">Glance</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Neutron"><span class="toc-number">11.</span> <span class="toc-text">Neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nova"><span class="toc-number">12.</span> <span class="toc-text">Nova</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder"><span class="toc-number">13.</span> <span class="toc-text">Cinder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-_配置Keystone"><span class="toc-number">13.1.</span> <span class="toc-text">2.6. 配置Keystone</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT"><span class="toc-number">14.</span> <span class="toc-text">注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Paste_the_following:"><span class="toc-number">15.</span> <span class="toc-text">Paste the following:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Load_it:"><span class="toc-number">16.</span> <span class="toc-text">Load it:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-_设置Glance"><span class="toc-number">16.1.</span> <span class="toc-text">2.7. 设置Glance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-_设置Neutron"><span class="toc-number">16.2.</span> <span class="toc-text">2.8. 设置Neutron</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section"><span class="toc-number">17.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section"><span class="toc-number">18.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function"><span class="toc-number">19.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-9-_设置Nova"><span class="toc-number">19.1.</span> <span class="toc-text">2.9. 设置Nova</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809"><span class="toc-number">20.</span> <span class="toc-text">Workaround for https://bugs.launchpad.net/nova/+bug/1154809</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Auth"><span class="toc-number">21.</span> <span class="toc-text">Auth</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Imaging_service"><span class="toc-number">22.</span> <span class="toc-text">Imaging service</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vnc_configuration"><span class="toc-number">23.</span> <span class="toc-text">Vnc configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Network_settings"><span class="toc-number">24.</span> <span class="toc-text">Network settings</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Neutron_+_Nova_Security_groups"><span class="toc-number">25.</span> <span class="toc-text">If you want Neutron + Nova Security groups</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#firewall_driver=nova-virt-firewall-NoopFirewallDriver"><span class="toc-number">26.</span> <span class="toc-text">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security_group_api=neutron"><span class="toc-number">27.</span> <span class="toc-text">security_group_api=neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1-"><span class="toc-number">28.</span> <span class="toc-text">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metadata"><span class="toc-number">29.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Compute"><span class="toc-number">30.</span> <span class="toc-text">Compute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder-1"><span class="toc-number">31.</span> <span class="toc-text">Cinder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-10-_设置Cinder"><span class="toc-number">31.1.</span> <span class="toc-text">2.10. 设置Cinder</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#osapi_volume_listen_port=5900"><span class="toc-number">32.</span> <span class="toc-text">osapi_volume_listen_port=5900</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Type_in_the_followings:"><span class="toc-number">33.</span> <span class="toc-text">Type in the followings:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-11-_设置Horizon"><span class="toc-number">33.1.</span> <span class="toc-text">2.11. 设置Horizon</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-_网络节点"><span class="toc-number">34.</span> <span class="toc-text">3. 网络节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-_准备节点"><span class="toc-number">34.1.</span> <span class="toc-text">3.1. 准备节点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Comment_the_ubuntu_NTP_servers"><span class="toc-number">35.</span> <span class="toc-text">Comment the ubuntu NTP servers</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set_the_network_node_to_follow_up_your_conroller_node"><span class="toc-number">36.</span> <span class="toc-text">Set the network node to follow up your conroller node</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-_配置网络"><span class="toc-number">36.1.</span> <span class="toc-text">3.2. 配置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenStack_management"><span class="toc-number">37.</span> <span class="toc-text">OpenStack management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VM_internet_Access"><span class="toc-number">38.</span> <span class="toc-text">VM internet Access</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-_OpenVSwitch"><span class="toc-number">38.1.</span> <span class="toc-text">3.3. OpenVSwitch</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_file_describes_the_network_interfaces_available_on_your_system"><span class="toc-number">39.</span> <span class="toc-text">This file describes the network interfaces available on your system</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#and_how_to_activate_them-_For_more_information,_see_interfaces(5)-"><span class="toc-number">40.</span> <span class="toc-text">and how to activate them. For more information, see interfaces(5).</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_loopback_network_interface"><span class="toc-number">41.</span> <span class="toc-text">The loopback network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)-1"><span class="toc-number">42.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_primary_network_interface"><span class="toc-number">43.</span> <span class="toc-text">The primary network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_is_an_autoconfigured_IPv6_interface"><span class="toc-number">44.</span> <span class="toc-text">This is an autoconfigured IPv6 interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#iface_eth0_inet6_auto"><span class="toc-number">45.</span> <span class="toc-text">iface eth0 inet6 auto</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#For_Exposing_OpenStack_API_over_the_internet-1"><span class="toc-number">46.</span> <span class="toc-text">For Exposing OpenStack API over the internet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-_Neutron-*"><span class="toc-number">46.1.</span> <span class="toc-text">3.4. Neutron-*</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section-1"><span class="toc-number">47.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section-1"><span class="toc-number">48.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function-1"><span class="toc-number">49.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_Neutron_user_information_for_accessing_the_Neutron_API-"><span class="toc-number">50.</span> <span class="toc-text">The Neutron user information for accessing the Neutron API.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IP_address_used_by_Nova_metadata_server"><span class="toc-number">51.</span> <span class="toc-text">IP address used by Nova metadata server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TCP_Port_used_by_Nova_metadata_server"><span class="toc-number">52.</span> <span class="toc-text">TCP Port used by Nova metadata server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#确保RabbitMQ_IP指向了控制节点"><span class="toc-number">53.</span> <span class="toc-text">确保RabbitMQ IP指向了控制节点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-_计算节点"><span class="toc-number">54.</span> <span class="toc-text">4. 计算节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-_准备节点"><span class="toc-number">54.1.</span> <span class="toc-text">4.1. 准备节点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Comment_the_ubuntu_NTP_servers-1"><span class="toc-number">55.</span> <span class="toc-text">Comment the ubuntu NTP servers</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set_the_network_node_to_follow_up_your_conroller_node-1"><span class="toc-number">56.</span> <span class="toc-text">Set the network node to follow up your conroller node</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-_配置网络"><span class="toc-number">56.1.</span> <span class="toc-text">4.2. 配置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_file_describes_the_network_interfaces_available_on_your_system-1"><span class="toc-number">57.</span> <span class="toc-text">This file describes the network interfaces available on your system</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#and_how_to_activate_them-_For_more_information,_see_interfaces(5)--1"><span class="toc-number">58.</span> <span class="toc-text">and how to activate them. For more information, see interfaces(5).</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_loopback_network_interface-1"><span class="toc-number">59.</span> <span class="toc-text">The loopback network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)-2"><span class="toc-number">60.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_primary_network_interface-1"><span class="toc-number">61.</span> <span class="toc-text">The primary network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VM_Configuration"><span class="toc-number">62.</span> <span class="toc-text">VM Configuration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-_KVM"><span class="toc-number">62.1.</span> <span class="toc-text">4.3. KVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-_OpenVSwitch"><span class="toc-number">62.2.</span> <span class="toc-text">4.4. OpenVSwitch</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#br-int_will_be_used_for_VM_integration"><span class="toc-number">63.</span> <span class="toc-text">br-int will be used for VM integration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-_Neutron"><span class="toc-number">63.1.</span> <span class="toc-text">4.5. Neutron</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section-2"><span class="toc-number">64.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section-2"><span class="toc-number">65.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function-2"><span class="toc-number">66.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#确保RabbitMQ_IP指向了控制节点-1"><span class="toc-number">67.</span> <span class="toc-text">确保RabbitMQ IP指向了控制节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-_Nova"><span class="toc-number">67.1.</span> <span class="toc-text">4.6. Nova</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809-1"><span class="toc-number">68.</span> <span class="toc-text">Workaround for https://bugs.launchpad.net/nova/+bug/1154809</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Auth-1"><span class="toc-number">69.</span> <span class="toc-text">Auth</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Imaging_service-1"><span class="toc-number">70.</span> <span class="toc-text">Imaging service</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vnc_configuration-1"><span class="toc-number">71.</span> <span class="toc-text">Vnc configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Network_settings-1"><span class="toc-number">72.</span> <span class="toc-text">Network settings</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Neutron_+_Nova_Security_groups-1"><span class="toc-number">73.</span> <span class="toc-text">If you want Neutron + Nova Security groups</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#firewall_driver=nova-virt-firewall-NoopFirewallDriver-1"><span class="toc-number">74.</span> <span class="toc-text">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security_group_api=neutron-1"><span class="toc-number">75.</span> <span class="toc-text">security_group_api=neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1--1"><span class="toc-number">76.</span> <span class="toc-text">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metadata-1"><span class="toc-number">77.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Compute-1"><span class="toc-number">78.</span> <span class="toc-text">Compute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder-2"><span class="toc-number">79.</span> <span class="toc-text">Cinder</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-_结束语"><span class="toc-number">80.</span> <span class="toc-text">5. 结束语</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-_参考文档"><span class="toc-number">81.</span> <span class="toc-text">6. 参考文档</span></a></li></ol>
+		
+		</div>
+		
+		<p>==========================================================</p>
 <h1 id="OpenStack_Havana_安装指南">  OpenStack Havana 安装指南</h1><p>:Version: 1.0<br>:Source: <a href="https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode" target="_blank" rel="external">https://github.com/xidianpanpei/OpenStack-Havana-Install-Guide-CN-OVS_MutliNode</a><br>:Keywords: 多点OpenStack安装, Havana, Neutron, Nova, Keystone, Glance, Horizon, Cinder, OpenVSwitch, KVM, Ubuntu Server 12.04 (64 bits).</p>
 <h1 id="作者">作者</h1><p><code>crAzyli0n &lt;http://xidianpanpei.github.com&gt;</code>_ <a href="&#109;&#x61;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x70;&#97;&#x6e;&#x6e;&#112;&#x65;&#x69;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#111;&#109;">&#x70;&#97;&#x6e;&#x6e;&#112;&#x65;&#x69;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#111;&#109;</a></p>
 <p>本指南fork自<br><code>Shi Dongliang &lt;https://github.com/ist0ne/OpenStack-Grizzly-Install-Guide-CN&gt;</code><em><br>的git仓库。<br>同时，本指南同时参考<br><code>Bilel Msekni &lt;https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide&gt;</code></em><br>的git仓库。</p>
@@ -548,14 +557,9 @@ ovs_version: <span class="string">"1.4.0+build0"</span>
 <p>ps:在搭建过程中细心真的是非常重要的，否则，经常会因为某个配置错误，导致花费大量时间查错。</p>
 <h1 id="6-_参考文档">6. 参考文档</h1><p><code>Boostrapping Open vSwitch and Neutron &lt;https://a248.e.akamai.net/cdn.hpcloudsvc.com/h9f25be84b35c201beea6b13c85876258/prodaw2/Bootstrapping_OVS_neutron--final_20130319.html&gt;</code>_</p>
 <p><code>Cisco OpenStack Edition: Folsom Manual Install &lt;http://docwiki.cisco.com/wiki/Cisco_OpenStack_Edition:_Folsom_Manual_Install&gt;</code>_</p>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
+  
+	</div>
+		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
@@ -573,635 +577,47 @@ ovs_version: <span class="string">"1.4.0+build0"</span>
 
 
 
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" data-title="Openstack_Havana_Install_Guide_MutilNode | 李大辉" data-tsina="1901372893" class="share clearfix">
+	  </div>
+	
+	</div>
 
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" data-count-type="comments">&nbsp;</a>
-	
-</div>
 
 </footer>
 
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/09/09/java/Java的ClassLoader原理/" title="Java的ClassLoader原理" itemprop="url">Java的ClassLoader原理</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-09T12:00:52.000Z" itemprop="datePublished"> 发表于 2015-09-09</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>关于Java的类加载机制，一直都有看过很多知识，但没有系统的总结过。遇到一篇觉得总结的比较不错的博客，转载过来。<br>原文链接：<a href="http://blog.csdn.net/xyang81/article/details/7292380">深入分析Java ClassLoader原理</a></p>
-<h1 id="什么是ClassLoader?">什么是ClassLoader?</h1><hr>
-<p>大家都知道，当我们写好一个Java程序之后，不是管是CS还是BS应用，都是由若干个.class文件组织而成的一个完整的Java应用程序，当程序在运行时，即会调用该程序的一个入口函数来调用系统的相关功能，而这些功能都被封装在不同的class文件当中，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/09/09/java/Java的ClassLoader原理/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/ClassLoader/">ClassLoader</a><a href="/tags/Java/">Java</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
+   	       
+	</article>
 	
-	  	<span></span>
-		<a href="/2015/09/09/java/Java的ClassLoader原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/09/java/Java的ClassLoader原理/" data-count-type="comments">&nbsp;</a>
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/09/09/java/Java的ClassLoader原理/"  title="Java的ClassLoader原理">
+ <strong>下一篇：</strong><br/> 
+ <span>Java的ClassLoader原理
+</span>
+</a>
+</div>
+
+</nav>
+
 	
-</div>
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/" data-title="Openstack_Havana_Install_Guide_MutilNode" data-url="http://yoursite.com/2015/09/28/openstack/Openstack_Havana_Install_Guide_MutilNode/"></div>
+</section>
 
-</footer>
 
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/09/05/java/Java中的弱引用/" title="Java中的弱引用" itemprop="url">Java中的弱引用</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-05T01:00:52.000Z" itemprop="datePublished"> 发表于 2015-09-05</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文是在阅读《深入理解JAVA虚拟机：JVM的高级特性与最佳实践》中的关于对“对象已死吗”的章节介绍，继而在importnew中找到了一篇关于Java中的弱引用介绍的文章。<br><a href="https://weblogs.java.net/blog/enicholas/archive/2006/05/understanding_w.html">原文链接</a><br><a href="http://www.importnew.com/14115.html">译文链接</a><br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/09/05/java/Java中的弱引用/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java/">Java</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/05/java/Java中的弱引用/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/05/java/Java中的弱引用/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/09/01/Java集合学习9：对集合中transient的理解/" title="Java集合学习9：对集合中transient的理解" itemprop="url">Java集合学习9：对集合中transient的理解</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-09-01T12:40:09.000Z" itemprop="datePublished"> 发表于 2015-09-01</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>之前在阅读Java集合源码的过程中，发现在多种集合的背后，其基本上都是一个数组，而该数组也都会用transient关键字进行标识。例如，在HashMap中，<code>transient Entry&lt;K,V&gt;[] table;</code>，又例如在ArrayList中，<code>private transient Object[] elementData;</code>。</p>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/09/01/Java集合学习9：对集合中transient的理解/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java集合/">Java集合</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/09/01/Java集合学习9：对集合中transient的理解/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/09/01/Java集合学习9：对集合中transient的理解/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/29/java/Java中的内存泄漏/" title="Java中的内存泄漏" itemprop="url">Java中的内存泄漏</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-29T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-29</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>Java语言的一个关键的优势就是它的内存管理机制。你只管创建对象，Java的垃圾回收器帮你分配以及回收内存。然而，实际的情况并没有那么简单，因为内存泄漏在Java应用程序中还是时有发生的。文章内容来源于importnew。</p>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/29/java/Java中的内存泄漏/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/内存泄漏/">内存泄漏</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/29/java/Java中的内存泄漏/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/29/java/Java中的内存泄漏/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/" title="Hibernate：save、persist和saveOrUpdate" itemprop="url">Hibernate：save、persist和saveOrUpdate</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-08T03:22:14.000Z" itemprop="datePublished"> 发表于 2015-08-08</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。</p>
-<h1 id="save和saverOrUpdate的区别">save和saverOrUpdate的区别</h1><hr>
-<p>最主要的区别是save()方法生成一个新的标识符（identifier），然后在数据库中插入一条记录，并且返回一个Serializable对象；而saverOrUpdate()是根据是否在数据中存在来选择插入(INSERT)或者是更新(UPDATE)。如果持久化的对象已经在数据库中，则执行UPDATE SQL。</p>
-<p>saverOrUpdate()方法使用更灵活，但却涉及到一个额外的流程去查找该对象在数据库中是否存在。</p>
-<h1 id="save和persist的区别">save和persist的区别</h1><hr>
-<ul>
-<li>返回类型不同。两个方法都会将对象插入到数据，但save返回的是Serializable对象，而persist返回的是void。</li>
-<li>ID赋值时机不同。二者同样用于将transient实例持久化，但persist不保证ID值立即赋给持久化实例，可能会在flush的时候给ID赋值。</li>
-<li>transaction外的行为不同。如果在transaction之外调用，persist保证会立即执行INSERT语句；而save则不保证（save返回一个identifier，如果必须执行INSERT来获取该identifier，则就会立即执行INSERT，而不论是在transaction之内或之外）</li>
-<li>使用场景。persist方法适用于被扩展的Session上下文的长期运行的会话中，而save则不适用。(Because of its above behavior of persist method outside transaction boundary, its useful in long-running conversations with an extended Session context. On the other hand save method is not good in a long-running conversation with an extended Session context.)</li>
-</ul>
-
-        
-        
-        <p class="article-more-link">
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/" title="Hibernate：悲观锁和乐观锁" itemprop="url">Hibernate：悲观锁和乐观锁</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-06T06:47:52.000Z" itemprop="datePublished"> 发表于 2015-08-06</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>业务逻辑的实现过程中，往往需要保证数据访问的排他性。如在金融系统的日终结算处理中，我们希望针对某个 cut-off 时间点的数据进行处理，而不希望在结算进行过程中（可能是几秒种，也可能是几个小时），数据再发生变化。此时，我们就需要通过一些机制来保证这些数据在某个操作过程中不会被外界修改，这样的机制，在这里，也就是所谓的 “锁” ，即给我们选定的目标数据上锁，使其无法被其他程序修改。</p>
-<p>Hibernate 支持两种锁机制：即通常所说的 “悲观锁（ Pessimistic Locking ）”和 “乐观锁（ Optimistic Locking ）” 。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/06/Hibernate：悲观锁与乐观锁/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/06/Hibernate：悲观锁与乐观锁/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/08/04/java/Java对象的Clone/" title="Java对象的Clone" itemprop="url">Java对象的Clone</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-08-04T02:00:52.000Z" itemprop="datePublished"> 发表于 2015-08-04</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>本文包含的内容：</p>
-<ul>
-<li>Java对象的创建</li>
-<li>复制对象or复制引用</li>
-<li>深拷贝和浅拷贝</li>
-<li>使用序列化实现对象的深拷贝</li>
-</ul>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/08/04/java/Java对象的Clone/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Java/">Java</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Clone/">Clone</a><a href="/tags/Java/">Java</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/08/04/java/Java对象的Clone/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/08/04/java/Java对象的Clone/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/28/spring/Spring的IOC和AOP/" title="Spring的IOC和AOP" itemprop="url">Spring的IOC和AOP</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-28T02:11:52.000Z" itemprop="datePublished"> 发表于 2015-07-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="Spring的简单理解">Spring的简单理解</h1><hr>
-<p>Spring技术可以说是java企业开发里最重要的技术，不过真的理解Spring的作用和意义还真是一件麻烦的事情。<br>Spring最根本的使命：<font color="#ff0000"><strong>简化Java开发。</strong></font><br>为了降低Java开发的复杂性，Spring采取以下4种关键策略：</p>
-<ol>
-<li>基于POJO的轻量级和最小侵入性编程</li>
-<li>通过依赖注入和面向接口实现松耦合</li>
-<li>基于切面和惯例进行声明式编程</li>
-<li>通过切面和模版减少样板示代码</li>
-</ol>
-<p>很多人对Spring理解其实都是停留在使用阶段（例如：声明式事务很好用等等），当今的Spring技术生态环境里可谓是蔚为壮观，Spring已经包罗万象，它的内容之多完全不亚于它的本源Java语言了，而Spring这么大的框都是建立在IOC和AOP技术之上，只有深入理解了这两个技术我们才能明白为什么Spring这个框能装的下那么多东西了。在理解IOC和AOP之前，可以先看一下Spring给我们带来了哪些好处。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/28/spring/Spring的IOC和AOP/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Spring/">Spring</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/AOP/">AOP</a><a href="/tags/IOC/">IOC</a><a href="/tags/Spring/">Spring</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/28/spring/Spring的IOC和AOP/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/28/spring/Spring的IOC和AOP/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/07/28/spring/Spring声明式事务管理/" title="Spring声明式事务管理" itemprop="url">Spring声明式事务管理</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
-		
-  <p class="article-time">
-    <time datetime="2015-07-28T01:26:52.000Z" itemprop="datePublished"> 发表于 2015-07-28</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="概述">概述</h1><hr>
-<p>Spring 的声明式事务管理在底层是建立在 AOP 的基础之上的。其本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据执行情况提交或者回滚事务。</p>
-<p>声明式事务最大的优点就是不需要通过编程的方式管理事务，这样就不需要在业务逻辑代码中掺杂事务管理的代码，只需在配置文件中做相关的事务规则声明（或通过等价的基于标注的方式），便可以将事务规则应用到业务逻辑中。因为事务管理本身就是一个典型的横切逻辑，正是 AOP 的用武之地。Spring 开发团队也意识到了这一点，为声明式事务提供了简单而强大的支持。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/07/28/spring/Spring声明式事务管理/#more">阅读更多</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/Spring/">Spring</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/Spring/">Spring</a><a href="/tags/事务/">事务</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/07/28/spring/Spring声明式事务管理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/28/spring/Spring声明式事务管理/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-
-  <nav id="page-nav" class="clearfix">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
-  </nav>
-
-</div>
+</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenStack_Havana_安装指南"><span class="toc-number">1.</span> <span class="toc-text">  OpenStack Havana 安装指南</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#作者"><span class="toc-number">2.</span> <span class="toc-text">作者</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内容列表"><span class="toc-number">3.</span> <span class="toc-text">内容列表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0-_简介"><span class="toc-number">4.</span> <span class="toc-text">0. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-_环境搭建"><span class="toc-number">5.</span> <span class="toc-text">1. 环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-_控制节点"><span class="toc-number">6.</span> <span class="toc-text">2. 控制节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-_准备Ubuntu"><span class="toc-number">6.1.</span> <span class="toc-text">2.1. 准备Ubuntu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-设置网络"><span class="toc-number">6.2.</span> <span class="toc-text">2.2.设置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)"><span class="toc-number">7.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#For_Exposing_OpenStack_API_over_the_internet"><span class="toc-number">8.</span> <span class="toc-text">For Exposing OpenStack API over the internet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-_安装MySQL"><span class="toc-number">8.1.</span> <span class="toc-text">2.3. 安装MySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-_安装RabbitMQ和NTP"><span class="toc-number">8.2.</span> <span class="toc-text">2.4. 安装RabbitMQ和NTP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-_创建数据库"><span class="toc-number">8.3.</span> <span class="toc-text">2.5. 创建数据库</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Keystone"><span class="toc-number">9.</span> <span class="toc-text">Keystone</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Glance"><span class="toc-number">10.</span> <span class="toc-text">Glance</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Neutron"><span class="toc-number">11.</span> <span class="toc-text">Neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nova"><span class="toc-number">12.</span> <span class="toc-text">Nova</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder"><span class="toc-number">13.</span> <span class="toc-text">Cinder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-_配置Keystone"><span class="toc-number">13.1.</span> <span class="toc-text">2.6. 配置Keystone</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT"><span class="toc-number">14.</span> <span class="toc-text">注意在执行脚本前请按你的网卡配置修改HOST_IP和HOST_IP_EXT</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Paste_the_following:"><span class="toc-number">15.</span> <span class="toc-text">Paste the following:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Load_it:"><span class="toc-number">16.</span> <span class="toc-text">Load it:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-_设置Glance"><span class="toc-number">16.1.</span> <span class="toc-text">2.7. 设置Glance</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-_设置Neutron"><span class="toc-number">16.2.</span> <span class="toc-text">2.8. 设置Neutron</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section"><span class="toc-number">17.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section"><span class="toc-number">18.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function"><span class="toc-number">19.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-9-_设置Nova"><span class="toc-number">19.1.</span> <span class="toc-text">2.9. 设置Nova</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809"><span class="toc-number">20.</span> <span class="toc-text">Workaround for https://bugs.launchpad.net/nova/+bug/1154809</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Auth"><span class="toc-number">21.</span> <span class="toc-text">Auth</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Imaging_service"><span class="toc-number">22.</span> <span class="toc-text">Imaging service</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vnc_configuration"><span class="toc-number">23.</span> <span class="toc-text">Vnc configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Network_settings"><span class="toc-number">24.</span> <span class="toc-text">Network settings</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Neutron_+_Nova_Security_groups"><span class="toc-number">25.</span> <span class="toc-text">If you want Neutron + Nova Security groups</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#firewall_driver=nova-virt-firewall-NoopFirewallDriver"><span class="toc-number">26.</span> <span class="toc-text">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security_group_api=neutron"><span class="toc-number">27.</span> <span class="toc-text">security_group_api=neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1-"><span class="toc-number">28.</span> <span class="toc-text">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metadata"><span class="toc-number">29.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Compute"><span class="toc-number">30.</span> <span class="toc-text">Compute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder-1"><span class="toc-number">31.</span> <span class="toc-text">Cinder</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-10-_设置Cinder"><span class="toc-number">31.1.</span> <span class="toc-text">2.10. 设置Cinder</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#osapi_volume_listen_port=5900"><span class="toc-number">32.</span> <span class="toc-text">osapi_volume_listen_port=5900</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Type_in_the_followings:"><span class="toc-number">33.</span> <span class="toc-text">Type in the followings:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-11-_设置Horizon"><span class="toc-number">33.1.</span> <span class="toc-text">2.11. 设置Horizon</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-_网络节点"><span class="toc-number">34.</span> <span class="toc-text">3. 网络节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-_准备节点"><span class="toc-number">34.1.</span> <span class="toc-text">3.1. 准备节点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Comment_the_ubuntu_NTP_servers"><span class="toc-number">35.</span> <span class="toc-text">Comment the ubuntu NTP servers</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set_the_network_node_to_follow_up_your_conroller_node"><span class="toc-number">36.</span> <span class="toc-text">Set the network node to follow up your conroller node</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-_配置网络"><span class="toc-number">36.1.</span> <span class="toc-text">3.2. 配置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenStack_management"><span class="toc-number">37.</span> <span class="toc-text">OpenStack management</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VM_internet_Access"><span class="toc-number">38.</span> <span class="toc-text">VM internet Access</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-_OpenVSwitch"><span class="toc-number">38.1.</span> <span class="toc-text">3.3. OpenVSwitch</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_file_describes_the_network_interfaces_available_on_your_system"><span class="toc-number">39.</span> <span class="toc-text">This file describes the network interfaces available on your system</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#and_how_to_activate_them-_For_more_information,_see_interfaces(5)-"><span class="toc-number">40.</span> <span class="toc-text">and how to activate them. For more information, see interfaces(5).</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_loopback_network_interface"><span class="toc-number">41.</span> <span class="toc-text">The loopback network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)-1"><span class="toc-number">42.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_primary_network_interface"><span class="toc-number">43.</span> <span class="toc-text">The primary network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_is_an_autoconfigured_IPv6_interface"><span class="toc-number">44.</span> <span class="toc-text">This is an autoconfigured IPv6 interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#iface_eth0_inet6_auto"><span class="toc-number">45.</span> <span class="toc-text">iface eth0 inet6 auto</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#For_Exposing_OpenStack_API_over_the_internet-1"><span class="toc-number">46.</span> <span class="toc-text">For Exposing OpenStack API over the internet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-_Neutron-*"><span class="toc-number">46.1.</span> <span class="toc-text">3.4. Neutron-*</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section-1"><span class="toc-number">47.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section-1"><span class="toc-number">48.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function-1"><span class="toc-number">49.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_Neutron_user_information_for_accessing_the_Neutron_API-"><span class="toc-number">50.</span> <span class="toc-text">The Neutron user information for accessing the Neutron API.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IP_address_used_by_Nova_metadata_server"><span class="toc-number">51.</span> <span class="toc-text">IP address used by Nova metadata server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TCP_Port_used_by_Nova_metadata_server"><span class="toc-number">52.</span> <span class="toc-text">TCP Port used by Nova metadata server</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#确保RabbitMQ_IP指向了控制节点"><span class="toc-number">53.</span> <span class="toc-text">确保RabbitMQ IP指向了控制节点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-_计算节点"><span class="toc-number">54.</span> <span class="toc-text">4. 计算节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-_准备节点"><span class="toc-number">54.1.</span> <span class="toc-text">4.1. 准备节点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Comment_the_ubuntu_NTP_servers-1"><span class="toc-number">55.</span> <span class="toc-text">Comment the ubuntu NTP servers</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set_the_network_node_to_follow_up_your_conroller_node-1"><span class="toc-number">56.</span> <span class="toc-text">Set the network node to follow up your conroller node</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-_配置网络"><span class="toc-number">56.1.</span> <span class="toc-text">4.2. 配置网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#This_file_describes_the_network_interfaces_available_on_your_system-1"><span class="toc-number">57.</span> <span class="toc-text">This file describes the network interfaces available on your system</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#and_how_to_activate_them-_For_more_information,_see_interfaces(5)--1"><span class="toc-number">58.</span> <span class="toc-text">and how to activate them. For more information, see interfaces(5).</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_loopback_network_interface-1"><span class="toc-number">59.</span> <span class="toc-text">The loopback network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Not_internet_connected(used_for_OpenStack_management)-2"><span class="toc-number">60.</span> <span class="toc-text">Not internet connected(used for OpenStack management)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The_primary_network_interface-1"><span class="toc-number">61.</span> <span class="toc-text">The primary network interface</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VM_Configuration"><span class="toc-number">62.</span> <span class="toc-text">VM Configuration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-_KVM"><span class="toc-number">62.1.</span> <span class="toc-text">4.3. KVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-_OpenVSwitch"><span class="toc-number">62.2.</span> <span class="toc-text">4.4. OpenVSwitch</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#br-int_will_be_used_for_VM_integration"><span class="toc-number">63.</span> <span class="toc-text">br-int will be used for VM integration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-_Neutron"><span class="toc-number">63.1.</span> <span class="toc-text">4.5. Neutron</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_database_section-2"><span class="toc-number">64.</span> <span class="toc-text">Under the database section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Under_the_OVS_section-2"><span class="toc-number">65.</span> <span class="toc-text">Under the OVS section</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Firewall_driver_for_realizing_neutron_security_group_function-2"><span class="toc-number">66.</span> <span class="toc-text">Firewall driver for realizing neutron security group function</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#确保RabbitMQ_IP指向了控制节点-1"><span class="toc-number">67.</span> <span class="toc-text">确保RabbitMQ IP指向了控制节点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-_Nova"><span class="toc-number">67.1.</span> <span class="toc-text">4.6. Nova</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Workaround_for_https://bugs-launchpad-net/nova/+bug/1154809-1"><span class="toc-number">68.</span> <span class="toc-text">Workaround for https://bugs.launchpad.net/nova/+bug/1154809</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Auth-1"><span class="toc-number">69.</span> <span class="toc-text">Auth</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Imaging_service-1"><span class="toc-number">70.</span> <span class="toc-text">Imaging service</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vnc_configuration-1"><span class="toc-number">71.</span> <span class="toc-text">Vnc configuration</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Network_settings-1"><span class="toc-number">72.</span> <span class="toc-text">Network settings</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Neutron_+_Nova_Security_groups-1"><span class="toc-number">73.</span> <span class="toc-text">If you want Neutron + Nova Security groups</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#firewall_driver=nova-virt-firewall-NoopFirewallDriver-1"><span class="toc-number">74.</span> <span class="toc-text">firewall_driver=nova.virt.firewall.NoopFirewallDriver</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security_group_api=neutron-1"><span class="toc-number">75.</span> <span class="toc-text">security_group_api=neutron</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#If_you_want_Nova_Security_groups_only,_comment_the_two_lines_above_and_uncomment_line_-1--1"><span class="toc-number">76.</span> <span class="toc-text">If you want Nova Security groups only, comment the two lines above and uncomment line -1-.</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metadata-1"><span class="toc-number">77.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Compute-1"><span class="toc-number">78.</span> <span class="toc-text">Compute</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cinder-2"><span class="toc-number">79.</span> <span class="toc-text">Cinder</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-_结束语"><span class="toc-number">80.</span> <span class="toc-text">5. 结束语</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-_参考文档"><span class="toc-number">81.</span> <span class="toc-text">6. 参考文档</span></a></li></ol>
+ 
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -1471,6 +887,11 @@ $(document).ready(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
   
+        getSize();
+        if (myWidth >= 1024) {
+          c.click();
+        }
+  
   $(window).resize(function(){
     getSize(); 
     if (myWidth >= 1024) {
@@ -1479,12 +900,69 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
 
 
 
@@ -1562,4 +1040,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- Tiny_search End -->
 
   </body>
- </html>
+</html>
