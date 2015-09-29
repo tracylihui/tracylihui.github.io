@@ -4,29 +4,22 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hibernate：save、persist和saveOrUpdate | 李大辉</title>
+    <title>李大辉</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Ｔracylihui">
     
 
     
-    <meta name="description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
-save和saverOrUpdate的区别
-最主要的区别是save()方法生成一个">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Hibernate：save、persist和saveOrUpdate">
-<meta property="og:url" content="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/index.html">
+    <meta name="description" content="给自己提供一个总结的平台">
+<meta property="og:type" content="website">
+<meta property="og:title" content="李大辉">
+<meta property="og:url" content="http://yoursite.com/page/6/index.html">
 <meta property="og:site_name" content="李大辉">
-<meta property="og:description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
-save和saverOrUpdate的区别
-最主要的区别是save()方法生成一个">
-<meta property="og:updated_time" content="2015-08-08T04:31:12.680Z">
+<meta property="og:description" content="给自己提供一个总结的平台">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hibernate：save、persist和saveOrUpdate">
-<meta name="twitter:description" content="Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。
-save和saverOrUpdate的区别
-最主要的区别是save()方法生成一个">
+<meta name="twitter:title" content="李大辉">
+<meta name="twitter:description" content="给自己提供一个总结的平台">
 
     
     <link rel="alternative" href="/atom.xml" title="李大辉" type="application/atom+xml">
@@ -84,112 +77,82 @@ save和saverOrUpdate的区别
 </div>
     </header>
     <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
-  
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
+      <div id="main">
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/08/Hibernate：save、persist和saveOrUpdate/" title="Hibernate：save、persist和saveOrUpdate" itemprop="url">Hibernate：save、persist和saveOrUpdate</a>
+      <a href="/2015/07/01/Java集合学习1：HashMap的实现原理/" title="Java集合学习1：HashMap的实现原理" itemprop="url">Java集合学习1：HashMap的实现原理</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Ｔracylihui" target="_blank" itemprop="author">Ｔracylihui</a>
 		
   <p class="article-time">
-    <time datetime="2015-08-08T03:22:14.000Z" itemprop="datePublished"> 发表于 2015-08-08</time>
+    <time datetime="2015-07-01T01:46:32.000Z" itemprop="datePublished"> 发表于 2015-07-01</time>
     
   </p>
 </header>
-	<div class="article-content">
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#save和saverOrUpdate的区别"><span class="toc-number">1.</span> <span class="toc-text">save和saverOrUpdate的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#save和persist的区别"><span class="toc-number">2.</span> <span class="toc-text">save和persist的区别</span></a></li></ol>
-		
-		</div>
-		
-		<p>Hibernate的Session类提供了将对象保存到数据库的方法，例如save，saverOrUpdate还有persist。可以根据自己的需要来选择使用save，saverOrUpdate或者persist。所以能过对着三个方法之间的区别有一定的了解对开发会有一定帮助，当然，这个问题在面试过程中也有可能会遇到。</p>
-<h1 id="save和saverOrUpdate的区别">save和saverOrUpdate的区别</h1><hr>
-<p>最主要的区别是save()方法生成一个新的标识符（identifier），然后在数据库中插入一条记录，并且返回一个Serializable对象；而saverOrUpdate()是根据是否在数据中存在来选择插入(INSERT)或者是更新(UPDATE)。如果持久化的对象已经在数据库中，则执行UPDATE SQL。</p>
-<p>saverOrUpdate()方法使用更灵活，但却涉及到一个额外的流程去查找该对象在数据库中是否存在。</p>
-<h1 id="save和persist的区别">save和persist的区别</h1><hr>
-<ul>
-<li>返回类型不同。两个方法都会将对象插入到数据，但save返回的是Serializable对象，而persist返回的是void。</li>
-<li>ID赋值时机不同。二者同样用于将transient实例持久化，但persist不保证ID值立即赋给持久化实例，可能会在flush的时候给ID赋值。</li>
-<li>transaction外的行为不同。如果在transaction之外调用，persist保证会立即执行INSERT语句；而save则不保证（save返回一个identifier，如果必须执行INSERT来获取该identifier，则就会立即执行INSERT，而不论是在transaction之内或之外）</li>
-<li>使用场景。persist方法适用于被扩展的Session上下文的长期运行的会话中，而save则不适用。(Because of its above behavior of persist method outside transaction boundary, its useful in long-running conversations with an extended Session context. On the other hand save method is not good in a long-running conversation with an extended Session context.)</li>
-</ul>
-  
-	</div>
-		<footer class="article-footer clearfix">
+    <div class="article-content">
+        
+        <h1 id="HashMap概述">HashMap概述</h1><hr>
+<p>HashMap是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用null值和null键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
+<p>此实现假定哈希函数将元素适当地分布在各桶之间，可为基本操作（get 和 put）提供稳定的性能。迭代 collection 视图所需的时间与 HashMap 实例的“容量”（桶的数量）及其大小（键-值映射关系数）成比例。所以，如果迭代性能很重要，则不要将初始容量设置得太高或将加载因子设置得太低。也许大家开始对这段话有一点不太懂，不过不用担心，当你读完这篇文章后，就能深切理解这其中的含义了。</p>
+<p>需要注意的是：Hashmap不是同步的，如果多个线程同时访问一个HashMap，而其中至少一个线程从结构上（指添加或者删除一个或多个映射关系的任何操作）修改了，则必须保持外部同步，以防止对映射进行意外的非同步访问。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/07/01/Java集合学习1：HashMap的实现原理/#more">阅读更多</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
 <div class="article-catetags">
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/Hibernate/">Hibernate</a>
+  <a class="article-category-link" href="/categories/Java集合/">Java集合</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Hibernate/">Hibernate</a>
+  <span></span> <a href="/tags/Java集合/">Java集合</a>
   </div>
 
 </div>
 
 
 
-	<div class="article-share" id="share">
-	
-	  <div data-url="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-title="Hibernate：save、persist和saveOrUpdate | 李大辉" data-tsina="1901372893" class="share clearfix">
-	  </div>
-	
-	</div>
 
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/07/01/Java集合学习1：HashMap的实现原理/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/07/01/Java集合学习1：HashMap的实现原理/" data-count-type="comments">&nbsp;</a>
+	
+</div>
 
 </footer>
 
-   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev" >
- <a href="/2015/08/29/java/Java中的内存泄漏/" title="Java中的内存泄漏">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Java中的内存泄漏</span>
-</a>
+
+    </article>
+
+
+
+
+
+
+
+  <nav id="page-nav" class="clearfix">
+    <a class="extend prev" rel="prev" href="/page/5/"><span></span>Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+  </nav>
+
 </div>
-
-
-<div class="next">
-<a href="/2015/08/06/Hibernate：悲观锁与乐观锁/"  title="Hibernate：悲观锁和乐观锁">
- <strong>下一篇：</strong><br/> 
- <span>Hibernate：悲观锁和乐观锁
-</span>
-</a>
-</div>
-
-</nav>
-
-	
-<section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/08/08/Hibernate：save、persist和saveOrUpdate/" data-title="Hibernate：save、persist和saveOrUpdate" data-url="http://yoursite.com/2015/08/08/Hibernate：save、persist和saveOrUpdate/"></div>
-</section>
-
-
-</div>  
       <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
- 
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#save和saverOrUpdate的区别"><span class="toc-number">1.</span> <span class="toc-text">save和saverOrUpdate的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#save和persist的区别"><span class="toc-number">2.</span> <span class="toc-text">save和persist的区别</span></a></li></ol>
- 
-  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -459,11 +422,6 @@ $(document).ready(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
   
-        getSize();
-        if (myWidth >= 1024) {
-          c.click();
-        }
-  
   $(window).resize(function(){
     getSize(); 
     if (myWidth >= 1024) {
@@ -472,69 +430,12 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
 });
 </script>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  c.click(function(){
-    ta.css('display', 'block').addClass('fadeIn');
-  });
-  o.click(function(){
-    ta.css('display', 'none');
-  });
-  $(window).scroll(function(){
-    ta.css("top",Math.max(140,320-$(this).scrollTop()));
-  });
-});
-</script>
-
-
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina'),
-      description = $this.attr('description');
-  var html = [
-  '<a href="#" class="overlay" id="qrcode"></a>',
-  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
-  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-  $('.article-share-qrcode').click(function(){
-    var imgSrc = $('#qrcode-pic').attr('data-src');
-    $('#qrcode-pic').attr('src', imgSrc);
-    $('#qrcode-pic').load(function(){
-        $('.qrcode strong').text(' ');
-    });
-  });
-});     
-</script>
 
 
 
@@ -612,4 +513,4 @@ document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3
 <!-- Tiny_search End -->
 
   </body>
-</html>
+ </html>
